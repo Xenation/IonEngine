@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{9c4b4a44-902a-4f53-b838-fe8146a4c17c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\test">
+      <UniqueIdentifier>{7244f9b8-4996-4f55-83be-91ebbc4ef32d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Scenes">
+      <UniqueIdentifier>{959ce7a3-aef8-4b18-a9b7-ea1cb5bc85e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{659ca7fd-d3b1-4cca-8e77-f6f7ab98b082}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\postprocess_test">
+      <UniqueIdentifier>{3edc77e7-2d63-4d91-819b-13587b0566a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\shaders\particle_basic">
+      <UniqueIdentifier>{d00d84fa-1e6c-4f23-8db2-b413e84b40d3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="TestGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestRotator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TestScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="TestGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TestRotator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="res\shaders\test\vs.glsl">
+      <Filter>Resource Files\shaders\test</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\shaders\test\fs.glsl">
+      <Filter>Resource Files\shaders\test</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\shaders\postprocess_test\fs.glsl">
+      <Filter>Resource Files\shaders\postprocess_test</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\shaders\postprocess_test\vs.glsl">
+      <Filter>Resource Files\shaders\postprocess_test</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\shaders\particle_basic\vs.glsl">
+      <Filter>Resource Files\shaders\particle_basic</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\shaders\particle_basic\fs.glsl">
+      <Filter>Resource Files\shaders\particle_basic</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="res\shaders\particle_basic\gs.glsl">
+      <Filter>Resource Files\shaders\particle_basic</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\test\gs.glsl">
+      <Filter>Resource Files\shaders\test</Filter>
+    </None>
+  </ItemGroup>
+</Project>
