@@ -275,12 +275,52 @@ std::string Rectf::toString() {
 	return "Rectf(min" + std::string(min.toString()) + ", max" + std::string(max.toString()) + ")";
 }
 
-// Ray
-const char* Ray::toCString() {
+// Ray2f
+const char* Ray2f::toCString() {
 	return toString().c_str();
 }
-std::string Ray::toString() {
-	return "Ray(origin" + std::string(origin.toString()) + ", direction" + std::string(direction.toString()) + ")";
+std::string Ray2f::toString() {
+	return "Ray2f(origin" + std::string(origin.toString()) + ", direction" + std::string(direction.toString()) + ")";
+}
+
+// Ray3f
+const char* Ray3f::toCString() {
+	return toString().c_str();
+}
+std::string Ray3f::toString() {
+	return "Ray3f(origin" + std::string(origin.toString()) + ", direction" + std::string(direction.toString()) + ")";
+}
+
+// Line2f
+const char* Line2f::toCString() {
+	return toString().c_str();
+}
+std::string Line2f::toString() {
+	return "Line2f(" + p1.toString() + ", " + p2.toString() + ")";
+}
+
+// Line3f
+const char* Line3f::toCString() {
+	return toString().c_str();
+}
+std::string Line3f::toString() {
+	return "Line3f(" + p1.toString() + ", " + p2.toString() + ")";
+}
+
+// Segment2f
+const char* Segment2f::toCString() {
+	return toString().c_str();
+}
+std::string Segment2f::toString() {
+	return "Segment2f(" + p1.toString() + ", " + p2.toString() + ")";
+}
+
+// Segment3f
+const char* Segment3f::toCString() {
+	return toString().c_str();
+}
+std::string Segment3f::toString() {
+	return "Segment3f(" + p1.toString() + ", " + p2.toString() + ")";
 }
 
 // Plane
@@ -289,4 +329,82 @@ const char* Plane::toCString() {
 }
 std::string Plane::toString() {
 	return "Plane(normal" + std::string(normal.toString()) + ", distance = " + std::to_string(distance) + ")";
+}
+
+// OBB2D
+const char* OBB2D::toCString() {
+	return toString().c_str();
+}
+std::string OBB2D::toString() {
+	return "OBB2D(center" + center.toString() + ", size" + size.toString() + ", rotation = " + std::to_string(rotation) + ")";
+}
+
+bool OBB2D::raycast(const Ray2f& ray, float& distance) const {
+	distance = INFINITY;
+	Vec2f delta = center - ray.origin;
+
+	float tMin = 0.0f;
+	float tMax = INFINITY;
+	for (int a = 0; a < 2; a++) {
+		float e = axis[a].dot(delta);
+		float f = ray.direction.dot(axis[a]);
+
+		if (f > 0.001f || f < -0.001f) {
+			float t1 = (e - size[a] * 0.5f) / f;
+			float t2 = (e + size[a] * 0.5f) / f;
+
+			swapToMinMax(t1, t2);
+
+			if (t2 < tMax) {
+				tMax = t2;
+			}
+			if (t1 > tMin) {
+				tMin = t1;
+			}
+
+			if (tMax < tMin) {
+				return false;
+			}
+		} else {
+			if (-e - size[a] * 0.5f > 0.0f || -e + size[a] * 0.5f < 0.0f) {
+				return false;
+			}
+		}
+	}
+
+	distance = tMin;
+	return true;
+}
+
+bool OBB2D::overlaps(const OBB2D& other) const {
+	return overlaps1Way(other) && other.overlaps1Way(*this);
+}
+
+bool OBB2D::overlaps1Way(const OBB2D& other) const {
+	float tMin = -INFINITY;
+	float tMax = INFINITY;
+	for (int a = 0; a < 2; a++) {
+		for (int c = 0; c < 4; c++) {
+			float t = other.corner[c].dot(axis[a]);
+
+			if (t < tMin) {
+				tMin = t;
+			} else if (t > tMax) {
+				tMax = t;
+			}
+		}
+
+		if (tMin > 1 || tMax < 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+// OBB3D
+const char* OBB3D::toCString() {
+	return toString().c_str();
+}
+std::string OBB3D::toString() {
+	return "OBB3D(center" + center.toString() + ", size" + size.toString() + ", rotation" + rotation.toString() + ")";
 }

@@ -133,6 +133,21 @@ inline float randomRangef(float min, float max) {
 	// r * ((max - min) / rmax)
 	return rand() * ((max - min) / (float) RAND_MAX) + min;
 }
+
+inline void swapToMinMax(int& min, int& max) {
+	if (max < min) {
+		int tmp = min;
+		min = max;
+		max = tmp;
+	}
+}
+inline void swapToMinMax(float& min, float& max) {
+	if (max < min) {
+		float tmp = min;
+		min = max;
+		max = tmp;
+	}
+}
 #pragma endregion
 
 #pragma region Vectors
@@ -154,8 +169,8 @@ public:
 	static const Vec2i down;
 
 	/* ---- CONSTRUCTORS ---- */
-	inline Vec2i() : x(0), y(0) {}
-	inline Vec2i(int x, int y) : x(x), y(y) {}
+	constexpr Vec2i() : x(0), y(0) {}
+	constexpr Vec2i(int x, int y) : x(x), y(y) {}
 
 	/* ---- OPERATORS ---- */
 	// Misc
@@ -236,6 +251,29 @@ public:
 	/* ---- METHODS ---- */
 	const char* toCString();
 	std::string toString();
+	inline int dot(const Vec2i& other) const {
+		return x * other.x + y * other.y;
+	}
+	inline float magnitude() const {
+		return sqrtfInline(x * x + y * y);
+	}
+	inline Vec2i abs() const {
+		return Vec2i((x < 0) ? -x : x, (y < 0) ? -y : y);
+	}
+	inline Vec2i sign() const {
+		return Vec2i((x < 0) ? -1 : 1, (y < 0) ? -1 : 1);
+	}
+	inline Vec2i step(const Vec2i& edge) const {
+		return step(*this, edge);
+	}
+
+	// Static
+	inline static int dot(const Vec2i& l, const Vec2i& r) {
+		return l.x * r.x + l.y * r.y;
+	}
+	inline static Vec2i step(const Vec2i& in, const Vec2i& edge) {
+		return Vec2i((in.x < edge.x) ? 0 : 1, (in.y < edge.y) ? 0 : 1);
+	}
 };
 
 /* ==== VEC3i ==== */
@@ -267,8 +305,8 @@ public:
 	static const Vec3i west;
 
 	/* ---- CONSTRUCTORS ---- */
-	inline Vec3i() : x(0), y(0), z(0) {}
-	inline Vec3i(int x, int y, int z) : x(x), y(y), z(z) {}
+	constexpr Vec3i() : x(0), y(0), z(0) {}
+	constexpr Vec3i(int x, int y, int z) : x(x), y(y), z(z) {}
 
 	/* ---- OPERATORS ---- */
 	// Misc
@@ -355,6 +393,29 @@ public:
 	/* ---- METHODS ---- */
 	const char* toCString();
 	std::string toString();
+	inline int dot(const Vec3i& other) const {
+		return x * other.x + y * other.y + z * other.z;
+	}
+	inline float magnitude() const {
+		return sqrtfInline(x * x + y * y + z * z);
+	}
+	inline Vec3i abs() const {
+		return Vec3i((x < 0) ? -x : x, (y < 0) ? -y : y, (z < 0) ? -z : z);
+	}
+	inline Vec3i sign() const {
+		return Vec3i((x < 0) ? -1 : 1, (y < 0) ? -1 : 1, (z < 0) ? -1 : 1);
+	}
+	inline Vec3i step(const Vec3i& edge) const {
+		return step(*this, edge);
+	}
+
+	// Static
+	inline static int dot(const Vec3i& l, const Vec3i& r) {
+		return l.x * r.x + l.y * r.y + l.z * r.z;
+	}
+	inline static Vec3i step(const Vec3i& in, const Vec3i& edge) {
+		Vec3i((in.x < edge.x) ? 0 : 1, (in.y < edge.y) ? 0 : 1, (in.z < edge.z) ? 0 : 1);
+	}
 };
 
 /* ==== VEC4i ==== */
@@ -384,9 +445,9 @@ public:
 	static const Vec4i backward;
 
 	/* ---- CONSTRUCTORS ---- */
-	inline Vec4i() : x(0), y(0), z(0), w(0) {}
-	inline Vec4i(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
-	inline Vec4i(__m128i emm) : _emm(emm) {}
+	constexpr Vec4i() : x(0), y(0), z(0), w(0) {}
+	constexpr Vec4i(int x, int y, int z, int w) : x(x), y(y), z(z), w(w) {}
+	constexpr Vec4i(__m128i emm) : _emm(emm) {}
 
 	/* ---- OPERATORS ---- */
 	// Misc
@@ -467,6 +528,29 @@ public:
 	/* ---- METHODS ---- */
 	const char* toCString();
 	std::string toString();
+	inline int dot(const Vec4i& other) const {
+		return x * other.x + y * other.y + z * other.z + w * other.w;
+	}
+	inline float magnitude() const {
+		return sqrtfInline(x * x + y * y + z * z + w * w);
+	}
+	inline Vec4i abs() const {
+		return Vec4i((x < 0) ? -x : x, (y < 0) ? -y : y, (z < 0) ? -z : z, (w < 0) ? -w : w);
+	}
+	inline Vec4i sign() const {
+		return Vec4i((x < 0) ? -1 : 1 , (y < 0) ? -1 : 1, (z < 0) ? -1 : 1, (w < 0) ? -1 : 1);
+	}
+	inline Vec4i step(const Vec4i& edge) {
+		return step(*this, edge);
+	}
+
+	// Static
+	inline static int dot(const Vec4i& l, const Vec4i& r) {
+		return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
+	}
+	inline static Vec4i step(const Vec4i& in, const Vec4i& edge) {
+		return Vec4i((in.x < edge.x) ? 0 : 1, (in.y < edge.y) ? 0 : 1, (in.z < edge.z) ? 0 : 1, (in.w < edge.w) ? 0 : 1);
+	}
 };
 
 /* ==== VEC2f ==== */
@@ -571,6 +655,55 @@ public:
 	/* ---- METHODS ---- */
 	const char* toCString();
 	std::string toString();
+	inline float dot(const Vec2f &other) const {
+		return x * other.x + y * other.y;
+	}
+	inline Vec2f normalized() const {
+		return (*this) * invsqrt(this->dot(*this));
+	}
+	inline Vec2f normalized_precise() const {
+		float mag = this->magnitude();
+		return { this->x / mag, this->y / mag};
+	}
+	inline void normalize() {
+		float inv = invsqrt(x * x + y * y);
+		x *= inv;
+		y *= inv;
+	}
+	inline void normalize_precise() {
+		float mag = magnitude();
+		x /= mag;
+		y /= mag;
+	}
+	inline float magnitude() const {
+		return sqrtfInline(x * x + y * y);
+	}
+	inline Vec2f abs() const {
+		return Vec2f((x < 0) ? -x : x, (y < 0) ? -y : y);
+	}
+	inline Vec2f sign() const {
+		return Vec2f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1);
+	}
+	inline Vec2f inverse() const {
+		return Vec2f(1.0f / x, 1.0f / y);
+	}
+	inline Vec2i floor() const {
+		return Vec2i(floorToInt(x), floorToInt(y));
+	}
+	inline Vec2f step(const Vec2f& edge) const {
+		return Vec2f((x < edge.x) ? 0 : 1, (y < edge.y) ? 0 : 1);
+	}
+
+	// Static
+	inline float dot(const Vec2f &l, const Vec2f &r) {
+		return l.x * r.x + l.y * r.y;
+	}
+	inline Vec2f step(const Vec2f &in, const Vec2f& edge) {
+		return Vec2f((in.x < edge.x) ? 0 : 1, (in.y < edge.y) ? 0 : 1);
+	}
+	inline Vec2f lerp(const Vec2f &a, const Vec2f &b, float t) {
+		return Vec2f(lerpf(a.x, b.x, t), lerpf(a.y, b.y, t));
+	}
 };
 
 /* ==== VEC3f ==== */
@@ -721,17 +854,28 @@ public:
 	inline Vec3f sign() const {
 		return Vec3f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1, (z < 0) ? -1 : 1);
 	}
-	inline Vec3f step(const Vec3f &edge) const {
-		return Vec3f((x < edge.x) ? 0 : 1, (z < edge.z) ? 0 : 1, (z < edge.z) ? 0 : 1);
-	}
-	inline static Vec3f lerp(const Vec3f &a, const Vec3f &b, float t) {
-		return {lerpf(a.x, b.x, t), lerpf(a.y, b.y, t), lerpf(a.z, b.z, t)};
-	}
 	inline Vec3f inverse() const {
 		return {1.0f / x, 1.0f / y, 1.0f / z};
 	}
 	inline Vec3i floor() const {
 		return {floorToInt(x), floorToInt(y), floorToInt(z)};
+	}
+	inline Vec3f step(const Vec3f &edge) const {
+		return Vec3f((x < edge.x) ? 0 : 1, (z < edge.z) ? 0 : 1, (z < edge.z) ? 0 : 1);
+	}
+
+	// Static
+	inline static float dot(const Vec3f &l, const Vec3f &r) {
+		return l.x * r.x + l.y * r.y + l.z * r.z;
+	}
+	inline static Vec3f cross(const Vec3f &l, const Vec3f &r) {
+		return {r.y * l.z - r.z * l.y, r.z * l.x - r.x * l.z, r.x * l.y - r.y * l.x};
+	}
+	inline static Vec3f step(const Vec3f &in, const Vec3f& edge) {
+		return Vec3f((in.x < edge.x) ? 0 : 1, (in.z < edge.z) ? 0 : 1, (in.z < edge.z) ? 0 : 1);
+	}
+	inline static Vec3f lerp(const Vec3f &a, const Vec3f &b, float t) {
+		return {lerpf(a.x, b.x, t), lerpf(a.y, b.y, t), lerpf(a.z, b.z, t)};
 	}
 };
 
@@ -842,6 +986,59 @@ public:
 	/* ---- METHODS ---- */
 	const char* toCString();
 	std::string toString();
+	inline float dot(const Vec4f &other) const {
+		return x * other.x + y * other.y + z * other.z + w * other.w;
+	}
+	inline Vec4f normalized() const {
+		return (*this) * invsqrt(this->dot(*this));
+	}
+	inline Vec4f normalized_precise() const {
+		float mag = magnitude();
+		return Vec4f(x / mag, y / mag, z / mag, w / mag);
+	}
+	inline void normalize() {
+		float inv = invsqrt(x * x + y * y + z * z + w * w);
+		x *= inv;
+		y *= inv;
+		z *= inv;
+		w *= inv;
+	}
+	inline void normalize_precise() {
+		float mag = this->magnitude();
+		x /= mag;
+		y /= mag;
+		z /= mag;
+		w /= mag;
+	}
+	inline float magnitude() const {
+		return sqrtfInline(x * x + y * y + z * z + w * w);
+	}
+	inline Vec4f abs() const {
+		return Vec4f((x < 0) ? -x : x, (y < 0) ? -y : y, (z < 0) ? -z : z, (w < 0) ? -w : w);
+	}
+	inline Vec4f sign() const {
+		return Vec4f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1, (z < 0) ? -1 : 1, (w < 0) ? -1 : 1);
+	}
+	inline Vec4f inverse() const {
+		return Vec4f(1.0f / x, 1.0f / y, 1.0f / z, 1.0f / w);
+	}
+	inline Vec4i floor() const {
+		return Vec4i(floorToInt(x), floorToInt(y), floorToInt(z), floorToInt(w));
+	}
+	inline Vec4f step(const Vec4f &edge) const {
+		return step(*this, edge);
+	}
+
+	// Static
+	inline static float dot(const Vec4f& l, const Vec4f& r) {
+		return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
+	}
+	inline static Vec4f step(const Vec4f& in, const Vec4f& edge) {
+		return Vec4f((in.x < edge.x) ? 0 : 1, (in.y < edge.y) ? 0 : 1, (in.z < edge.z) ? 0 : 1, (in.w < edge.w) ? 0 : 1);
+	}
+	inline static Vec4f lerp(const Vec4f& a, const Vec4f& b, float t) {
+		return Vec4f(lerpf(a.x, b.x, t), lerpf(a.y, b.y, t), lerpf(a.z, b.z, t), lerpf(a.w, b.w, t));
+	}
 };
 
 /* ==== BIVEC3f ==== */
@@ -1537,13 +1734,79 @@ public:
 	std::string toString();
 };
 
-/* ==== RAY ==== */
-struct Ray {
+/* ==== RAY2f ==== */
+struct Ray2f {
+	Vec2f origin, direction;
+
+public:
+	inline Ray2f() : origin(Vec2f(0, 0)), direction(Vec2f(0, 1)) {}
+	inline Ray2f(Vec2f origin, Vec2f direction) : origin(origin), direction(direction) {}
+
+	const char* toCString();
+	std::string toString();
+};
+
+/* ==== RAY3f ==== */
+struct Ray3f {
 	Vec3f origin, direction;
 
 public:
-	inline Ray() : origin(Vec3f(0, 0, 0)), direction(Vec3f(0, 1, 0)) {}
-	inline Ray(Vec3f origin, Vec3f dir) : origin(origin), direction(dir) {}
+	inline Ray3f() : origin(Vec3f(0, 0, 0)), direction(Vec3f(0, 1, 0)) {}
+	inline Ray3f(Vec3f origin, Vec3f direction) : origin(origin), direction(direction) {}
+
+	const char* toCString();
+	std::string toString();
+};
+
+/* ==== LINE2f ==== */
+struct Line2f {
+	Vec2f p1, p2;
+
+public:
+	inline Line2f() : p1(Vec2f(0, 0)), p2(Vec2f(1, 1)) {}
+	inline Line2f(Vec2f p1, Vec2f p2) : p1(p1), p2(p2) {}
+
+	const char* toCString();
+	std::string toString();
+};
+
+/* ==== LINE3f ==== */
+struct Line3f {
+	Vec3f p1, p2;
+
+public:
+	inline Line3f() : p1(Vec3f(0, 0, 0)), p2(Vec3f(1, 1, 1)) {}
+	inline Line3f(Vec3f p1, Vec3f p2) : p1(p1), p2(p2) {}
+
+	const char* toCString();
+	std::string toString();
+};
+
+/* ==== SEGMENT2f ==== */
+struct Segment2f {
+	union {
+		struct { Vec2f p1, p2; };
+		Line2f line;
+	};
+
+public:
+	inline Segment2f() : p1(Vec2f(0, 0)), p2(Vec2f(1, 1)) {}
+	inline Segment2f(Vec2f p1, Vec2f p2) : p1(p1), p2(p2) {}
+
+	const char* toCString();
+	std::string toString();
+};
+
+/* ==== SEGMENT3f ==== */
+struct Segment3f {
+	union {
+		struct { Vec3f p1, p2; };
+		Line3f line;
+	};
+
+public:
+	inline Segment3f(): p1(Vec3f(0, 0, 0)), p2(Vec3f(1, 1, 1)) {}
+	inline Segment3f(Vec3f p1, Vec3f p2) : p1(p1), p2(p2) {}
 
 	const char* toCString();
 	std::string toString();
@@ -1564,7 +1827,7 @@ public:
 	inline Plane(Vec3f normal, float distance) : normal(normal), distance(distance) {}
 	inline Plane(Vec4f normalDistance) : normalDistance(normalDistance) {}
 
-	inline bool intersectRay(const Ray& ray, Vec3f& intersect, float& t) const {
+	inline bool intersectRay(const Ray3f& ray, Vec3f& intersect, float& t) const {
 		float denom = normalDistance.x * ray.direction.x + normalDistance.y * ray.direction.y + normalDistance.z * ray.direction.z;
 		t = (-normalDistance.x * ray.origin.x - normalDistance.y * ray.origin.y - normalDistance.z * ray.origin.z - normalDistance.w) / denom;
 		if (t <= 0) {
@@ -1573,6 +1836,59 @@ public:
 		intersect = ray.origin + ray.direction * t;
 		return true;
 	}
+
+	const char* toCString();
+	std::string toString();
+};
+
+/* ==== OBB2D ==== */
+struct OBB2D {
+	Vec2f center, size;
+	float rotation;
+	Vec2f corner[4];
+	Vec2f axis[2];
+
+public:
+	inline OBB2D() : center(Vec2f(0, 0)), size(Vec2f(1, 1)), rotation(0.0f) {}
+	inline OBB2D(Vec2f center, Vec2f size, float rotation) : center(center), size(size) {
+		Vec2f x = Vec2f(cosf(rotation), sinf(rotation)) * (size.x * 0.5f);
+		Vec2f y = Vec2f(-sinf(rotation), cosf(rotation)) * (size.y * 0.5f);
+
+		corner[0] = center - x - y;
+		corner[0] = center + x - y;
+		corner[0] = center + x + y;
+		corner[0] = center - x + y;
+
+		computeAxes();
+	}
+
+	const char* toCString();
+	std::string toString();
+
+	bool raycast(const Ray2f& ray, float& distance) const;
+	bool overlaps(const OBB2D& other) const;
+
+private:
+	inline void computeAxes() {
+		axis[0] = corner[1] - corner[0];
+		axis[0].normalize();
+		axis[1] = corner[3] - corner[0];
+		axis[1].normalize();
+	}
+
+	bool overlaps1Way(const OBB2D& other) const;
+};
+
+/* ==== OBB3D ==== */
+struct OBB3D {
+	Vec3f center, size;
+	Rotor3f rotation;
+	Vec3f corners[8];
+	Vec3f axis[3];
+
+public:
+	inline OBB3D() : center(Vec3f(0, 0, 0)), size(Vec3f(1, 1, 1)), rotation(Rotor3f::identity) {}
+	// TODO implement
 
 	const char* toCString();
 	std::string toString();
@@ -1707,7 +2023,7 @@ inline bool triangleBarycentric(const Vec3f& v0, const Vec3f& v1, const Vec3f& v
 	return weightV0 >= 0 && weightV1 >= 0 && weightV2 >= 0;
 }
 
-inline bool intersectTriangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, const Ray& ray, Vec3f& intersect, float& t) {
+inline bool intersectTriangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, const Ray3f& ray, Vec3f& intersect, float& t) {
 	Vec3f v01 = v1 - v0;
 	Vec3f v02 = v2 - v0;
 	Vec3f normal = v01.cross(v02).normalized();
@@ -1719,7 +2035,7 @@ inline bool intersectTriangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2,
 	return triangleBarycentric(v0, v1, v2, intersect, bary);
 }
 
-inline bool intersectQuad(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, const Vec3f& v3, const Ray& ray, Vec3f& intersect, float& t) {
+inline bool intersectQuad(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, const Vec3f& v3, const Ray3f& ray, Vec3f& intersect, float& t) {
 	Vec3f v01 = v1 - v0;
 	Vec3f v12 = v2 - v1;
 	Vec3f v23 = v3 - v2;
@@ -1741,22 +2057,34 @@ inline bool intersectQuad(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, con
 	return c0.dot(c1) > 0 && c1.dot(c2) > 0 && c2.dot(c3) > 0;
 }
 
+inline void swapToMinMax(Vec2i& min, Vec2i& max) {
+	swapToMinMax(min.x, max.x);
+	swapToMinMax(min.y, max.y);
+}
 inline void swapToMinMax(Vec3i& min, Vec3i& max) {
-	int tmp;
-	if (min.x > max.x) {
-		tmp = min.x;
-		min.x = max.x;
-		max.x = tmp;
-	}
-	if (min.y > max.y) {
-		tmp = min.y;
-		min.y = max.y;
-		max.y = tmp;
-	}
-	if (min.z > max.z) {
-		tmp = min.z;
-		min.z = max.z;
-		max.z = tmp;
-	}
+	swapToMinMax(min.x, max.x);
+	swapToMinMax(min.y, max.y);
+	swapToMinMax(min.z, max.z);
+}
+inline void swapToMinMax(Vec4i& min, Vec4i& max) {
+	swapToMinMax(min.x, max.x);
+	swapToMinMax(min.y, max.y);
+	swapToMinMax(min.z, max.z);
+	swapToMinMax(min.w, max.w);
+}
+inline void swapToMinMax(Vec2f& min, Vec2f& max) {
+	swapToMinMax(min.x, max.x);
+	swapToMinMax(min.y, max.y);
+}
+inline void swapToMinMax(Vec3f& min, Vec3f& max) {
+	swapToMinMax(min.x, max.x);
+	swapToMinMax(min.y, max.y);
+	swapToMinMax(min.z, max.z);
+}
+inline void swapToMinMax(Vec4f& min, Vec4f& max) {
+	swapToMinMax(min.x, max.x);
+	swapToMinMax(min.y, max.y);
+	swapToMinMax(min.z, max.z);
+	swapToMinMax(min.w, max.w);
 }
 #pragma endregion
