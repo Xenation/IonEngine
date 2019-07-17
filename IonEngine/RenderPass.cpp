@@ -14,7 +14,7 @@ RenderPass::~RenderPass() {}
 
 
 void RenderPass::prepare() {
-
+	
 }
 
 void RenderPass::render() {

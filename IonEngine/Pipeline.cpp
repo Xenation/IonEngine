@@ -72,7 +72,9 @@ void Pipeline::render(Camera* camera) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		RenderPass* renderPass = renderPasses[passIndex];
+		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, renderPass->name.length(), renderPass->name.c_str());
 		renderPass->render();
+		glPopDebugGroup();
 	}
 	renderBuffer->unbind();
 	renderBuffer->blitTo(nullptr);

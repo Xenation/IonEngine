@@ -5,7 +5,7 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-	<Filter Include="Source Files\Engine">
+    <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{ccd53e4c-eb55-49a0-8c2b-f34f7b73dff1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Engine\Render">
@@ -14,29 +14,29 @@
     <Filter Include="Source Files\Engine\Render\Core">
       <UniqueIdentifier>{db34ade5-3d46-414f-85a2-d0a41b3b759f}</UniqueIdentifier>
     </Filter>
-	<Filter Include="Source Files\Engine\Entity">
+    <Filter Include="Source Files\Engine\Entity">
       <UniqueIdentifier>{91fddb46-e802-4937-86e9-c22a57dd4839}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Engine\Entity\Components">
       <UniqueIdentifier>{105b76ab-31d7-4c8e-8dad-96bdfc0999e0}</UniqueIdentifier>
     </Filter>
-	<Filter Include="Source Files\Engine\Utils">
+    <Filter Include="Source Files\Engine\Utils">
       <UniqueIdentifier>{ec2c53cb-76f7-44ad-88a6-0684b21a7bb2}</UniqueIdentifier>
     </Filter>
-	 <Filter Include="Source Files\External">
+    <Filter Include="Source Files\External">
       <UniqueIdentifier>{78cd02f1-1885-42dd-878d-062f3e2bc1c9}</UniqueIdentifier>
     </Filter>
-	 <Filter Include="Source Files\Engine\Render\Shader">
+    <Filter Include="Source Files\Engine\Render\Shader">
       <UniqueIdentifier>{7f9d265d-fc81-40b9-b8e6-1df80d3a01a6}</UniqueIdentifier>
     </Filter>
-	<Filter Include="Source Files\Engine\Physics">
+    <Filter Include="Source Files\Engine\Physics">
       <UniqueIdentifier>{f79de6d6-d1dc-4266-bd07-b6c0bb80f57a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-	 <Filter Include="Header Files\Engine">
+    <Filter Include="Header Files\Engine">
       <UniqueIdentifier>{cf612ee8-bf38-4324-bbbe-c25c4340ab1b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Engine\Render">
@@ -48,19 +48,19 @@
     <Filter Include="Header Files\Engine\Entity">
       <UniqueIdentifier>{5900b9b1-f528-4da8-976d-9eeaa1997990}</UniqueIdentifier>
     </Filter>
-	<Filter Include="Header Files\Engine\Entity\Components">
+    <Filter Include="Header Files\Engine\Entity\Components">
       <UniqueIdentifier>{bc7fb3a2-7630-4577-b555-149498967beb}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Engine\Utils">
       <UniqueIdentifier>{36b7da28-2fb9-411c-8841-a3542d4d7d62}</UniqueIdentifier>
     </Filter>
-	<Filter Include="Header Files\External">
+    <Filter Include="Header Files\External">
       <UniqueIdentifier>{e08634af-6a24-4f73-9bb3-b665c7422d1b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Engine\Render\Shader">
       <UniqueIdentifier>{a34ebef1-1e23-4994-972e-cdf4d123bdd0}</UniqueIdentifier>
     </Filter>
-	<Filter Include="Header Files\Engine\Physics">
+    <Filter Include="Header Files\Engine\Physics">
       <UniqueIdentifier>{34f566a4-62f5-4adf-9033-1b8efa6aba1f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resource Files">
