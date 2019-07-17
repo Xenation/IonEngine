@@ -58,29 +58,27 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="res\shaders\test\vs.glsl">
-      <Filter>Resource Files\shaders\test</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="res\shaders\test\fs.glsl">
-      <Filter>Resource Files\shaders\test</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="res\shaders\postprocess_test\fs.glsl">
+    <None Include="res\shaders\particle_basic\fs.glsl">
+      <Filter>Resource Files\shaders\particle_basic</Filter>
+    </None>
+    <None Include="res\shaders\particle_basic\gs.glsl">
+      <Filter>Resource Files\shaders\particle_basic</Filter>
+    </None>
+    <None Include="res\shaders\particle_basic\vs.glsl">
+      <Filter>Resource Files\shaders\particle_basic</Filter>
+    </None>
+    <None Include="res\shaders\postprocess_test\fs.glsl">
       <Filter>Resource Files\shaders\postprocess_test</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="res\shaders\postprocess_test\vs.glsl">
+    </None>
+    <None Include="res\shaders\postprocess_test\vs.glsl">
       <Filter>Resource Files\shaders\postprocess_test</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="res\shaders\particle_basic\vs.glsl">
-      <Filter>Resource Files\shaders\particle_basic</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="res\shaders\particle_basic\fs.glsl">
-      <Filter>Resource Files\shaders\particle_basic</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="res\shaders\particle_basic\gs.glsl">
-      <Filter>Resource Files\shaders\particle_basic</Filter>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
+    </None>
+    <None Include="res\shaders\test\fs.glsl">
+      <Filter>Resource Files\shaders\test</Filter>
+    </None>
+    <None Include="res\shaders\test\vs.glsl">
+      <Filter>Resource Files\shaders\test</Filter>
+    </None>
     <None Include="res\shaders\test\gs.glsl">
       <Filter>Resource Files\shaders\test</Filter>
     </None>
