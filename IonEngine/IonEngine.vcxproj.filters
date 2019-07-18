@@ -216,6 +216,9 @@
     <ClCompile Include="PhysicsDebugger.cpp">
       <Filter>Source Files\Engine\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Source Files\Engine\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -394,6 +397,9 @@
     </ClInclude>
     <ClInclude Include="PhysicsDebugger.h">
       <Filter>Header Files\Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Header Files\Engine\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

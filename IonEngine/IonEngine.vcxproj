@@ -213,6 +213,7 @@
     <ClCompile Include="PhysicsDebugger.cpp" />
     <ClCompile Include="PhysicsWorld.cpp" />
     <ClCompile Include="Perlin.cpp" />
+    <ClCompile Include="Random.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="PhysicsDebugger.h" />
     <ClInclude Include="PhysicsWorld.h" />
+    <ClInclude Include="Random.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="ShaderProgram.h" />

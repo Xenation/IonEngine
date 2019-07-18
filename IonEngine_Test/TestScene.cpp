@@ -14,6 +14,8 @@
 #include <ConvexMeshCollider.h>
 #include <ConcaveMeshCollider.h>
 #include <SphereCollider.h>
+#include <Random.h>
+#include <VisualDebug.h>
 #include "NoclipController.h"
 #include "TestRotator.h"
 
@@ -127,6 +129,12 @@ void TestScene::update() {
 	if (Time::time > 15.0f && !ballRb->isEnabled()) {
 		ballRb->enable();
 	}
+
+	//Random rng(666);
+	//for (int i = 0; i < 666; i++) {
+	//	Vec3f pos = toVec3f(rng.inCircle());
+	//	VisualDebug::drawLine(pos, pos + Vec3f::up * 0.01f, rng.color());
+	//}
 }
 
 void TestScene::destroy() {

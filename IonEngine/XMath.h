@@ -42,7 +42,7 @@ inline float minf(float a, float b) {
 	return (a < b) ? a : b;
 }
 inline float minf(float a, float b, float c) {
-	(a < b) ? ((a < c) ? a : c) : ((b < c) ? b : c);
+	return (a < b) ? ((a < c) ? a : c) : ((b < c) ? b : c);
 }
 
 inline void minmax3f(float a, float b, float c, float &min, float&max) {
