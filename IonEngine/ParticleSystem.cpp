@@ -7,6 +7,7 @@
 #include "Material.h"
 #include "SpecializedShaderProgram.h"
 #include "Perlin.h"
+#include "Random.h"
 
 
 
@@ -42,7 +43,7 @@ void ParticleSystem::onUpdate() {
 	// New Particle generation
 	if (isEmitting && Time::time - lastEmissionTime > emissionInterval) {
 		lastEmissionTime = Time::time;
-		createParticle(entity->transform->getWorldPosition() + emitOffset + Vec3f(perlinf(Time::time * 100, 0, 0) * emitZoneExtents.x, perlinf(0, Time::time * 100, 0) * emitZoneExtents.y, perlinf(0, 0, Time::time * 100) * emitZoneExtents.z), entity->transform->localToWorldDir(emitVelocity), randomRangef(minLifetime, maxLifetime));
+		createParticle(entity->transform->getWorldPosition() + emitOffset + Vec3f(perlinf(Time::time * 100, 0, 0) * emitZoneExtents.x, perlinf(0, Time::time * 100, 0) * emitZoneExtents.y, perlinf(0, 0, Time::time * 100) * emitZoneExtents.z), entity->transform->localToWorldDir(emitVelocity), Random::i->range(minLifetime, maxLifetime));
 	}
 
 	// Particles state update

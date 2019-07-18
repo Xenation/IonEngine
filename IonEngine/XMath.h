@@ -12,6 +12,20 @@
 const __m128 _mm_one = _mm_set1_ps(1.0f);
 const __m128 _mm_negOne = _mm_set1_ps(-1.0f);
 const __m128 _mm_mask_signf = _mm_castsi128_ps(_mm_set1_epi32(0x80'00'00'00));
+
+namespace IonEngine {
+	namespace Math {
+		constexpr float pi = 3.1415926535897932384626433832795f;
+		constexpr float two_pi = 6.283185307179586476925286766559f;
+		constexpr float half_pi = 1.5707963267948966192313216916398f;
+		constexpr float quarter_pi = 0.78539816339744830961566084581988f;
+		constexpr float e = 2.7182818284590452353602874713527f;
+		constexpr float deg2rad = 0.01745329251994329576923690768489f;
+		constexpr float rad2deg = 57.295779513082320876798154814105f;
+		constexpr float positiveInfinity = INFINITY;
+		constexpr float negativeInfinity = -INFINITY;
+	}
+}
 #pragma endregion
 
 #pragma region MathFunctions
@@ -121,17 +135,6 @@ inline int ceilToInt(double d) {
 
 inline int ceilToInt(float f) {
 	return (f > 0) ? ((int) f) + 1 : ((int) (f - 1)) - 1;
-}
-
-inline float randomValuef() {
-	return rand() / (float) RAND_MAX;
-}
-
-inline float randomRangef(float min, float max) {
-	// (r / rmax) * (max - min)
-	// max * (r / rmax) - min * (r / rmax)
-	// r * ((max - min) / rmax)
-	return rand() * ((max - min) / (float) RAND_MAX) + min;
 }
 
 inline void swapToMinMax(int& min, int& max) {

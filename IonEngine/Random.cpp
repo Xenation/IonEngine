@@ -1,5 +1,7 @@
 #include "Random.h"
 
+using namespace IonEngine::Math;
+
 
 
 Random* Random::i = new Random(666);
@@ -28,27 +30,27 @@ int Random::range(int min, int max) {
 }
 
 Vec2f Random::inCircle(float radius) {
-	float a = uniform() * M_PI * 2.0f;
+	float a = uniform() * two_pi;
 	float r = radius * sqrtfInline(uniform());
 	return Vec2f(r * cosf(a), r * sinf(a));
 }
 
 Vec3f Random::inSphere(float radius) {
 	float u = 2.0f * uniform() - 1.0f;
-	float phi = 2.0f * M_PI * uniform();
+	float phi = two_pi * uniform();
 	float m = sqrtfInline(1.0f - u * u);
 	float r = cbrt(uniform());
 	return Vec3f(cosf(phi) * m * r, sinf(phi) * m * r, u);
 }
 
 Vec2f Random::onCircle(float radius) {
-	float a = uniform() * M_PI * 2.0f;
+	float a = uniform() * two_pi;
 	return Vec2f(radius * cosf(a), radius * sinf(a));
 }
 
 Vec3f Random::onSphere(float radius) {
 	float u = 2.0f * uniform() - 1.0f;
-	float phi = 2.0f * M_PI * uniform();
+	float phi = two_pi * uniform();
 	float m = sqrtfInline(1.0f - u * u);
 	return Vec3f(cosf(phi) * m * radius, sinf(phi) * m * radius, u);
 }
