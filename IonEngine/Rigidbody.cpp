@@ -19,7 +19,7 @@ SynchronizedTransform::~SynchronizedTransform() {
 
 void SynchronizedTransform::getWorldTransform(btTransform& worldTransform) const {
 	Vec3f pos = transform->getWorldPosition();
-	Quaternion rot = transform->getWorldRotation();
+	Quaternion rot = transform->getWorldRotationQuat();
 	worldTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
 	worldTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
 }

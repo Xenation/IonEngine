@@ -19,6 +19,8 @@ private:
 	Entity* rotatingEnt;
 	Entity* ground;
 	Entity* ball;
+	Entity* refCube;
+	Entity* mirCube;
 	Mesh* cubeMesh;
 };
 

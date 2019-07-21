@@ -11,5 +11,7 @@ TestRotator::~TestRotator() {}
 
 
 void TestRotator::onUpdate() {
-	transform->rotate(Quaternion::euler({ ((float) M_PI_2) * Time::deltaTime, 0, 0 }));
+	float dr = ((float) M_PI_2) * Time::deltaTime;
+	//transform->rotate(Rotor3f(transform->forward(), Vec3f(0, sin(dr), cos(dr))));
+	transform->rotate(Rotor3f::euler({ ((float) M_PI_2) * Time::deltaTime, 0, 0 }));
 }

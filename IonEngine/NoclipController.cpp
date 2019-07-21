@@ -47,7 +47,7 @@ void NoclipController::onUpdate() {
 		eulerRot.y += Input::mouseDelta.x * lookSensivity * dt;
 		eulerRot.x += Input::mouseDelta.y * lookSensivity * dt;
 		Input::mouseDelta = Vec2f::zero; // TODO remove when input system better
-		entity->transform->setRotation(Quaternion::euler(eulerRot));
+		entity->transform->setRotation(Rotor3f::euler(eulerRot));
 	}
 	if (Input::getMouseUp(MouseButton::RIGHT)) {
 		Input::UnlockMouse();

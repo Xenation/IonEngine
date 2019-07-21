@@ -29,9 +29,9 @@ void TestScene::load() {
 	Scene::load();
 	camera = new Entity("Camera");
 	camera->addComponent<Camera>();
-	camera->addComponent<NoclipController>()->lookSensivity = 1.0f;
+	camera->addComponent<NoclipController>()->lookSensivity = 0.5f;
 	camera->transform->setPosition({5, 5, -5});
-	camera->transform->setRotation(Quaternion::euler({ M_PI_4, -M_PI_4, 0 }));
+	camera->transform->setRotation(Rotor3f::euler({ M_PI_4, -M_PI_4, 0 }));
 
 	cubeMesh = new Mesh("Cube", 8, 36);
 	cubeMesh->setAttributesDefinition(1, new int[1]{3});
@@ -122,6 +122,19 @@ void TestScene::load() {
 	ballRb->setCollider(ballCollider);
 	ballRb->setMass(1.0f);
 	ballRb->disable();
+
+	refCube = new Entity("Cube");
+	refCube->transform->setPosition(Vec3f(5, 5, 0));
+	MeshRenderer* refCubeRenderer = refCube->addComponent<MeshRenderer>();
+	refCubeRenderer->setMaterial(testMaterial);
+	refCubeRenderer->setMesh(cubeMesh);
+
+	mirCube = new Entity("Cube");
+	mirCube->transform->setPosition(Vec3f(10, 5, 0));
+	MeshRenderer* mirCubeRenderer = mirCube->addComponent<MeshRenderer>();
+	mirCubeRenderer->setMaterial(testMaterial);
+	mirCubeRenderer->setMesh(cubeMesh);
+
 }
 
 void TestScene::update() {
@@ -129,6 +142,16 @@ void TestScene::update() {
 	if (Time::time > 15.0f && !ballRb->isEnabled()) {
 		ballRb->enable();
 	}
+
+	Vec3f euler = Vec3f(Time::time, Time::time * 0.4f, Time::time * 0.25f);
+	Rotor3f rotor = Rotor3f::euler(euler);
+	refCube->transform->setRotation(rotor);
+	//Matrix4x4f transf = Matrix4x4f::transformation(Vec3f::zero, Vec3f::one, rotor);
+	Rotor3f extractedRotor = refCube->transform->getLocalToParentMatrix().rotor();
+	mirCube->transform->setRotation(extractedRotor);
+	//if (rotor != extractedRotor) {
+	//	Debug::log("ROTOR", "different extracted rotor! original:" + rotor.toString() + "  extracted:" + extractedRotor.toString());
+	//}
 
 	//Random rng(666);
 	//for (int i = 0; i < 666; i++) {

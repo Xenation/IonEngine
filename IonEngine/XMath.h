@@ -111,13 +111,13 @@ inline float invsqrt(float n) {
 		unsigned int i;
 	} conv;
 
-	float x2;
 	const float threehalfs = 1.5f;
 
-	x2 = n * 0.5f;
+	float x2 = n * 0.5f;
 	conv.f = n;
 	conv.i = 0x5f3759df - (conv.i >> 1);
-	conv.f = conv.f * (threehalfs - (conv.f * x2 * x2));
+	conv.f *= (threehalfs - (x2 * conv.f * conv.f));
+	conv.f *= (threehalfs - (x2 * conv.f * conv.f));
 	return conv.f;
 }
 
@@ -135,6 +135,22 @@ inline int ceilToInt(double d) {
 
 inline int ceilToInt(float f) {
 	return (f > 0) ? ((int) f) + 1 : ((int) (f - 1)) - 1;
+}
+
+inline int roundToInt(double d) {
+	return (d > 0) ? (int) (d + 0.5f) : (int) (d - 0.5f);
+}
+
+inline int roundToInt(float f) {
+	return (f > 0) ? (int) (f + 0.5f) : (int) (f - 0.5f);
+}
+
+inline float clamp(float f, float min, float max) {
+	return (f < min) ? min : ((f > max) ? max : f);
+}
+
+inline int clamp(int i, float min, float max) {
+	return (i < min) ? min : ((i > max) ? max : i);
 }
 
 inline void swapToMinMax(int& min, int& max) {
@@ -268,6 +284,12 @@ public:
 	}
 	inline Vec2i step(const Vec2i& edge) const {
 		return step(*this, edge);
+	}
+	inline Vec2i clamped(int min, int max) const {
+		return Vec2i(clamp(x, min, max), clamp(y, min, max));
+	}
+	inline Vec2i clamped(Vec2i min, Vec2i max) const {
+		return Vec2i(clamp(x, min.x, max.x), clamp(y, min.y, max.y));
 	}
 
 	// Static
@@ -411,6 +433,12 @@ public:
 	inline Vec3i step(const Vec3i& edge) const {
 		return step(*this, edge);
 	}
+	inline Vec3i clamped(int min, int max) const {
+		return Vec3i(clamp(x, min, max), clamp(y, min, max), clamp(z, min, max));
+	}
+	inline Vec3i clamped(Vec3i min, Vec3i max) const {
+		return Vec3i(clamp(x, min.x, max.x), clamp(y, min.y, max.y), clamp(z, min.z, max.z));
+	}
 
 	// Static
 	inline static int dot(const Vec3i& l, const Vec3i& r) {
@@ -545,6 +573,12 @@ public:
 	}
 	inline Vec4i step(const Vec4i& edge) {
 		return step(*this, edge);
+	}
+	inline Vec4i clamped(int min, int max) const {
+		return Vec4i(clamp(x, min, max), clamp(y, min, max), clamp(z, min, max), clamp(w, min, max));
+	}
+	inline Vec4i clamped(Vec4i min, Vec4i max) const {
+		return Vec4i(clamp(x, min.x, max.x), clamp(y, min.y, max.y), clamp(z, min.z, max.z), clamp(w, min.w, max.w));
 	}
 
 	// Static
@@ -687,14 +721,29 @@ public:
 	inline Vec2f sign() const {
 		return Vec2f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1);
 	}
-	inline Vec2f inverse() const {
+	inline void inverse() {
+		x = 1.0f / x; y = 1.0f / y;
+	}
+	inline Vec2f inversed() const {
 		return Vec2f(1.0f / x, 1.0f / y);
 	}
 	inline Vec2i floor() const {
 		return Vec2i(floorToInt(x), floorToInt(y));
 	}
+	inline Vec2i ceil() const {
+		return Vec2i(ceilToInt(x), ceilToInt(y));
+	}
+	inline Vec2i round() const {
+		return Vec2i(roundToInt(x), roundToInt(y));
+	}
 	inline Vec2f step(const Vec2f& edge) const {
 		return Vec2f((x < edge.x) ? 0 : 1, (y < edge.y) ? 0 : 1);
+	}
+	inline Vec2f clamped(float min, float max) const {
+		return Vec2f(clamp(x, min, max), clamp(y, min, max));
+	}
+	inline Vec2f clamped(Vec2f min, Vec2f max) const {
+		return Vec2f(clamp(x, min.x, max.x), clamp(y, min.y, max.y));
 	}
 
 	// Static
@@ -857,14 +906,29 @@ public:
 	inline Vec3f sign() const {
 		return Vec3f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1, (z < 0) ? -1 : 1);
 	}
-	inline Vec3f inverse() const {
+	inline void inverse() {
+		x = 1.0f / x; y = 1.0f / y; z = 1.0f / z;
+	}
+	inline Vec3f inversed() const {
 		return {1.0f / x, 1.0f / y, 1.0f / z};
 	}
 	inline Vec3i floor() const {
 		return {floorToInt(x), floorToInt(y), floorToInt(z)};
 	}
+	inline Vec3i ceil() const {
+		return {ceilToInt(x), ceilToInt(y), ceilToInt(z)};
+	}
+	inline Vec3i round() const {
+		return {roundToInt(x), roundToInt(y), roundToInt(z)};
+	}
 	inline Vec3f step(const Vec3f &edge) const {
 		return Vec3f((x < edge.x) ? 0 : 1, (z < edge.z) ? 0 : 1, (z < edge.z) ? 0 : 1);
+	}
+	inline Vec3f clamped(float min, float max) const {
+		return Vec3f(clamp(x, min, max), clamp(y, min, max), clamp(z, min, max));
+	}
+	inline Vec3f clamped(Vec3f min, Vec3f max) const {
+		return Vec3f(clamp(x, min.x, max.x), clamp(y, min.y, max.y), clamp(z, min.z, max.z));
 	}
 
 	// Static
@@ -996,22 +1060,15 @@ public:
 		return (*this) * invsqrt(this->dot(*this));
 	}
 	inline Vec4f normalized_precise() const {
-		float mag = magnitude();
-		return Vec4f(x / mag, y / mag, z / mag, w / mag);
+		return (*this) / magnitude();
 	}
 	inline void normalize() {
 		float inv = invsqrt(x * x + y * y + z * z + w * w);
-		x *= inv;
-		y *= inv;
-		z *= inv;
-		w *= inv;
+		_mm_mul_ps(_xmm, _mm_set1_ps(inv));
 	}
 	inline void normalize_precise() {
 		float mag = this->magnitude();
-		x /= mag;
-		y /= mag;
-		z /= mag;
-		w /= mag;
+		_mm_div_ps(_xmm, _mm_set1_ps(mag));
 	}
 	inline float magnitude() const {
 		return sqrtfInline(x * x + y * y + z * z + w * w);
@@ -1022,14 +1079,31 @@ public:
 	inline Vec4f sign() const {
 		return Vec4f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1, (z < 0) ? -1 : 1, (w < 0) ? -1 : 1);
 	}
-	inline Vec4f inverse() const {
-		return Vec4f(1.0f / x, 1.0f / y, 1.0f / z, 1.0f / w);
+	inline void inverse() {
+		_mm_rcp_ps(_xmm);
+	}
+	inline Vec4f inversed() const {
+		Vec4f r = *this;
+		_mm_rcp_ps(r._xmm);
+		return r;
 	}
 	inline Vec4i floor() const {
 		return Vec4i(floorToInt(x), floorToInt(y), floorToInt(z), floorToInt(w));
 	}
+	inline Vec4i ceil() const {
+		return Vec4i(ceilToInt(x), ceilToInt(y), ceilToInt(z), ceilToInt(w));
+	}
+	inline Vec4i round() const {
+		return Vec4i(roundToInt(x), roundToInt(y), roundToInt(z), roundToInt(w));
+	}
 	inline Vec4f step(const Vec4f &edge) const {
 		return step(*this, edge);
+	}
+	inline Vec4f clamped(float min, float max) const {
+		return Vec4f(clamp(x, min, max), clamp(y, min, max), clamp(z, min, max), clamp(w, min, max));
+	}
+	inline Vec4f clamped(Vec4f min, Vec4f max) const {
+		return Vec4f(clamp(x, min.x, max.x), clamp(y, min.y, max.y), clamp(z, min.z, max.z), clamp(w, min.w, max.w));
 	}
 
 	// Static
@@ -1101,6 +1175,14 @@ public:
 	inline friend void operator*=(Rotor3f& a, const Rotor3f& b) {
 		a = a * b;
 	}
+	inline friend bool operator!=(const Rotor3f& a, const Rotor3f& b) {
+		// Does not take in account equivalent but opposite rotations
+		return a.a != b.a || a.xy != b.xy || a.xz != b.xz || a.yz != b.yz;
+	}
+	inline friend bool operator==(const Rotor3f& a, const Rotor3f& b) {
+		// Does not take in account equivalent but opposite rotations
+		return !(a != b);
+	}
 
 	/* ----- METHODS ---- */
 	const char* toCString();
@@ -1113,6 +1195,29 @@ public:
 				Bivec3f(-sina * bvPlane.xy, -sina * bvPlane.xz, -sina * bvPlane.yz)
 			}
 		};
+	}
+	inline static Rotor3f euler(const Vec3f& eulerAngles) {
+		return attitude(eulerAngles.y, eulerAngles.x, eulerAngles.z);
+	}
+	inline static Rotor3f attitude(float yaw, float pitch, float roll) {
+		// TODO optimize
+		Rotor3f ry;
+		ry.a = cos(yaw * 0.5f);
+		ry.xz = sin(yaw * 0.5f);
+
+		Rotor3f rp;
+		rp.a = cos(pitch * 0.5f);
+		rp.yz = -sin(pitch * 0.5f);
+
+		Rotor3f rr;
+		rr.a = cos(roll * 0.5f);
+		rr.xy = -sin(roll * 0.5f);
+
+		//Debug::log("ROTOR", std::string("input: y" + std::to_string(yaw) + " p" + std::to_string(pitch) + " r" + std::to_string(roll)));
+		//Debug::log("ROTOR", std::string("possible: ry:" + ry.toString()));
+		//Debug::log("ROTOR", std::string("possible: rp:" + rp.toString()));
+		//Debug::log("ROTOR", std::string("possible: rr:" + rr.toString()));
+		return ry * rp * rr;
 	}
 	inline Vec3f rotate(const Vec3f& v) const {
 		const Rotor3f& p = *this;
@@ -1143,7 +1248,7 @@ public:
 		return sqrtfInline(magnitudeSqr());
 	}
 	inline void normalize() {
-		float isqrt = invsqrt(magnitudeSqr());
+		float isqrt = invsqrt(a * a + xy * xy + xz * xz + yz * yz);
 		a *= isqrt;
 		xy *= isqrt;
 		xz *= isqrt;
@@ -1202,22 +1307,19 @@ public:
 		w *= invMag;
 	}
 	inline static Quaternion euler(const Vec3f& eulerRot) {
-		return headingAttitudeBank(eulerRot.y, eulerRot.z, eulerRot.x);
+		return attitude(eulerRot.y, eulerRot.x, eulerRot.z);
 	}
-	inline static Quaternion attitude(const float& pitch, const float& roll, const float& yaw) {
-		return headingAttitudeBank(yaw, roll, pitch);
-	}
-	inline static Quaternion headingAttitudeBank(const float& heading, const float& attitude, const float& bank) {
-		float c1 = cosf(heading * 0.5f);
-		float s1 = sinf(heading * 0.5f);
-		float c2 = cosf(attitude * 0.5f);
-		float s2 = sinf(attitude * 0.5f);
-		float c3 = cosf(bank * 0.5f);
-		float s3 = sinf(bank * 0.5f);
+	inline static Quaternion attitude(float yaw, float pitch, float roll) {
+		float c1 = cosf(yaw * 0.5f);
+		float s1 = sinf(yaw * 0.5f);
+		float c2 = cosf(roll * 0.5f);
+		float s2 = sinf(roll * 0.5f);
+		float c3 = cosf(pitch * 0.5f);
+		float s3 = sinf(pitch * 0.5f);
 		float c1c2 = c1 * c2;
 		float s1s2 = s1 * s2;
 
-		return {c1c2 * s3 + s1s2 * c3, s1 * c2 * c3 + c1 * s2 * s3, c1 * s2 * c3 - s1 * c2 * s3, c1c2 * c3 - s1s2 * s3};
+		return { c1c2 * s3 + s1s2 * c3, s1 * c2 * c3 + c1 * s2 * s3, c1 * s2 * c3 - s1 * c2 * s3, c1c2 * c3 - s1s2 * s3 };
 	}
 	inline static Quaternion axisAngle(Vec3f axis, float angle) {
 		Quaternion quat;
@@ -1263,6 +1365,12 @@ public:
 struct Matrix4x4f {
 	union {
 		// Stored in column major order but accessed in row major (first digit is row/y, second is column/x)
+		// Transposed in row major it would look like this
+		//		c0	c1	c2	c3
+		// r0	m00	m01	m02	m03
+		// r1	m10	m11	m12	m13
+		// r2	m20	m21	m22	m23
+		// r3	m30	m31	m32	m33
 		struct {
 			float m00, m10, m20, m30;
 			float m01, m11, m21, m31;
@@ -1327,13 +1435,13 @@ public:
 
 	// Access
 	inline float get(Vec2i pos) {
-		return data[pos.y + pos.x * 4];
+		return columns[pos.x][pos.y];
 	}
-	inline float set(Vec2i pos, float val) {
-		data[pos.y + pos.x * 4] = val;
+	inline void set(Vec2i pos, float val) {
+		columns[pos.x][pos.y] = val;
 	}
 	inline float& at(int row, int col) {
-		return data[row + col * 4];
+		return columns[col][row];
 	}
 	inline Vec3f& translation() {
 		return columns[3].xyz;
@@ -1341,7 +1449,7 @@ public:
 	inline Vec3f scale() {
 		return Vec3f(columns[0].xyz.magnitude(), columns[1].xyz.magnitude(), columns[2].xyz.magnitude());
 	}
-	inline Quaternion rotation() {
+	inline Quaternion quaternion() {
 		Vec3f sca = scale();
 		Matrix4x4f rotMat = Matrix4x4f(
 			m00, m10, m20, 0,
@@ -1383,6 +1491,33 @@ public:
 		}
 		return q;
 	}
+	inline Rotor3f rotor() {
+		// Extract pure rotation matrix
+		Vec3f sca = scale();
+		Matrix4x4f rotMat = Matrix4x4f(
+			m00, m10, m20, 0,
+			m01, m11, m21, 0,
+			m02, m12, m22, 0,
+			0, 0, 0, 1
+		);
+		rotMat.columns[0] /= sca.x;
+		rotMat.columns[1] /= sca.y;
+		rotMat.columns[2] /= sca.z;
+
+		// Unrotated frame
+		// x: Vec3f::right
+		// y: Vec3f::up
+		// z: Vec3f::forward
+
+		// Rotated frame
+		const Vec3f& xr = rotMat.columns[0].xyz;
+		const Vec3f& yr = rotMat.columns[1].xyz;
+		const Vec3f& zr = rotMat.columns[2].xyz;
+
+		Rotor3f r = Rotor3f(-(1 + xr.x + yr.y + zr.z), xr.y - yr.x, xr.z - zr.x, yr.z - zr.y); // minus sign needed for some reason
+		r.normalize();
+		return r;
+	}
 
 	// Write
 	inline void setRotationScale(Quaternion rot, Vec3f scale) {
@@ -1390,15 +1525,18 @@ public:
 		m01 = 2.0f * rot.x * rot.y - 2.0f * rot.z * rot.w; m11 = 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.z * rot.z; m21 = 2.0f * rot.y * rot.z + 2.0f * rot.x * rot.w;
 		m02 = 2.0f * rot.x * rot.z + 2.0f * rot.y * rot.w; m12 = 2.0f * rot.y * rot.z - 2.0f * rot.x * rot.w; m22 = 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.y * rot.y;
 
-		m00 *= scale.x;
-		m01 *= scale.x;
-		m02 *= scale.x;
-		m10 *= scale.y;
-		m11 *= scale.y;
-		m12 *= scale.y;
-		m20 *= scale.z;
-		m21 *= scale.z;
-		m22 *= scale.z;
+		_mm_mul_ps(_xmm[0], _mm_set1_ps(scale.x));
+		_mm_mul_ps(_xmm[1], _mm_set1_ps(scale.y));
+		_mm_mul_ps(_xmm[2], _mm_set1_ps(scale.z));
+	}
+	inline void setRotationScale(Rotor3f rot, Vec3f scale) {
+		m00 = rot.a * rot.a - rot.xy * rot.xy - rot.xz * rot.xz + rot.yz * rot.yz; m10 = -2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz; m20 = -2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy;
+		m01 = 2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz; m11 = rot.a * rot.a - rot.xy * rot.xy + rot.xz * rot.xz - rot.yz * rot.yz; m21 = -2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy;
+		m02 = 2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy; m12 = 2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy; m22 = rot.a * rot.a + rot.xy * rot.xy - rot.xz * rot.xz - rot.yz * rot.yz;
+
+		_mm_mul_ps(_xmm[0], _mm_set1_ps(scale.x));
+		_mm_mul_ps(_xmm[1], _mm_set1_ps(scale.y));
+		_mm_mul_ps(_xmm[2], _mm_set1_ps(scale.z));
 	}
 
 	// Optimized Operations
@@ -1420,7 +1558,7 @@ public:
 			-inv3[0][0] * m03 + -inv3[0][1] * m13 + -inv3[0][2] * m23, -inv3[1][0] * m03 + -inv3[1][1] * m13 + -inv3[1][2] * m23, -inv3[2][0] * m03 + -inv3[2][1] * m13 + -inv3[2][2] * m23, 1
 		);
 	}
-	inline Vec3f multPoint(Vec3f point) const {
+	inline Vec3f multPoint(const Vec3f& point) const {
 		__m128 vreg;
 		vreg = _mm_mul_ps(_xmm[0], _mm_set1_ps(point.x));
 		vreg = _mm_add_ps(vreg, _mm_mul_ps(_xmm[1], _mm_set1_ps(point.y)));
@@ -1428,7 +1566,7 @@ public:
 		vreg = _mm_add_ps(vreg, _xmm[3]);
 		return Vec3f(vreg.m128_f32[0], vreg.m128_f32[1], vreg.m128_f32[2]);
 	}
-	inline Vec3f multDirection(Vec3f dir) const {
+	inline Vec3f multDirection(const Vec3f& dir) const {
 		Vec3f v;
 		__m128 vreg;
 		vreg = _mm_mul_ps(_xmm[0], _mm_set1_ps(dir.x));
@@ -1438,7 +1576,7 @@ public:
 	}
 
 	// Transformations
-	static Matrix4x4f translation(Vec3f transVec) {
+	static Matrix4x4f translation(const Vec3f& transVec) {
 		return Matrix4x4f(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
@@ -1446,7 +1584,7 @@ public:
 			transVec.x, transVec.y, transVec.z, 1
 		);
 	}
-	static Matrix4x4f scale(Vec3f scaleVec) {
+	static Matrix4x4f scale(const Vec3f& scaleVec) {
 		return Matrix4x4f(
 			scaleVec.x, 0, 0, 0,
 			0, scaleVec.y, 0, 0,
@@ -1454,27 +1592,25 @@ public:
 			0, 0, 0, 1
 		);
 	}
-	static Matrix4x4f translationScale(Vec3f transVec, Vec3f scaleVec) {
+	static Matrix4x4f rotation(const Rotor3f& rot) {
 		return Matrix4x4f(
-			scaleVec.x, 0, 0, 0,
-			0, scaleVec.y, 0, 0,
-			0, 0, scaleVec.z, 0,
-			transVec.x, transVec.y, transVec.z, 1
+			rot.a * rot.a - rot.xy * rot.xy - rot.xz * rot.xz + rot.yz * rot.yz, -2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, -2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 0,
+			2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, rot.a * rot.a - rot.xy * rot.xy + rot.xz * rot.xz - rot.yz * rot.yz, -2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, 0,
+			2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, rot.a * rot.a + rot.xy * rot.xy - rot.xz * rot.xz - rot.yz * rot.yz, 0,
+			0, 0, 0, 1
 		);
+		// OLD slower code
+		//Vec3f vx = rot.rotate(Vec3f(1, 0, 0));
+		//Vec3f vy = rot.rotate(Vec3f(0, 1, 0));
+		//Vec3f vz = rot.rotate(Vec3f(0, 0, 1));
+		//return Matrix4x4f(
+		//	vx.x, vy.x, vz.x,	0,
+		//	vx.y, vy.y, vz.y,	0,
+		//	vx.z, vy.z, vz.z,	0,
+		//	0,		0,		0,	1
+		//);
 	}
-	static Matrix4x4f rotation(Rotor3f rot) {
-		// TODO optimize
-		Vec3f vx = rot.rotate(Vec3f(1, 0, 0));
-		Vec3f vy = rot.rotate(Vec3f(0, 1, 0));
-		Vec3f vz = rot.rotate(Vec3f(0, 0, 1));
-		return Matrix4x4f(
-			vx.x, vy.x, vz.x,	0,
-			vx.y, vy.y, vz.y,	0,
-			vx.z, vy.z, vz.z,	0,
-			0,		0,		0,	1
-		);
-	}
-	static Matrix4x4f rotation(Quaternion rot) {
+	static Matrix4x4f rotation(const Quaternion& rot) {
 		return Matrix4x4f(
 			1.0f - 2.0f * rot.y * rot.y - 2.0f * rot.z * rot.z,		2.0f * rot.x * rot.y + 2.0f * rot.z * rot.w,		2.0f * rot.x * rot.z - 2.0f * rot.y * rot.w,		0,
 			2.0f * rot.x * rot.y - 2.0f * rot.z * rot.w,			1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.z * rot.z, 2.0f * rot.y * rot.z + 2.0f * rot.x * rot.w,		0,
@@ -1482,7 +1618,7 @@ public:
 			0,														0,													0,													1
 		);
 	}
-	static Matrix4x4f rotation(Vec3f euler) {
+	static Matrix4x4f rotation(const Vec3f& euler) {
 		float cx = cosf(euler.x);
 		float sx = sinf(euler.x);
 		float cy = cosf(euler.y);
@@ -1496,27 +1632,42 @@ public:
 			0,							0,							0,				1
 		);
 	}
-	static Matrix4x4f translationRotation(Vec3f transVec, Quaternion rot) {
+	static Matrix4x4f translationScale(const Vec3f& transVec, const Vec3f& scaleVec) {
+		return Matrix4x4f(
+			scaleVec.x, 0, 0, 0,
+			0, scaleVec.y, 0, 0,
+			0, 0, scaleVec.z, 0,
+			transVec.x, transVec.y, transVec.z, 1
+		);
+	}
+	static Matrix4x4f translationRotation(const Vec3f& transVec, const Quaternion& rot) {
 		return Matrix4x4f(
 			1.0f - 2.0f * rot.y * rot.y - 2.0f * rot.z * rot.z, 2.0f * rot.x * rot.y + 2.0f * rot.z * rot.w, 2.0f * rot.x * rot.z - 2.0f * rot.y * rot.w, 0,
 			2.0f * rot.x * rot.y - 2.0f * rot.z * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.z * rot.z, 2.0f * rot.y * rot.z + 2.0f * rot.x * rot.w, 0,
 			2.0f * rot.x * rot.z + 2.0f * rot.y * rot.w, 2.0f * rot.y * rot.z - 2.0f * rot.x * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.y * rot.y, 0,
 			transVec.x, transVec.y, transVec.z, 1
 		);
+		
 	}
-	static Matrix4x4f translationRotation(Vec3f transVec, Rotor3f rot) {
-		// TODO optimize
-		Vec3f vx = rot.rotate(Vec3f(1, 0, 0));
-		Vec3f vy = rot.rotate(Vec3f(0, 1, 0));
-		Vec3f vz = rot.rotate(Vec3f(0, 0, 1));
+	static Matrix4x4f translationRotation(const Vec3f& transVec, const Rotor3f& rot) {
 		return Matrix4x4f(
-			vx.x, vy.x, vz.x, 0,
-			vx.y, vy.y, vz.y, 0,
-			vx.z, vy.z, vz.z, 0,
+			rot.a * rot.a - rot.xy * rot.xy - rot.xz * rot.xz + rot.yz * rot.yz, -2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, -2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 0,
+			2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, rot.a * rot.a - rot.xy * rot.xy + rot.xz * rot.xz - rot.yz * rot.yz, -2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, 0,
+			2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, rot.a * rot.a + rot.xy * rot.xy - rot.xz * rot.xz - rot.yz * rot.yz, 0,
 			transVec.x, transVec.y, transVec.z, 1
 		);
+		// OLD slower code
+		//Vec3f vx = rot.rotate(Vec3f(1, 0, 0));
+		//Vec3f vy = rot.rotate(Vec3f(0, 1, 0));
+		//Vec3f vz = rot.rotate(Vec3f(0, 0, 1));
+		//return Matrix4x4f(
+		//	vx.x, vx.y, vx.z, 0,
+		//	vy.x, vy.y, vy.z, 0,
+		//	vz.x, vz.y, vz.z, 0,
+		//	transVec.x, transVec.y, transVec.z, 1
+		//);
 	}
-	static Matrix4x4f translationRotation(Vec3f transVec, Vec3f euler) {
+	static Matrix4x4f translationRotation(const Vec3f& transVec, const Vec3f& euler) {
 		float cx = cosf(euler.x);
 		float sx = sinf(euler.x);
 		float cy = cosf(euler.y);
@@ -1530,13 +1681,13 @@ public:
 			transVec.x, transVec.y, transVec.z, 1
 		);
 	}
-	static Matrix4x4f transformation(Vec3f translationVec, Vec3f scaleVec, Rotor3f rotor) {
+	static Matrix4x4f transformation(const Vec3f& translationVec, const Vec3f& scaleVec, const Rotor3f& rotor) {
 		return translationRotation(translationVec, rotor) * scale(scaleVec);
 	}
-	static Matrix4x4f transformation(Vec3f translationVec, Vec3f scaleVec, Quaternion rotationQuat) {
+	static Matrix4x4f transformation(const Vec3f& translationVec, const Vec3f& scaleVec, const Quaternion& rotationQuat) {
 		return translationRotation(translationVec, rotationQuat) * scale(scaleVec);
 	}
-	static Matrix4x4f transformation(Vec3f translationVec, Vec3f scaleVec, Vec3f rotationVec) {
+	static Matrix4x4f transformation(const Vec3f& translationVec, const Vec3f& scaleVec, const Vec3f& rotationVec) {
 		return translationRotation(translationVec, rotationVec) * scale(scaleVec);
 	}
 	static Matrix4x4f perspectiveProjection(float fov, float aspect, float nearPlane, float farPlane) {
