@@ -16,6 +16,7 @@
 #include <SphereCollider.h>
 #include <Random.h>
 #include <VisualDebug.h>
+#include <Light.h>
 #include "NoclipController.h"
 #include "TestRotator.h"
 
@@ -32,6 +33,11 @@ void TestScene::load() {
 	camera->addComponent<NoclipController>()->lookSensivity = 0.5f;
 	camera->transform->setPosition({5, 5, -5});
 	camera->transform->setRotation(Rotor3f::euler({ M_PI_4, -M_PI_4, 0 }));
+
+	sun = new Entity("Sun");
+	Light* sunLight = new Light(sun, Light::Directional);
+	sun->addComponent(sunLight);
+	sun->transform->setRotation(Rotor3f::euler({M_PI_4, M_PI_4 * 0.5f, 0}));
 
 	cubeMesh = new Mesh("Cube", 8, 36);
 	cubeMesh->setAttributesDefinition(1, new int[1]{3});
@@ -138,6 +144,12 @@ void TestScene::load() {
 }
 
 void TestScene::update() {
+	//sun->getComponent<Light>()->intensity = sinf(Time::time) * 0.5f + 0.5f;
+	//sun->getComponent<Light>()->color.r = sinf(Time::time) * .5f + .5f;
+	//sun->getComponent<Light>()->color.g = sinf(Time::time + M_PI * 0.333f) * .5f + .5f;
+	//sun->getComponent<Light>()->color.b = sinf(Time::time + M_PI * 0.666f) * .5f + .5f;
+	//sun->transform->setWorldRotation(Rotor3f::euler(M_PI_4, Time::time, 0));
+
 	Rigidbody* ballRb = ball->getComponent<Rigidbody>();
 	if (Time::time > 15.0f && !ballRb->isEnabled()) {
 		ballRb->enable();
@@ -163,8 +175,11 @@ void TestScene::update() {
 void TestScene::destroy() {
 	Scene::destroy();
 	delete camera;
+	delete sun;
 	delete rotatingEnt;
 	delete ground;
 	delete ball;
+	delete refCube;
+	delete mirCube;
 	delete cubeMesh;
 }

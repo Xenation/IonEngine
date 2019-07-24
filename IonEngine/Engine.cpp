@@ -10,6 +10,7 @@
 #include "Game.h"
 #include "PhysicsWorld.h"
 #include "VisualDebug.h"
+#include "LightManager.h"
 
 
 
@@ -22,20 +23,23 @@ Window* Engine::window = nullptr;
 Pipeline* Engine::pipeline = nullptr;
 EntityManager* Engine::entityManager = nullptr;
 PhysicsWorld* Engine::physicsWorld = nullptr;
+LightManager* Engine::lightManager = nullptr;
 Gui* Engine::gui = nullptr;
 Scene* Engine::scene = nullptr;
 Game* Engine::game = nullptr;
 
 
-void Engine::initialize(Game* gamePt,  Pipeline* pipelinePt, Gui* guiPt) {
+void Engine::initialize(Game* gamePt, Pipeline* pipelinePt, Gui* guiPt) {
 	window = new Window();
 	entityManager = new EntityManager();
 	physicsWorld = new PhysicsWorld();
+	lightManager = new LightManager();
 	if (pipelinePt == nullptr) {
-		pipeline = new Pipeline(window->getWidth(), window->getHeight());
+		pipeline = new Pipeline(window->getWidth(), window->getHeight(), lightManager);
 	} else {
 		pipeline = pipelinePt;
 	}
+
 	if (guiPt == nullptr) {
 		gui = new Gui(window);
 	} else {

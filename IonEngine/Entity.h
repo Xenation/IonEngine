@@ -21,18 +21,23 @@ public:
 	template<typename T, typename std::enable_if<std::is_base_of<Component, T>::value>::type* = nullptr>
 	T* addComponent() {
 		T* nComponent = new T(this);
-		components.add(nComponent);
+		return addComponent<T>(nComponent);
+	}
+
+	// Adds a component from an existing instance (this instance must not have already been assigned to another entity)
+	template<typename T, typename std::enable_if<std::is_base_of<Component, T>::value>::type* = nullptr>
+	T* addComponent(T* comp) {
+		components.add(comp);
 
 		if (typeid(T) == typeid(Transform)) {
-			transform = (Transform*) nComponent;
-			updateTransformPointers();
+			replaceTransformPointers((Transform*) comp);
 		}
 
-		nComponent->onStart();
-		if (nComponent->isEnabled()) {
-			nComponent->onEnable();
+		comp->onStart();
+		if (comp->isEnabled()) {
+			comp->onEnable();
 		}
-		return nComponent;
+		return comp;
 	}
 	
 	// Gets a component of the given type
@@ -107,18 +112,6 @@ private:
 	void removeChild(unsigned int index);
 	void parentChangeNotifyChildren();
 
-	// Adds a component
-	template<typename T, typename std::enable_if<std::is_base_of<Component, T>::value>::type* = nullptr>
-	T* addComponent(T* comp) {
-		components.add(comp);
-
-		comp->onStart();
-		if (comp->isEnabled()) {
-			comp->onEnable();
-		}
-		return comp;
-	}
-
-	void updateTransformPointers();
+	void replaceTransformPointers(Transform* nTransform);
 };
 

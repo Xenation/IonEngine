@@ -8,12 +8,13 @@ class Camera;
 class UniformBuffer;
 class RenderPass;
 class Framebuffer;
+class LightManager;
 
 class Pipeline {
 public:
 	SimpleList<RenderPass*> renderPasses;
 
-	Pipeline(int width, int height);
+	Pipeline(int width, int height, LightManager* lightManager);
 	Pipeline(const Pipeline&) = delete;
 	~Pipeline();
 
@@ -34,7 +35,8 @@ private:
 	UniformBuffer* globalUniformBuffer;
 	Framebuffer* renderBuffer;
 	float aspectRatio = 1.0f;
-	unsigned int samples = 8;
+	unsigned int samples = 4;
+	LightManager* lightManager;
 
 	void render(Camera* camera);
 };

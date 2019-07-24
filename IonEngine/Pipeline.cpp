@@ -11,6 +11,8 @@
 #include "RenderPass.h"
 #include "Framebuffer.h"
 #include "SpecializedShaderProgram.h"
+#include "LightManager.h"
+#include "Light.h"
 
 #define RENDERERS_START_SIZE 32
 #define RENDERERS_INCREASE 32
@@ -21,8 +23,8 @@
 
 
 
-Pipeline::Pipeline(int width, int height) 
-	: renderers(RENDERERS_START_SIZE, RENDERERS_INCREASE), cameras(CAMERAS_START_SIZE, CAMERAS_INCREASE), renderPasses(RENDERPASSES_START_SIZE, RENDERERS_INCREASE) {
+Pipeline::Pipeline(int width, int height, LightManager* lightManager)
+	: lightManager(lightManager), renderers(RENDERERS_START_SIZE, RENDERERS_INCREASE), cameras(CAMERAS_START_SIZE, CAMERAS_INCREASE), renderPasses(RENDERPASSES_START_SIZE, RENDERERS_INCREASE) {
 
 	renderBuffer = new Framebuffer("RenderBuffer", width, height, samples);
 	renderBuffer->createAttachments(2, new Framebuffer::Attachment[2]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
@@ -31,13 +33,13 @@ Pipeline::Pipeline(int width, int height)
 
 	renderPasses.add(new RenderPassOpaque("opaque"));
 	renderPasses.add(new RenderPassTransparent("transparent"));
-	renderPasses.add(new RenderPassPostprocess("postprocess", renderBuffer));
+	//renderPasses.add(new RenderPassPostprocess("postprocess", renderBuffer));
 
 	SpecializedShaderProgram::initialize(this);
 	ShaderProgram::initializeAll(this);
 
 	globalUniformBuffer = new UniformBuffer("Global");
-	globalUniformBuffer->setLayouts(2, new UniformLayout[2]{UniformLayout(1, 4, new GLSLType[4]{GLSL_MAT4, GLSL_MAT4, GLSL_IVEC2, GLSL_UINT}), UniformLayout(2, 1, new GLSLType[1]{GLSL_FLOAT})});
+	globalUniformBuffer->setLayouts(2, new UniformLayout[2]{UniformLayout(1, 4, new GLSLType[4]{GLSL_MAT4, GLSL_MAT4, GLSL_IVEC2, GLSL_UINT}), UniformLayout(2, 3, new GLSLType[3]{GLSL_FLOAT, GLSL_VEC4, GLSL_VEC4})});
 	globalUniformBuffer->uploadToGL();
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
@@ -50,6 +52,13 @@ Pipeline::~Pipeline() {
 
 
 void Pipeline::render() {
+	// Globals Update
+	Light* mainDirectional = lightManager->getMainDirectional();
+	globalUniformBuffer->getLayout(1).setMember(0, Time::time);
+	globalUniformBuffer->getLayout(1).setMember(1, mainDirectional->color.vec);
+	globalUniformBuffer->getLayout(1).setMember(2, toVec4f(mainDirectional->getDirection()));
+	globalUniformBuffer->updateLayout(1);
+
 	unsigned int rendered = 0;
 	for (unsigned int i = 0; i < cameras.capacity && rendered < cameras.count; i++) {
 		if (cameras[i] == nullptr) continue;
@@ -59,22 +68,24 @@ void Pipeline::render() {
 }
 
 void Pipeline::render(Camera* camera) {
-	// Globals Update
+	// Camera Globals Update
 	globalUniformBuffer->getLayout(0).setMember(0, camera->getProjectionMatrix());
 	globalUniformBuffer->getLayout(0).setMember(1, camera->getViewMatrix());
 	globalUniformBuffer->getLayout(0).setMember(2, Vec2i(renderBuffer->getWidth(), renderBuffer->getHeight()));
 	globalUniformBuffer->getLayout(0).setMember(3, samples);
 	globalUniformBuffer->updateLayout(0);
-	globalUniformBuffer->getLayout(1).setMember(0, Time::time);
-	globalUniformBuffer->updateLayout(1);
 
 	renderBuffer->bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		RenderPass* renderPass = renderPasses[passIndex];
+#ifdef _DEBUG // May be overkill
 		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, renderPass->name.length(), renderPass->name.c_str());
+#endif
 		renderPass->render();
+#ifdef _DEBUG
 		glPopDebugGroup();
+#endif
 	}
 	renderBuffer->unbind();
 	renderBuffer->blitTo(nullptr);

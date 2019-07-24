@@ -52,7 +52,11 @@ void Entity::updateComponents() {
 	}
 }
 
-void Entity::updateTransformPointers() {
+void Entity::replaceTransformPointers(Transform* nTransform) {
+	if (transform != nullptr) {
+		delete transform;
+	}
+	transform = nTransform;
 	unsigned int updated = 0;
 	for (unsigned int i = 0; i < components.capacity; i++) {
 		if (updated == components.count) break;
@@ -84,7 +88,7 @@ void Entity::addChild(Entity* child) {
 }
 
 void Entity::removeChild(unsigned int index) {
-	children.remove(index);
+	children.removeAt(index);
 	for (unsigned int i = index; i < children.count; i++) {
 		children[i]->childIndex--;
 	}

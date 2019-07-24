@@ -31,7 +31,7 @@ void Window::initializeGLFW() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 8);
+	glfwWindowHint(GLFW_SAMPLES, 4); // TODO Have better control over the window's buffer
 }
 
 void Window::resizeFrameCallback(GLFWwindow* window, int width, int height) {
@@ -85,4 +85,16 @@ int Window::shouldClose() {
 
 void Window::closeWindow() {
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+void Window::setTitle(const char* title) {
+	glfwSetWindowTitle(window, title);
+}
+
+void Window::enableVSync() {
+	glfwSwapInterval(1);
+}
+
+void Window::disableVSync() {
+	glfwSwapInterval(0);
 }

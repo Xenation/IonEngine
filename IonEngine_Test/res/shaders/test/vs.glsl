@@ -14,7 +14,6 @@ uniform mat4x4 modelMatrix;
 
 layout (std140, binding = 10) uniform Material {
 	vec4 color;
-	vec4 lightDir;
 	float ambient;
 };
 

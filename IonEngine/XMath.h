@@ -1199,6 +1199,9 @@ public:
 	inline static Rotor3f euler(const Vec3f& eulerAngles) {
 		return attitude(eulerAngles.y, eulerAngles.x, eulerAngles.z);
 	}
+	inline static Rotor3f euler(float eulerX, float eulerY, float eulerZ) {
+		return attitude(eulerY, eulerX, eulerZ);
+	}
 	inline static Rotor3f attitude(float yaw, float pitch, float roll) {
 		// TODO optimize
 		Rotor3f ry;

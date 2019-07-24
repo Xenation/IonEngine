@@ -16,6 +16,7 @@ public:
 	virtual void destroy() override;
 private:
 	Entity* camera;
+	Entity* sun;
 	Entity* rotatingEnt;
 	Entity* ground;
 	Entity* ball;

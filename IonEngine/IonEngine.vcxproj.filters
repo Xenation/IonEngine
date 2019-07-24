@@ -67,6 +67,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms;glsl</Extensions>
     </Filter>
+    <Filter Include="Header Files\Engine\Render\Lighting">
+      <UniqueIdentifier>{7dd27bda-c65d-439f-a0a5-a303daeb7f17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Render\Lighting">
+      <UniqueIdentifier>{8faf4969-719d-48b2-8583-f1068355ec11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -218,6 +224,12 @@
     </ClCompile>
     <ClCompile Include="Random.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Source Files\Engine\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="LightManager.cpp">
+      <Filter>Source Files\Engine\Render\Lighting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -400,6 +412,12 @@
     </ClInclude>
     <ClInclude Include="Random.h">
       <Filter>Header Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files\Engine\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="LightManager.h">
+      <Filter>Header Files\Engine\Render\Lighting</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

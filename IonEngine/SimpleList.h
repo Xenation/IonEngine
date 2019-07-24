@@ -29,18 +29,28 @@ public:
 		return index;
 	}
 
-	void remove(unsigned int index) {
+	void removeAt(unsigned int index) {
 		for (unsigned int i = index + 1; i < count; i++) {
 			arr[i - 1] = arr[i];
 		}
 		count--;
 	}
 
+	void remove(T item) {
+		unsigned int i;
+		for (i = 0; i < count; i++) {
+			if (arr[i] == item) break;
+		}
+		if (i < count) {
+			removeAt(i);
+		}
+	}
+
 	void clear() {
 		count = 0;
 	}
 
-	inline T& operator [](unsigned int index) {
+	inline T& operator[](unsigned int index) {
 		return arr[index];
 	}
 

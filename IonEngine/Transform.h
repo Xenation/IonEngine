@@ -23,10 +23,10 @@ public:
 	inline void setWorldScale(Vec3f sca) { localToWorldMatrix = Matrix4x4f::transformation(localToWorldMatrix.translation(), sca, localToWorldMatrix.rotor()); updateMatricesFromLTW(); }
 	inline void setRotation(Rotor3f rot) { rotation = rot; localToParentMatrix = Matrix4x4f::transformation(localToParentMatrix.translation(), scale, rotation); updateMatricesFromLTP(); }
 	inline void setRotation(Quaternion rot) { localToParentMatrix = Matrix4x4f::transformation(localToParentMatrix.translation(), scale, rot); rotation = localToParentMatrix.rotor(); updateMatricesFromLTP(); }
+	inline void setWorldRotation(Rotor3f rot) { localToWorldMatrix = Matrix4x4f::transformation(localToWorldMatrix.translation(), localToWorldMatrix.scale(), rot); updateMatricesFromLTW(); rotation = localToParentMatrix.rotor(); }
+	inline void setWorldRotation(Quaternion rot) { localToWorldMatrix = Matrix4x4f::transformation(localToWorldMatrix.translation(), localToWorldMatrix.scale(), rot); updateMatricesFromLTW(); rotation = localToParentMatrix.rotor(); }
 	inline void rotate(Rotor3f rot) { rotation *= rot; localToParentMatrix = Matrix4x4f::transformation(localToParentMatrix.translation(), scale, rotation); updateMatricesFromLTP(); }
 	inline void rotate(Quaternion rot) { Quaternion q = localToParentMatrix.quaternion(); q *= rot; localToParentMatrix = Matrix4x4f::transformation(localToParentMatrix.translation(), scale, q); rotation = localToParentMatrix.rotor(); updateMatricesFromLTP(); }
-	inline void setWorldRotation(Rotor3f rot) { localToWorldMatrix = Matrix4x4f::transformation(localToWorldMatrix.translation(), localToWorldMatrix.scale(), rot); updateMatricesFromLTW(); }
-	inline void setWorldRotation(Quaternion rot) { localToWorldMatrix = Matrix4x4f::transformation(localToWorldMatrix.translation(), localToWorldMatrix.scale(), rot); updateMatricesFromLTW(); }
 
 	Matrix4x4f getLocalToWorldMatrix();
 	Matrix4x4f getWorldToLocalMatrix();

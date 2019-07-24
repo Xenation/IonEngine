@@ -7,6 +7,7 @@ class Scene;
 class Gui;
 class Game;
 class PhysicsWorld;
+class LightManager;
 
 class Engine {
 public:
@@ -14,6 +15,7 @@ public:
 	static Pipeline* pipeline;
 	static EntityManager* entityManager;
 	static PhysicsWorld* physicsWorld;
+	static LightManager* lightManager; // TODO should be moved to a better place
 	static Gui* gui;
 	static Scene* scene;
 	static Game* game;

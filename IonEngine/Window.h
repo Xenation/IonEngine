@@ -1,7 +1,9 @@
 #pragma once
 #include "HollowSet.h"
+
 struct GLFWwindow;
 class Renderer;
+
 class Window {
 public:
 	Window(const char* title = "IonEngine");
@@ -10,6 +12,10 @@ public:
 	void display();
 	int shouldClose();
 	void closeWindow();
+
+	void setTitle(const char* title);
+	void enableVSync();
+	void disableVSync();
 
 	inline int getWidth() { return width; }
 	inline int getHeight() { return height; }

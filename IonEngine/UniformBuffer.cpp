@@ -112,8 +112,13 @@ void UniformLayout::computeLayoutOffsets() {
 	switch (type) {
 	case UniformLayoutType::STD140:
 		for (unsigned int i = 0; i < memberCount; i++) {
+			unsigned int alignment = glslTypeBaseAlignment(members[i]);
+			unsigned int unaligment = currentOffset % alignment;
+			if (unaligment > 0) {
+				currentOffset += alignment - unaligment;
+			}
 			membersOffsets[i] = currentOffset;
-			currentOffset += glslTypeBaseAlignment(members[i]);
+			currentOffset += alignment;
 		}
 		size = currentOffset;
 		break;

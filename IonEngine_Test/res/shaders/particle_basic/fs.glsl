@@ -2,6 +2,8 @@
 
 layout (std140, binding = 2) uniform GlobalsVars {
 	float time;
+	vec4 mainDirLightColor;
+	vec4 mainDirLightDirection;
 };
 
 layout (std140, binding = 10) uniform Material {

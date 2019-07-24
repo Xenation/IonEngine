@@ -6,6 +6,7 @@ using namespace std::chrono;
 
 float Time::time = 0.f;
 float Time::deltaTime = 0.f;
+int Time::frameCount = 0;
 
 high_resolution_clock::time_point Time::startTime = high_resolution_clock::now();
 high_resolution_clock::time_point Time::currentTime = high_resolution_clock::now();
@@ -21,6 +22,7 @@ void Time::computeFrameTimes() {
 	currentTime = nTime;
 	time = durationSinceStart.count();
 	deltaTime = durationFrame.count();
+	frameCount++;
 }
 
 float Time::getExactTime() {
@@ -37,4 +39,8 @@ float Time::endTimeMesure() {
 	float dt = duration_cast<duration<float>>(high_resolution_clock::now() - timeStack[timeStack.count - 1]).count();
 	timeStack.count--;
 	return dt;
+}
+
+int Time::getInstantFPS() {
+	return 1.0f / deltaTime;
 }
