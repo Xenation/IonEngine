@@ -17,6 +17,7 @@
 #include <Random.h>
 #include <VisualDebug.h>
 #include <Light.h>
+#include <MeshImporter.h>
 #include "NoclipController.h"
 #include "TestRotator.h"
 
@@ -119,6 +120,16 @@ void TestScene::load() {
 	Rigidbody* groundWallRb = groundWall->addComponent<Rigidbody>();
 	groundWallRb->setCollider(groundWallCollider);
 
+	Entity* sphere = new Entity("Sphere");
+	sphere->setParent(ground);
+	sphere->transform->setWorldPosition({0, 0, 0});
+	sphere->transform->setWorldScale({1, 1, 1});
+	MeshRenderer* sphereRenderer = sphere->addComponent<MeshRenderer>();
+	sphereRenderer->setMaterial(wallMaterial);
+	sphereMesh = MeshImporter::Import("icosphere.obj");
+	sphereMesh->uploadToGL();
+	sphereRenderer->setMesh(sphereMesh);
+
 	ball = new Entity("Cube");
 	ball->transform->setPosition(Vec3f(0, 20, 0));
 	MeshRenderer* ballRenderer = ball->addComponent<MeshRenderer>();
@@ -182,4 +193,5 @@ void TestScene::destroy() {
 	delete refCube;
 	delete mirCube;
 	delete cubeMesh;
+	delete sphereMesh;
 }

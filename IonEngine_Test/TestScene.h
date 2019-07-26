@@ -23,5 +23,6 @@ private:
 	Entity* refCube;
 	Entity* mirCube;
 	Mesh* cubeMesh;
+	Mesh* sphereMesh;
 };
 
