@@ -1561,6 +1561,14 @@ public:
 			-inv3[0][0] * m03 + -inv3[0][1] * m13 + -inv3[0][2] * m23, -inv3[1][0] * m03 + -inv3[1][1] * m13 + -inv3[1][2] * m23, -inv3[2][0] * m03 + -inv3[2][1] * m13 + -inv3[2][2] * m23, 1
 		);
 	}
+	inline Matrix4x4f inversePerspective() const {
+		return Matrix4x4f(
+			1.0f / m00, 0, 0, 0,
+			0, 1.0f / m11, 0, 0,
+			0, 0, 0, 1.0f / m23,
+			0, 0, 1, m22 / -m23
+		);
+	}
 	inline Vec3f multPoint(const Vec3f& point) const {
 		__m128 vreg;
 		vreg = _mm_mul_ps(_xmm[0], _mm_set1_ps(point.x));

@@ -59,6 +59,8 @@ public:
 
 	inline int getVertexCount() const { return vertexCount; }
 	inline int getIndexCount() const { return indexCount; }
+	inline void setDrawnIndexCount(int drawnCount) { drawnIndexCount = drawnCount; }
+	inline int getDrawnIndexCount() const { return drawnIndexCount; }
 	inline bool isLoadedToGL() const { return loadedToGL; }
 	inline bool isCachedInLocal() const { return cachedInLocal; }
 	inline GLenum getTopology() const { return topology; }
@@ -82,6 +84,7 @@ private:
 	void* vertices = nullptr;
 	int indexCount;
 	unsigned int* indices = nullptr;
+	int drawnIndexCount = -1; // -1 means draw all
 	GLenum topology = GL_TRIANGLES;
 	GLenum usage = GL_STATIC_DRAW;
 	unsigned int loadedVertexBufferSize = 0;

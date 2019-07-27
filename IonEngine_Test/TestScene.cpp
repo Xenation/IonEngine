@@ -176,11 +176,14 @@ void TestScene::update() {
 	//	Debug::log("ROTOR", "different extracted rotor! original:" + rotor.toString() + "  extracted:" + extractedRotor.toString());
 	//}
 
-	//Random rng(666);
-	//for (int i = 0; i < 666; i++) {
-	//	Vec3f pos = toVec3f(rng.inCircle());
-	//	VisualDebug::drawLine(pos, pos + Vec3f::up * 0.01f, rng.color());
-	//}
+	Random rng(666);
+	for (int i = 0; i < 666; i++) {
+		Vec3f pos = toVec3f(rng.inCircle());
+		VisualDebug::drawCube(pos, Vec3f::one * 0.01f, rng.color());
+		//VisualDebug::drawSphere(pos, 0.05f, rng.color());
+	}
+
+	//VisualDebug::drawFrustum(camera->getComponent<Camera>()->getViewMatrix(), camera->getComponent<Camera>()->getProjectionMatrix(), camera->getComponent<Camera>()->getNearPlane(), camera->getComponent<Camera>()->getFarPlane() - 500, Color::red);
 }
 
 void TestScene::destroy() {

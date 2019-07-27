@@ -67,8 +67,8 @@ void Engine::loop() {
 		game->postUpdate();
 		// RENDER
 		pipeline->render();
-		gui->render();
 		VisualDebug::render();
+		gui->render();
 		// DISPLAY
 		window->display();
 	}

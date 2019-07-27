@@ -391,11 +391,13 @@ void Mesh::render() const {
 		return;
 	}
 
-	triangleCount += indexCount / 3;
+	int drawnCount = (drawnIndexCount == -1) ? indexCount : drawnIndexCount;
+
+	triangleCount += drawnCount / 3;
 
 	glBindVertexArray(vao);
 
-	glDrawElements(topology, indexCount, GL_UNSIGNED_INT, NULL);
+	glDrawElements(topology, drawnCount, GL_UNSIGNED_INT, NULL);
 
 	glBindVertexArray(0);
 }
