@@ -17,8 +17,7 @@ out vec4 fragColor;
 
 void main() {
 	vec4 diffuse = color;
-	float dirLight = clamp(dot(normal, mainDirLightDirection.xyz), 0, 1);
+	float dirLight = max(ambient, clamp(dot(normal, mainDirLightDirection.xyz), 0, 1));
 	diffuse.rgb *= mainDirLightColor.rgb * mainDirLightColor.a * dirLight;
-	diffuse.rgb = max(vec3(ambient), diffuse.rgb);
 	fragColor = diffuse;
 }

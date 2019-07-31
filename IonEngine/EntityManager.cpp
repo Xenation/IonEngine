@@ -4,6 +4,7 @@
 #include "Debug.h"
 #include "Entity.h"
 #include "Time.h"
+#include "EntityEditor.h"
 
 #define ENTITY_ARRAY_START_SIZE 64
 #define ENTITY_ARRAY_INCREASE 64
@@ -45,43 +46,6 @@ void EntityManager::updateEntities() {
 		updated++;
 	}
 	addUpdateTime(Time::endTimeMesure());
-}
-
-void EntityManager::gui() {
-	ImGui::Text("Update Times");
-	ImGui::Indent();
-	ImGui::PlotLines("", updateTimes, 300, 0, '\0', 0.0f, maxUpdateTime);
-	ImGui::Text("Max Update Time: %.6fms", maxUpdateTime * 1000);
-	ImGui::Unindent();
-	ImGui::Text("Scene");
-	unsigned int displayed = 0;
-	for (unsigned int i = 0; i < entities.capacity; i++) {
-		if (displayed == entities.count) break;
-		if (entities[i] == nullptr || entities[i]->getParent() != nullptr) continue;
-		gui(entities[i]);
-		displayed++;
-	}
-}
-
-void EntityManager::gui(Entity* entity) {
-	if (ImGui::TreeNode(entity->name)) {
-		HollowSet<Component*>& components = entity->getRawComponentsSet();
-		if (components.count != 0 && ImGui::TreeNode("components")) {
-			unsigned int compCount = 0;
-			for (unsigned int i = 0; i < components.capacity && compCount < components.count; i = compCount = i + 1) {
-				ImGui::Text(typeid(*components[i]).name());
-			}
-			ImGui::TreePop();
-		}
-		unsigned int childCount = entity->childCount();
-		if (childCount != 0 && ImGui::TreeNode("childs")) {
-			for (unsigned int i = 0; i < childCount; i++) {
-				gui(entity->getChild(i));
-			}
-			ImGui::TreePop();
-		}
-		ImGui::TreePop();
-	}
 }
 
 void EntityManager::addUpdateTime(float time) {

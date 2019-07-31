@@ -204,12 +204,6 @@ const char* Input::getKeyCodeString(KeyCode keyCode) {
 
 void Input::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (key == KeyCode::UNKNOWN) return;
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-		Engine::window->closeWindow();
-	}
-	if (key == GLFW_KEY_F5 && action == GLFW_PRESS) {
-		ShaderProgram::reloadAll();
-	}
 
 	if (action == GLFW_PRESS) {
 		keyPressedStates[key] = true;

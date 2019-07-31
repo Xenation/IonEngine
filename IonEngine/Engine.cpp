@@ -45,6 +45,7 @@ void Engine::initialize(Game* gamePt, Pipeline* pipelinePt, Gui* guiPt) {
 	} else {
 		gui = guiPt;
 	}
+	gui->initialize();
 
 	game = gamePt;
 	game->initialize();

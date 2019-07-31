@@ -1,6 +1,5 @@
 #include "SpecializedShaderProgram.h"
 
-#include <imgui.h>
 #include "Debug.h"
 #include "ShaderProgram.h"
 #include "RenderPass.h"
@@ -25,15 +24,6 @@ SpecializedShaderProgram::SpecializedShaderProgram(ShaderProgram*const parentSha
 
 SpecializedShaderProgram::~SpecializedShaderProgram() {}
 
-void SpecializedShaderProgram::gui() {
-	if (renderPass == nullptr) return;
-	uint matProcessed = 0;
-	for (uint matIndex = 0; matIndex < materials.capacity && matProcessed < materials.count; matIndex++) {
-		if (materials[matIndex] == nullptr) continue;
-		materials[matIndex]->gui();
-		matProcessed++;
-	}
-}
 
 void SpecializedShaderProgram::load(const char* vsSource[3], const char* tcsSource[3], const char* tesSource[3], const char* gsSource[3], const char* fsSource[3]) {
 	if (renderPass != nullptr) {

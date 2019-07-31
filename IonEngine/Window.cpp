@@ -31,6 +31,7 @@ void Window::initializeGLFW() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 	glfwWindowHint(GLFW_SAMPLES, 4); // TODO Have better control over the window's buffer
 }
 
@@ -56,7 +57,7 @@ Window::Window(const char* title) {
 	glfwSetMouseButtonCallback(window, Input::getMouseButtonCallback());
 	glfwSetCursorPosCallback(window, Input::getMousePosCallback());
 	glfwSetFramebufferSizeCallback(window, resizeFrameCallback);
-	glfwSetWindowPos(window, 500, 500);
+	//glfwSetWindowPos(window, 500, 500);
 	glfwGetWindowSize(window, &width, &height);
 
 	glfwMakeContextCurrent(window);

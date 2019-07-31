@@ -1,7 +1,6 @@
 #include "ShaderProgram.h"
 
 #include <filesystem>
-#include <imgui.h>
 #include "Debug.h"
 #include "ShaderPreprocessor.h"
 #include "SpecializedShaderProgram.h"
@@ -69,12 +68,6 @@ ShaderProgram* ShaderProgram::createFromRaw(std::string name, std::string vs, st
 	return rawProgram;
 }
 
-void ShaderProgram::guiAll() {
-	for (uint programIndex = 0; programIndex < shaderCount; programIndex++) {
-		shaders[programIndex]->gui();
-	}
-}
-
 
 
 ShaderProgram::ShaderProgram(std::string name) : name(name) {
@@ -96,11 +89,6 @@ ShaderProgram::~ShaderProgram() {
 	}
 }
 
-void ShaderProgram::gui() {
-	for (uint specProgramIndex = 0; specProgramIndex < specializedProgramsCount; specProgramIndex++) {
-		specializedPrograms[specProgramIndex]->gui();
-	}
-}
 
 void ShaderProgram::load() {
 	if (loaded) return;

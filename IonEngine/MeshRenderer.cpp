@@ -22,7 +22,7 @@ void MeshRenderer::setMaterial(Material* mat) {
 }
 
 void MeshRenderer::render() {
-	if (mesh == nullptr) return;
+	if (!isEnabled() || mesh == nullptr) return;
 
 	material->specializedProgram->loadMatrix4x4f(modelMatrixLocation, entity->transform->getLocalToWorldMatrix());
 

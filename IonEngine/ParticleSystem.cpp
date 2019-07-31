@@ -69,10 +69,10 @@ void ParticleSystem::setMaterial(Material* mat) {
 }
 
 void ParticleSystem::render() {
+	if (!isEnabled() || mesh == nullptr) return;
 	
 	//material->specializedProgram->loadMatrix4x4f(modelMatrixLocation, Matrix4x4f::translation(entity->transform->getWorldPosition()));
 
-	if (mesh == nullptr) return;
 	mesh->render();
 
 	/*for (uint i = 0; i < maxParticles; i++) {

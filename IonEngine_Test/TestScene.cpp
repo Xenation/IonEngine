@@ -140,13 +140,13 @@ void TestScene::load() {
 	ballRb->setMass(1.0f);
 	ballRb->disable();
 
-	refCube = new Entity("Cube");
+	refCube = new Entity("RefCube");
 	refCube->transform->setPosition(Vec3f(5, 5, 0));
 	MeshRenderer* refCubeRenderer = refCube->addComponent<MeshRenderer>();
 	refCubeRenderer->setMaterial(testMaterial);
 	refCubeRenderer->setMesh(cubeMesh);
 
-	mirCube = new Entity("Cube");
+	mirCube = new Entity("MirCube");
 	mirCube->transform->setPosition(Vec3f(10, 5, 0));
 	MeshRenderer* mirCubeRenderer = mirCube->addComponent<MeshRenderer>();
 	mirCubeRenderer->setMaterial(testMaterial);

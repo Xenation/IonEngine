@@ -1,10 +1,22 @@
 #pragma once
+#include "HollowSet.h"
+
 class Window;
+class EditorWindow;
+class SceneEditor;
+class MaterialEditor;
+class StatsEditor;
+class ConsoleWindow;
+
 class Gui {
 public:
 	Gui(Window* window);
 	~Gui();
 
+	unsigned int registerEditorWindow(EditorWindow* editor);
+	void unregisterEditorWindow(unsigned int id);
+
+	void initialize();
 	void update();
 	virtual void onUpdate();
 	void render();
@@ -12,16 +24,12 @@ public:
 private:
 	Window* window;
 
+	HollowSet<EditorWindow*> editorWindows;
+	SceneEditor* sceneEditor;
+	MaterialEditor* materialEditor;
+	StatsEditor* statsEditor;
+	ConsoleWindow* consoleWindow;
 	bool debugDisplayed;
-	bool statsDisplayed;
-	bool sceneDisplayed;
-	bool shadersDisplayed;
 	bool physicsDisplayed;
-
-	float frameTimes[300];
-	float maxFrameTime = 0;
-
-	void initFrameTimes();
-	void addFrameTime(float time);
 };
 

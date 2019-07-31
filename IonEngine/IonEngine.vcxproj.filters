@@ -73,6 +73,24 @@
     <Filter Include="Source Files\Engine\Render\Lighting">
       <UniqueIdentifier>{8faf4969-719d-48b2-8583-f1068355ec11}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Engine\Editor">
+      <UniqueIdentifier>{a013750a-c41d-4815-840e-2c421b865610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Editor">
+      <UniqueIdentifier>{f1094010-0b94-41b1-857d-3494a8499bf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Editor\Components">
+      <UniqueIdentifier>{cd18309f-d1fa-4a18-8c0d-a63c27e5edb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Editor\Components">
+      <UniqueIdentifier>{7c134825-1196-48a2-8778-1348bd55b464}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Editor\Windows">
+      <UniqueIdentifier>{346acadc-40a1-420a-9f43-99eec32d098f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Engine\Editor\Windows">
+      <UniqueIdentifier>{7d56cd03-9758-424a-ac72-d1bd7afa0df8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -233,6 +251,42 @@
     </ClCompile>
     <ClCompile Include="MeshImporter.cpp">
       <Filter>Source Files\Engine\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseComponentInspector.cpp">
+      <Filter>Source Files\Engine\Editor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformInspector.cpp">
+      <Filter>Source Files\Engine\Editor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRendererInspector.cpp">
+      <Filter>Source Files\Engine\Editor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorWindow.cpp">
+      <Filter>Source Files\Engine\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityEditor.cpp">
+      <Filter>Source Files\Engine\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialEditor.cpp">
+      <Filter>Source Files\Engine\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneEditor.cpp">
+      <Filter>Source Files\Engine\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="StatsEditor.cpp">
+      <Filter>Source Files\Engine\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleWindow.cpp">
+      <Filter>Source Files\Engine\Editor\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraInspector.cpp">
+      <Filter>Source Files\Engine\Editor\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="NoclipControllerInspector.cpp">
+      <Filter>Source Files\Engine\Editor\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -427,6 +481,45 @@
     </ClInclude>
     <ClInclude Include="StringUtils.h">
       <Filter>Header Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SimpleSet.h">
+      <Filter>Header Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseComponentInspector.h">
+      <Filter>Header Files\Engine\Editor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformInspector.h">
+      <Filter>Header Files\Engine\Editor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRendererInspector.h">
+      <Filter>Header Files\Engine\Editor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ComponentInspector.h">
+      <Filter>Header Files\Engine\Editor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorWindow.h">
+      <Filter>Header Files\Engine\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityEditor.h">
+      <Filter>Header Files\Engine\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialEditor.h">
+      <Filter>Header Files\Engine\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneEditor.h">
+      <Filter>Header Files\Engine\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="StatsEditor.h">
+      <Filter>Header Files\Engine\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleWindow.h">
+      <Filter>Header Files\Engine\Editor\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraInspector.h">
+      <Filter>Header Files\Engine\Editor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="NoclipControllerInspector.h">
+      <Filter>Header Files\Engine\Editor\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -25,7 +25,7 @@ public:
 private:
 	unsigned int id;
 
-	float fov = 90.0f;
+	float fov = 100.0f;
 	float nearPlane = 0.01f;
 	float farPlane = 1000.0f;
 	float aspectRatio = 1.0f;

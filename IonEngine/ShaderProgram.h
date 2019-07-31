@@ -11,13 +11,12 @@ class ShaderPreprocessor;
 class ShaderProgram {
 public:
 	static ShaderProgram** shaders;
-	static uint shaderCount;
+	static unsigned int shaderCount;
 
 	static void initializeAll(Pipeline* pipeline);
 	static void reloadAll();
 	static ShaderProgram* find(std::string name);
 	static ShaderProgram* createFromRaw(std::string name, std::string vs, std::string fs);
-	static void guiAll();
 
 	const std::string name;
 	ShaderProgramMetaInfo* info = nullptr;
@@ -26,14 +25,13 @@ public:
 	ShaderProgram(const ShaderProgram&) = delete;
 	~ShaderProgram();
 
-	void gui();
-
 	void load();
 	void reload();
 	void unload();
 
 	SpecializedShaderProgram* getSpecializedProgram(std::string renderPassName);
 	SpecializedShaderProgram* getSpecializedProgram(RenderPass* renderPass);
+	SpecializedShaderProgram** getAllSpecializedPrograms(unsigned int& count) { count = specializedProgramsCount; return specializedPrograms; }
 
 private:
 	static Pipeline* defaultPipeline;

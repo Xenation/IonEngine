@@ -64,6 +64,7 @@ public:
 	inline bool isLoadedToGL() const { return loadedToGL; }
 	inline bool isCachedInLocal() const { return cachedInLocal; }
 	inline GLenum getTopology() const { return topology; }
+	inline std::string getName() const { return name; }
 
 	void* getAttributePointer(int attrIndex, int& stride) const;
 	inline unsigned int* getIndicesPointer() const { return indices; }

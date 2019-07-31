@@ -19,6 +19,13 @@ public:
 
 	static Material* find(std::string name);
 
+	struct TextureField {
+		std::string name;
+		GLuint uniformLocation;
+		uint textureUnit;
+		Texture* texture;
+	};
+
 	const std::string name;
 	SpecializedShaderProgram*const specializedProgram;
 	HollowSet<Renderer*> renderers;
@@ -27,8 +34,6 @@ public:
 	Material(std::string name, ShaderProgram* shaderProgram, RenderPass* renderPass);
 	Material(std::string name, SpecializedShaderProgram* specializedProgram);
 	~Material();
-
-	void gui();
 
 	void setField(unsigned int index, bool value);
 	void setField(unsigned int index, int value);
@@ -47,19 +52,16 @@ public:
 	void setTextureByLocation(unsigned int location, Texture* texture);
 	void setTextureByUnit(unsigned int unit, Texture* texture);
 
+	TextureField* getTextureFields(unsigned int& count) { count = textureFieldCount; return textureFields; }
+	UniformLayout* getUniformLayout() { return uniformLayout; }
+	void markFieldChanged() { fieldsExpired = true; }
+
 	void updateFields();
 	void use();
 	void reload();
 
 private:
 	static HollowSet<Material*> materials;
-
-	struct TextureField {
-		std::string name;
-		GLuint uniformLocation;
-		uint textureUnit;
-		Texture* texture;
-	};
 
 	UniformBuffer* uniformBuffer;
 	UniformLayout* uniformLayout;

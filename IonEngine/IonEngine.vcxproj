@@ -182,16 +182,22 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BaseComponentInspector.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="BulletMesh.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraInspector.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CompoundCollider.cpp" />
     <ClCompile Include="ConcaveMeshCollider.cpp" />
+    <ClCompile Include="ConsoleWindow.cpp" />
     <ClCompile Include="ConvexMeshCollider.cpp" />
+    <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="EditorWindow.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityEditor.cpp" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="ext\gl3w.c">
       <FileType>CppCode</FileType>
@@ -210,8 +216,11 @@
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="LightManager.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MaterialEditor.cpp" />
     <ClCompile Include="MeshCollider.cpp" />
     <ClCompile Include="MeshImporter.cpp" />
+    <ClCompile Include="MeshRendererInspector.cpp" />
+    <ClCompile Include="NoclipControllerInspector.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="PhysicsDebugger.cpp" />
     <ClCompile Include="PhysicsWorld.cpp" />
@@ -219,12 +228,15 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="RenderPass.cpp" />
     <ClCompile Include="Rigidbody.cpp" />
+    <ClCompile Include="SceneEditor.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="ShaderMetaInfo.cpp" />
     <ClCompile Include="ShaderPreprocessor.cpp" />
     <ClCompile Include="SpecializedShaderProgram.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
+    <ClCompile Include="StatsEditor.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TransformInspector.cpp" />
     <ClCompile Include="UniformBuffer.cpp" />
     <ClCompile Include="VisualDebug.cpp" />
     <ClCompile Include="XMath.cpp" />
@@ -239,17 +251,23 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BaseComponentInspector.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="BulletMesh.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraInspector.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentInspector.h" />
     <ClInclude Include="CompoundCollider.h" />
     <ClInclude Include="ConcaveMeshCollider.h" />
+    <ClInclude Include="ConsoleWindow.h" />
     <ClInclude Include="ConvexMeshCollider.h" />
     <ClInclude Include="Debug.h" />
+    <ClInclude Include="EditorWindow.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityEditor.h" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="ext\gl3w.h" />
     <ClInclude Include="ext\glcorearb.h" />
@@ -271,8 +289,11 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="LightManager.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="MaterialEditor.h" />
     <ClInclude Include="MeshCollider.h" />
     <ClInclude Include="MeshImporter.h" />
+    <ClInclude Include="MeshRendererInspector.h" />
+    <ClInclude Include="NoclipControllerInspector.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Perlin.h" />
     <ClInclude Include="PhysicsDebugger.h" />
@@ -280,13 +301,17 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="RenderPass.h" />
     <ClInclude Include="Rigidbody.h" />
+    <ClInclude Include="SceneEditor.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="ShaderMetaInfo.h" />
     <ClInclude Include="ShaderPreprocessor.h" />
+    <ClInclude Include="SimpleSet.h" />
     <ClInclude Include="SpecializedShaderProgram.h" />
     <ClInclude Include="SphereCollider.h" />
+    <ClInclude Include="StatsEditor.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TransformInspector.h" />
     <ClInclude Include="UniformBuffer.h" />
     <ClInclude Include="VisualDebug.h" />
     <ClInclude Include="XMath.h" />

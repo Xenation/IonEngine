@@ -46,7 +46,7 @@ void Entity::updateComponents() {
 	unsigned int updated = 0;
 	for (unsigned int i = 0; i < components.capacity; i++) {
 		if (updated == components.count) break;
-		if (components[i] == nullptr) continue;
+		if (components[i] == nullptr || !components[i]->isEnabled()) continue;
 		components[i]->onUpdate();
 		updated++;
 	}

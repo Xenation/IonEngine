@@ -1,21 +1,21 @@
 #pragma once
 #include "Debug.h"
 
-// A Collection that guaranties order and contiguity
+// A Collection that does not guaranty order but guaranties contiguity
 template<typename T>
-class SimpleList {
+class SimpleSet {
 public:
 	unsigned int capacity;
 	unsigned int count;
 	unsigned int growAmount;
 
-	SimpleList() = delete;
-	SimpleList(const SimpleList<T>&) = delete;
-	SimpleList(unsigned int capacity, unsigned int growAmount, bool lazyInit = false) 
+	SimpleSet() = delete;
+	SimpleSet(const SimpleSet&) = delete;
+	SimpleSet(unsigned int capacity, unsigned int growAmount, bool lazyInit = false)
 		: capacity(capacity), arr((lazyInit) ? nullptr : new T[capacity]), count(0), growAmount(growAmount) {
 
 	}
-	~SimpleList() {
+	~SimpleSet() {
 		delete[] arr;
 	}
 
@@ -32,9 +32,7 @@ public:
 	}
 
 	void removeAt(unsigned int index) {
-		for (unsigned int i = index + 1; i < count; i++) {
-			arr[i - 1] = arr[i];
-		}
+		arr[index] = arr[count - 1];
 		count--;
 	}
 

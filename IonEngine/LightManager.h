@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SimpleList.h"
+#include "SimpleSet.h"
 
 class Light;
 
@@ -15,8 +15,8 @@ public:
 	Light* getMainDirectional();
 
 private:
-	SimpleList<Light*> directionalLights = SimpleList<Light*>(4, 4);
-	SimpleList<Light*> pointLights = SimpleList<Light*>(16, 16);
-	SimpleList<Light*> spotLights = SimpleList<Light*>(16, 16);
+	SimpleSet<Light*> directionalLights = SimpleSet<Light*>(4, 4);
+	SimpleSet<Light*> pointLights = SimpleSet<Light*>(16, 16);
+	SimpleSet<Light*> spotLights = SimpleSet<Light*>(16, 16);
 };
 

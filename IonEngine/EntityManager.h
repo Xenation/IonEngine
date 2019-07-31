@@ -1,6 +1,8 @@
 #pragma once
 #include "HollowSet.h"
+
 class Entity;
+
 class EntityManager {
 public:
 	EntityManager();
@@ -11,7 +13,10 @@ public:
 
 	void updateEntities();
 
-	void gui();
+	HollowSet<Entity*>* getEntitiesSet() { return &entities; }
+	float* getUpdateTimesPtr() { return updateTimes; }
+	unsigned int getUpdateTimesCount() { return 300; }
+	float getMaxUpdateTime() { return maxUpdateTime; }
 
 private:
 	HollowSet<Entity*> entities;
@@ -19,7 +24,6 @@ private:
 	float updateTimes[300];
 	float maxUpdateTime = 0;
 
-	void gui(Entity* entity);
 	void addUpdateTime(float time);
 };
 

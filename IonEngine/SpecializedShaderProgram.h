@@ -24,8 +24,6 @@ public:
 	SpecializedShaderProgram(const SpecializedShaderProgram&) = delete;
 	~SpecializedShaderProgram();
 
-	void gui();
-
 	void load(const char* vsSource[3], const char* tcsSource[3], const char* tesSource[3], const char* gsSource[3], const char* fsSource[3]);
 	void reload(const char* vsSource[3], const char* tcsSource[3], const char* tesSource[3], const char* gsSource[3], const char* fsSource[3]);
 	void unload();

@@ -36,14 +36,17 @@ Matrix4x4f Camera::getViewMatrix() {
 
 void Camera::setFov(float fov) {
 	this->fov = fov;
+	projectionMatrixExpired = true;
 }
 
 void Camera::setNearPlane(float near) {
 	nearPlane = near;
+	projectionMatrixExpired = true;
 }
 
 void Camera::setFarPlane(float far) {
 	farPlane = far;
+	projectionMatrixExpired = true;
 }
 
 void Camera::updateProjectionMatrix() {

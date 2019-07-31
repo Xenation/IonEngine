@@ -1,9 +1,10 @@
 #pragma once
 #include "Debug.h"
+
+// A Collection that does not guaranty order and contiguity but garanties that an element never moves
 template<typename T>
 class HollowSet {
 public:
-	T* arr;
 	unsigned int capacity;
 	unsigned int count;
 	unsigned int growAmount;
@@ -40,11 +41,17 @@ public:
 		}
 	}
 
-	inline T& operator [](const unsigned int index) {
+	inline T& operator[](const unsigned int index) {
+		return arr[index];
+	}
+
+	inline const T& operator[](unsigned int index) const {
 		return arr[index];
 	}
 
 private:
+	T* arr;
+
 	unsigned int getFreeIndex() {
 		unsigned int fIndex = 0;
 		for (; fIndex < capacity; fIndex++) {

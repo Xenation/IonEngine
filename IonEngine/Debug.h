@@ -28,4 +28,15 @@ public:
 		system("pause");
 		exit(EXIT_FAILURE);
 	}
+
+	static std::stringstream* getOutStream() { return out; }
+
+private:
+	class StaticConstructor {
+	public:
+		StaticConstructor();
+	};
+
+	static std::stringstream* out;
+	static StaticConstructor staticConstructor;
 };

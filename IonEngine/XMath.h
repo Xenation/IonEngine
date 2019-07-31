@@ -1140,12 +1140,17 @@ public:
 
 /* ==== ROTOR3f ==== */
 struct Rotor3f {
-	float a;
 	union {
-		Bivec3f bv;
 		struct {
-			float xy, xz, yz;
+			float a;
+			union {
+				Bivec3f bv;
+				struct {
+					float xy, xz, yz;
+				};
+			};
 		};
+		float data[4];
 	};
 
 public:
@@ -1204,23 +1209,42 @@ public:
 	}
 	inline static Rotor3f attitude(float yaw, float pitch, float roll) {
 		// TODO optimize
-		Rotor3f ry;
-		ry.a = cos(yaw * 0.5f);
-		ry.xz = sin(yaw * 0.5f);
+		//Rotor3f ry;
+		//ry.a = cos(yaw * 0.5f);
+		//ry.xz = sin(yaw * 0.5f);
 
-		Rotor3f rp;
-		rp.a = cos(pitch * 0.5f);
-		rp.yz = -sin(pitch * 0.5f);
+		//Rotor3f rp;
+		//rp.a = cos(pitch * 0.5f);
+		//rp.yz = -sin(pitch * 0.5f);
 
-		Rotor3f rr;
-		rr.a = cos(roll * 0.5f);
-		rr.xy = -sin(roll * 0.5f);
+		//Rotor3f rr;
+		//rr.a = cos(roll * 0.5f);
+		//rr.xy = -sin(roll * 0.5f);
+
+		float cosYaw = cos(yaw * 0.5f);
+		float sinYaw = sin(yaw * 0.5f);
+		float cosPitch = cos(pitch * 0.5f);
+		float sinPitch = sin(pitch * 0.5f);
+		float cosRoll = cos(roll * 0.5f);
+		float sinRoll = sin(roll * 0.5f);
+
+		Rotor3f ryp;
+		ryp.a = cosYaw * cosPitch;
+		ryp.xy = sinYaw * sinPitch;
+		ryp.xz = sinYaw * cosPitch;
+		ryp.yz = cosYaw * -sinPitch;
+
+		Rotor3f rypr;
+		rypr.a = ryp.a * cosRoll - ryp.xy * -sinRoll;
+		rypr.xy = ryp.xy * cosRoll + ryp.a * -sinRoll;
+		rypr.xz = ryp.xz * cosRoll - ryp.yz * -sinRoll;
+		rypr.yz = ryp.yz * cosRoll + ryp.xz * -sinRoll;
 
 		//Debug::log("ROTOR", std::string("input: y" + std::to_string(yaw) + " p" + std::to_string(pitch) + " r" + std::to_string(roll)));
 		//Debug::log("ROTOR", std::string("possible: ry:" + ry.toString()));
 		//Debug::log("ROTOR", std::string("possible: rp:" + rp.toString()));
 		//Debug::log("ROTOR", std::string("possible: rr:" + rr.toString()));
-		return ry * rp * rr;
+		return rypr;
 	}
 	inline Vec3f rotate(const Vec3f& v) const {
 		const Rotor3f& p = *this;
@@ -1701,7 +1725,8 @@ public:
 	static Matrix4x4f transformation(const Vec3f& translationVec, const Vec3f& scaleVec, const Vec3f& rotationVec) {
 		return translationRotation(translationVec, rotationVec) * scale(scaleVec);
 	}
-	static Matrix4x4f perspectiveProjection(float fov, float aspect, float nearPlane, float farPlane) {
+	static Matrix4x4f perspectiveProjection(float degFov, float aspect, float nearPlane, float farPlane) {
+		float fov = degFov * IonEngine::Math::deg2rad;
 		float zRange = farPlane - nearPlane;
 
 		float xScale = 1.0f / tanf(fov * 0.5f);

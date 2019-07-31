@@ -15,6 +15,5 @@ int main(int argc, char** args) {
 
 	Engine::destroy();
 
-	system("pause");
 	return 0;
 }

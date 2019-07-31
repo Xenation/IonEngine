@@ -100,6 +100,7 @@ public:
 	unsigned int childCount() { return children.count; }
 	Entity* getChild(unsigned int index);
 
+	const HollowSet<Component*>& getRawComponentsSet() const { return components; }
 	HollowSet<Component*>& getRawComponentsSet() { return components; }
 
 private:

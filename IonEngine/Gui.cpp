@@ -11,10 +11,15 @@
 #include "Mesh.h"
 #include "ShaderProgram.h"
 #include "PhysicsWorld.h"
+#include "EditorWindow.h"
+#include "SceneEditor.h"
+#include "MaterialEditor.h"
+#include "StatsEditor.h"
+#include "ConsoleWindow.h"
 
 
 
-Gui::Gui(Window* window) : window(window) {
+Gui::Gui(Window* window) : window(window), editorWindows(16, 16) {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void) io;
@@ -30,6 +35,28 @@ Gui::~Gui() {
 }
 
 
+unsigned int Gui::registerEditorWindow(EditorWindow* editor) {
+	return editorWindows.add(editor);
+}
+
+void Gui::unregisterEditorWindow(unsigned int id) {
+	editorWindows.remove(id);
+}
+
+void Gui::initialize() {
+	sceneEditor = new SceneEditor(Engine::entityManager);
+	sceneEditor->hidden = true;
+
+	materialEditor = new MaterialEditor();
+	materialEditor->hidden = true;
+
+	statsEditor = new StatsEditor();
+	statsEditor->hidden = true;
+
+	consoleWindow = new ConsoleWindow();
+	consoleWindow->hidden = true;
+}
+
 void Gui::update() {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -40,17 +67,20 @@ void Gui::update() {
 	}
 	if (debugDisplayed) {
 		if (Input::getKeyDown(KeyCode::F1)) {
-			statsDisplayed = !statsDisplayed;
+			statsEditor->hidden = !statsEditor->hidden;
 		}
 		if (Input::getKeyDown(KeyCode::F2)) {
-			sceneDisplayed = !sceneDisplayed;
+			sceneEditor->hidden = !sceneEditor->hidden;
 		}
 		if (Input::getKeyDown(KeyCode::F3)) {
-			shadersDisplayed = !shadersDisplayed;
+			materialEditor->hidden = !materialEditor->hidden;
 		}
 		if (Input::getKeyDown(KeyCode::F4)) {
 			physicsDisplayed = !physicsDisplayed;
 			Engine::physicsWorld->debug = physicsDisplayed;
+		}
+		if (Input::getKeyDown(KeyCode::F10)) {
+			consoleWindow->hidden = !consoleWindow->hidden;
 		}
 	}
 
@@ -61,44 +91,26 @@ void Gui::update() {
 void Gui::onUpdate() {
 	if (debugDisplayed) {
 		ImGui::BeginMainMenuBar();
-		if (ImGui::MenuItem("Stats")) {
-			statsDisplayed = !statsDisplayed;
+		if (ImGui::MenuItem("Stats", "F1")) {
+			statsEditor->hidden = !statsEditor->hidden;
 		}
-		if (ImGui::MenuItem("Scene")) {
-			sceneDisplayed = !sceneDisplayed;
+		if (ImGui::MenuItem("Scene", "F2")) {
+			sceneEditor->hidden = !sceneEditor->hidden;
 		}
-		if (ImGui::MenuItem("Shaders")) {
-			shadersDisplayed = !shadersDisplayed;
+		if (ImGui::MenuItem("Materials", "F3")) {
+			materialEditor->hidden = !materialEditor->hidden;
 		}
-		if (ImGui::MenuItem("Physics")) {
+		if (ImGui::MenuItem("Physics", "F4")) {
 			physicsDisplayed = !physicsDisplayed;
 			Engine::physicsWorld->debug = physicsDisplayed;
 		}
 		ImGui::EndMainMenuBar();
 
-		if (statsDisplayed) {
-			ImGui::Begin("Engine Stats");
-			addFrameTime(Time::deltaTime);
-			ImGui::PlotLines("Delta Times", frameTimes, 300, 0, '\0', 0, maxFrameTime);
-			ImGui::Indent();
-			ImGui::Text("(max: %.3fms)", maxFrameTime * 1000);
-			ImGui::Unindent();
-			ImGui::Text("Average Frame time: %.3fms", 1000.0f / ImGui::GetIO().Framerate);
-			ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-			ImGui::Text("Triangles: %i", Mesh::triangleCount);
-			ImGui::End();
-		}
-
-		if (sceneDisplayed) {
-			ImGui::Begin("Scene");
-			Engine::entityManager->gui();
-			ImGui::End();
-		}
-
-		if (shadersDisplayed) {
-			ImGui::Begin("ShaderPrograms");
-			ShaderProgram::guiAll();
-			ImGui::End();
+		unsigned int counted = 0;
+		for (unsigned int i = 0; i < editorWindows.capacity && counted < editorWindows.count; i++) {
+			if (editorWindows[i] == nullptr) continue;
+			editorWindows[i]->render();
+			counted++;
 		}
 	}
 }
@@ -106,24 +118,4 @@ void Gui::onUpdate() {
 void Gui::render() {
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void Gui::initFrameTimes() {
-	for (int i = 0; i < 300; i++) {
-		frameTimes[i] = 0;
-	}
-}
-
-void Gui::addFrameTime(float time) {
-	maxFrameTime = 0;
-	for (int i = 0; i < 299; i++) {
-		frameTimes[i] = frameTimes[i + 1];
-		if (frameTimes[i] > maxFrameTime) {
-			maxFrameTime = frameTimes[i];
-		}
-	}
-	frameTimes[299] = time;
-	if (time > maxFrameTime) {
-		maxFrameTime = time;
-	}
 }
