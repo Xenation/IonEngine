@@ -102,14 +102,15 @@ void VisualDebug::drawFrustum(const Matrix4x4f& viewMatrix, const Matrix4x4f& pr
 
 void VisualDebug::drawWireCube(const Vec3f& center, const Vec3f& size, const Color& color) {
 	initialize();
-	addWireVertex(Vec3f(center.x - size.x, center.y - size.y, center.z - size.z), color);
-	addWireVertex(Vec3f(center.x - size.x, center.y - size.y, center.z + size.z), color);
-	addWireVertex(Vec3f(center.x + size.x, center.y - size.y, center.z + size.z), color);
-	addWireVertex(Vec3f(center.x + size.x, center.y - size.y, center.z - size.z), color);
-	addWireVertex(Vec3f(center.x - size.x, center.y + size.y, center.z - size.z), color);
-	addWireVertex(Vec3f(center.x - size.x, center.y + size.y, center.z + size.z), color);
-	addWireVertex(Vec3f(center.x + size.x, center.y + size.y, center.z + size.z), color);
-	addWireVertex(Vec3f(center.x + size.x, center.y + size.y, center.z - size.z), color);
+	Vec3f extents = size * 0.5f;
+	addWireVertex(Vec3f(center.x - extents.x, center.y - extents.y, center.z - extents.z), color);
+	addWireVertex(Vec3f(center.x - extents.x, center.y - extents.y, center.z + extents.z), color);
+	addWireVertex(Vec3f(center.x + extents.x, center.y - extents.y, center.z + extents.z), color);
+	addWireVertex(Vec3f(center.x + extents.x, center.y - extents.y, center.z - extents.z), color);
+	addWireVertex(Vec3f(center.x - extents.x, center.y + extents.y, center.z - extents.z), color);
+	addWireVertex(Vec3f(center.x - extents.x, center.y + extents.y, center.z + extents.z), color);
+	addWireVertex(Vec3f(center.x + extents.x, center.y + extents.y, center.z + extents.z), color);
+	addWireVertex(Vec3f(center.x + extents.x, center.y + extents.y, center.z - extents.z), color);
 	addWireIndex(wireVerticesIndex - 8);
 	addWireIndex(wireVerticesIndex - 7);
 	addWireIndex(wireVerticesIndex - 7);
@@ -171,16 +172,54 @@ void VisualDebug::drawWireSphere(const Vec3f& center, float radius, const Color&
 	drawWireMesh(sphereMesh, Matrix4x4f::transformation(center, Vec3f::one * radius, Rotor3f::identity), color);
 }
 
+void VisualDebug::drawWireDisk(const Vec3f& center, const Vec3f& normal, float radius, const Color& color) {
+	Vec3f right;
+	if (normal == Vec3f::up) {
+		right = Vec3f::forward.cross(normal);
+	} else {
+		right = Vec3f::up.cross(normal);
+	}
+	right.normalize();
+	Vec3f up = normal.cross(right);
+	up.normalize();
+	const unsigned int subDivs = 32;
+	for (unsigned int i = 0; i < subDivs; i++) {
+		float perim = (i / (float) subDivs) * IonEngine::Math::two_pi;
+		addWireVertex(center + cosf(perim) * radius * right + sinf(perim) * radius * up, color);
+	}
+	for (unsigned int i = 0; i < subDivs - 1; i++) {
+		addWireIndex(wireVerticesIndex - i - 1);
+		addWireIndex(wireVerticesIndex - i - 2);
+	}
+	addWireIndex(wireVerticesIndex - subDivs);
+	addWireIndex(wireVerticesIndex - 1);
+}
+
+void VisualDebug::drawWirePlaneDisk(const Plane& plane, float normalLength, float diskRadius, const Color& color) {
+	Vec3f center = plane.normal * plane.distance;
+	drawLine(center, center + plane.normal * normalLength, color);
+	drawWireDisk(center, plane.normal, diskRadius, color);
+	drawWireDisk(center, plane.normal, diskRadius * 0.66f, color);
+}
+
+void VisualDebug::drawWirePlaneDisk(const Plane& plane, const Vec3f& unprojectedCenter, float normalLength, float diskRadius, const Color& color) {
+	Vec3f center = plane.projectPoint(unprojectedCenter);
+	drawLine(center, center + plane.normal * normalLength, color);
+	drawWireDisk(center, plane.normal, diskRadius, color);
+	drawWireDisk(center, plane.normal, diskRadius * 0.66f, color);
+}
+
 void VisualDebug::drawCube(const Vec3f& center, const Vec3f& size, const Color& color) {
 	initialize();
-	addSolidVertex(Vec3f(center.x - size.x, center.y - size.y, center.z - size.z), color);
-	addSolidVertex(Vec3f(center.x - size.x, center.y - size.y, center.z + size.z), color);
-	addSolidVertex(Vec3f(center.x + size.x, center.y - size.y, center.z + size.z), color);
-	addSolidVertex(Vec3f(center.x + size.x, center.y - size.y, center.z - size.z), color);
-	addSolidVertex(Vec3f(center.x - size.x, center.y + size.y, center.z - size.z), color);
-	addSolidVertex(Vec3f(center.x - size.x, center.y + size.y, center.z + size.z), color);
-	addSolidVertex(Vec3f(center.x + size.x, center.y + size.y, center.z + size.z), color);
-	addSolidVertex(Vec3f(center.x + size.x, center.y + size.y, center.z - size.z), color);
+	Vec3f extents = size * 0.5f;
+	addSolidVertex(Vec3f(center.x - extents.x, center.y - extents.y, center.z - extents.z), color);
+	addSolidVertex(Vec3f(center.x - extents.x, center.y - extents.y, center.z + extents.z), color);
+	addSolidVertex(Vec3f(center.x + extents.x, center.y - extents.y, center.z + extents.z), color);
+	addSolidVertex(Vec3f(center.x + extents.x, center.y - extents.y, center.z - extents.z), color);
+	addSolidVertex(Vec3f(center.x - extents.x, center.y + extents.y, center.z - extents.z), color);
+	addSolidVertex(Vec3f(center.x - extents.x, center.y + extents.y, center.z + extents.z), color);
+	addSolidVertex(Vec3f(center.x + extents.x, center.y + extents.y, center.z + extents.z), color);
+	addSolidVertex(Vec3f(center.x + extents.x, center.y + extents.y, center.z - extents.z), color);
 	// Bottom
 	addSolidIndex(solidVerticesIndex - 8);
 	addSolidIndex(solidVerticesIndex - 7);
@@ -244,6 +283,7 @@ void VisualDebug::drawSphere(const Vec3f& position, float radius, const Color& c
 
 void VisualDebug::render() {
 	if (!initialized) return;
+	glDepthMask(GL_FALSE);
 	wireMesh->updateInGL();
 	solidMesh->updateInGL();
 
@@ -270,6 +310,7 @@ void VisualDebug::render() {
 	solidVerticesIndex = 0;
 	solidIndicesIndex = 0;
 	solidMesh->setDrawnIndexCount(0);
+	glDepthMask(GL_TRUE);
 }
 
 void VisualDebug::initialize() {

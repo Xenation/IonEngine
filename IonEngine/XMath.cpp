@@ -12,6 +12,8 @@ const Vec2i Vec2i::right = {1, 0};
 const Vec2i Vec2i::left = {-1, 0};
 const Vec2i Vec2i::up = {0, 1};
 const Vec2i Vec2i::down = {0, -1};
+const Vec2i Vec2i::max = {INT_MAX, INT_MAX};
+const Vec2i Vec2i::min = {INT_MIN, INT_MIN};
 // Vec3i
 const Vec3i Vec3i::zero = {0, 0, 0};
 const Vec3i Vec3i::one = {1, 1, 1};
@@ -21,6 +23,8 @@ const Vec3i Vec3i::up = {0, 1, 0};
 const Vec3i Vec3i::down = {0, -1, 0};
 const Vec3i Vec3i::forward = {0, 0, 1};
 const Vec3i Vec3i::backward = {0, 0, -1};
+const Vec3i Vec3i::max = {INT_MAX, INT_MAX, INT_MAX};
+const Vec3i Vec3i::min = {INT_MIN, INT_MIN, INT_MIN};
 const Vec3i Vec3i::north = {0, 0, 1};
 const Vec3i Vec3i::east = {1, 0, 0};
 const Vec3i Vec3i::south = {0, 0, -1};
@@ -35,6 +39,8 @@ const Vec4i Vec4i::up = {0, 1, 0, 0};
 const Vec4i Vec4i::down = {0, -1, 0, 0};
 const Vec4i Vec4i::forward = {0, 0, 1, 0};
 const Vec4i Vec4i::backward = {0, 0, -1, 0};
+const Vec4i Vec4i::max = {INT_MAX, INT_MAX, INT_MAX, INT_MAX};
+const Vec4i Vec4i::min = {INT_MIN, INT_MIN, INT_MIN, INT_MIN};
 // Vec2f
 const Vec2f Vec2f::zero = {0, 0};
 const Vec2f Vec2f::one = {1, 1};
@@ -42,6 +48,8 @@ const Vec2f Vec2f::right = {1, 0};
 const Vec2f Vec2f::left = {-1, 0};
 const Vec2f Vec2f::up = {0, 1};
 const Vec2f Vec2f::down = {0, -1};
+const Vec2f Vec2f::positiveInfinity = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity};
+const Vec2f Vec2f::negativeInfinity = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity};
 // Vec3f
 const Vec3f Vec3f::zero = {0, 0, 0};
 const Vec3f Vec3f::one = {1, 1, 1};
@@ -51,6 +59,8 @@ const Vec3f Vec3f::up = {0, 1, 0};
 const Vec3f Vec3f::down = {0, -1, 0};
 const Vec3f Vec3f::forward = {0, 0, 1};
 const Vec3f Vec3f::backward = {0, 0, -1};
+const Vec3f Vec3f::positiveInfinity = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity};
+const Vec3f Vec3f::negativeInfinity = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity};
 // Vec4f
 const Vec4f Vec4f::zero = {0, 0, 0, 0};
 const Vec4f Vec4f::zeroPoint = {0, 0, 0, 1};
@@ -62,6 +72,12 @@ const Vec4f Vec4f::up = {0, 1, 0, 0};
 const Vec4f Vec4f::down = {0, -1, 0, 0};
 const Vec4f Vec4f::forward = {0, 0, 1, 0};
 const Vec4f Vec4f::backward = {0, 0, -1, 0};
+const Vec4f Vec4f::positiveInfinity = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity};
+const Vec4f Vec4f::negativeInfinity = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity};
+const Vec4f Vec4f::positiveInfinityPoint = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, 1};
+const Vec4f Vec4f::negativeInfinityPoint = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, 1};
+const Vec4f Vec4f::positiveInfinityDir = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, 0};
+const Vec4f Vec4f::negativeInfinityDir = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, 0};
 // Rotor3f
 const Rotor3f Rotor3f::identity = {1, {0, 0, 0}};
 // Matrix4x4f
@@ -251,12 +267,185 @@ std::string Boxi::toString() {
 	return "Boxi(min" + std::string(min.toString()) + ", max" + std::string(max.toString()) + ")";
 }
 
+bool Boxi::intersect(const Boxi& o) const {
+	return !(o.min.x > max.x || o.max.x < min.x) && !(o.min.y > max.y || o.max.y < min.y) && !(o.min.z > max.z || o.max.z < min.z);
+}
+bool Boxi::intersect(const Boxf& o) const {
+	return !(o.min.x > max.x || o.max.x < min.x) && !(o.min.y > max.y || o.max.y < min.y) && !(o.min.z > max.z || o.max.z < min.z);
+}
+bool Boxi::intersect(const Ray3f& ray) const {
+	return Boxf(toVec3f(min), toVec3f(max)).intersect(ray);
+}
+bool Boxi::intersect(const Line3f& line) const {
+	return Boxf(toVec3f(min), toVec3f(max)).intersect(line);
+}
+bool Boxi::intersect(const Segment3f& segment) const {
+	return Boxf(toVec3f(min), toVec3f(max)).intersect(segment);
+}
+bool Boxi::intersect(const Plane& plane) const {
+	return Boxf(toVec3f(min), toVec3f(max)).intersect(plane);
+}
+
+bool Boxi::intersect(const Boxi& o, Boxi& i) const {
+	i.min.x = maxi(min.x, o.min.x);
+	i.min.y = maxi(min.y, o.min.y);
+	i.min.z = maxi(min.z, o.min.z);
+
+	i.max.x = mini(max.x, o.max.x);
+	i.max.y = mini(max.y, o.max.y);
+	i.max.z = mini(max.z, o.max.z);
+
+	return i.min.x < i.max.x && i.min.y < i.max.y && i.min.z < i.max.z;
+}
+bool Boxi::intersect(const Boxf& o, Boxf& i) const {
+	i.min.x = maxf(min.x, o.min.x);
+	i.min.y = maxf(min.y, o.min.y);
+	i.min.z = maxf(min.z, o.min.z);
+
+	i.max.x = minf(max.x, o.max.x);
+	i.max.y = minf(max.y, o.max.y);
+	i.max.z = minf(max.z, o.max.z);
+
+	return i.min.x < i.max.x && i.min.y < i.max.y && i.min.z < i.max.z;
+}
+bool Boxi::intersect(const Ray3f& ray, Vec3f& i) const {
+	return Boxf(toVec3f(min), toVec3f(max)).intersect(ray, i);
+}
+bool Boxi::intersect(const Line3f& line, Vec3f& i) const {
+	return Boxf(toVec3f(min), toVec3f(max)).intersect(line, i);
+}
+bool Boxi::intersect(const Segment3f& segment, Vec3f& i) const {
+	return Boxf(toVec3f(min), toVec3f(max)).intersect(segment, i);
+}
+bool Boxi::intersect(const Plane& plane, float& side) const {
+	return Boxf(toVec3f(min), toVec3f(max)).intersect(plane, side);
+}
+
 // Boxf
 const char* Boxf::toCString() {
 	return toString().c_str();
 }
 std::string Boxf::toString() {
-	return "Boxf(center" + std::string(center.toString()) + ", extents" + std::string(extents.toString()) + ")";
+	return "Boxf(min" + std::string(min.toString()) + ", max" + std::string(max.toString()) + ")";
+}
+
+bool Boxf::intersect(const Boxi& o) const {
+	return !(o.min.x > max.x || o.max.x < min.x) && !(o.min.y > max.y || o.max.y < min.y) && !(o.min.z > max.z || o.max.z < min.z);
+}
+bool Boxf::intersect(const Boxf& o) const {
+	// TODO find faster test
+	return !(o.min.x > max.x || o.max.x < min.x) && !(o.min.y > max.y || o.max.y < min.y) && !(o.min.z > max.z || o.max.z < min.z);
+	//return oMin.x < max.x && oMax.x > min.x && oMin.y < max.y && oMax.y > min.y && oMin.z < max.z && oMax.z > min.z;
+}
+bool Boxf::intersect(const Ray3f& ray) const {
+	float dist = 0.0f;
+	return intersect(ray.origin, ray.direction, dist) && dist > 0.0f;
+}
+bool Boxf::intersect(const Line3f& line) const {
+	float dist = 0.0f;
+	Vec3f lineDir = line.p2 - line.p1;
+	lineDir.normalize();
+	return intersect(line.p1, lineDir, dist);
+}
+bool Boxf::intersect(const Segment3f& segment) const {
+	float dist = 0.0f;
+	Vec3f segmentVec = segment.p2 - segment.p1;
+	return intersect(segment.p1, segmentVec.normalized(), dist) && dist > 0.0f && dist < segmentVec.magnitude();
+}
+bool Boxf::intersect(const Plane& plane) const {
+	Vec3f extents = getExtents();
+	Vec3f center = min + extents;
+
+	float r = extents.x * fabsf(plane.normal.x) + extents.y * fabsf(plane.normal.y) + extents.z * fabsf(plane.normal.z);
+	float s = plane.normal.dot(center) - plane.distance;
+
+	return fabsf(s) <= r;
+}
+
+bool Boxf::intersect(const Boxi& o, Boxf& i) const {
+	return o.intersect(*this, i);
+}
+bool Boxf::intersect(const Boxf& o, Boxf& i) const {
+	i.min.x = maxf(min.x, o.min.x);
+	i.min.y = maxf(min.y, o.min.y);
+	i.min.z = maxf(min.z, o.min.z);
+
+	i.max.x = minf(max.x, o.max.x);
+	i.max.y = minf(max.y, o.max.y);
+	i.max.z = minf(max.z, o.max.z);
+
+	return i.min.x < i.max.x && i.min.y < i.max.y && i.min.z < i.max.z;
+}
+bool Boxf::intersect(const Ray3f& ray, Vec3f& i) const {
+	float dist = 0.0f;
+	if (intersect(ray.origin, ray.direction, dist) && dist > 0.0f) {
+		i = ray.origin + ray.direction * dist;
+		return true;
+	}
+	return false;
+}
+bool Boxf::intersect(const Line3f& line, Vec3f& i) const {
+	float dist = 0.0f;
+	Vec3f lineDir = line.p2 - line.p1;
+	lineDir.normalize();
+	if (intersect(line.p1, lineDir, dist)) {
+		i = line.p1 + lineDir * dist;
+		return true;
+	}
+	return false;
+}
+bool Boxf::intersect(const Segment3f& segment, Vec3f& i) const {
+	float dist = 0.0f;
+	Vec3f segmentVec = segment.p2 - segment.p1;
+	if (intersect(segment.p1, segmentVec.normalized(), dist) && dist > 0.0f && dist < segmentVec.magnitude()) {
+		i =	segment.p1 + segmentVec.normalized() * dist;
+		return true;
+	}
+	return false;
+}
+bool Boxf::intersect(const Plane& plane, float& side) const {
+	Vec3f extents = getExtents();
+	Vec3f center = min + extents;
+
+	float r = extents.x * fabsf(plane.normal.x) + extents.y * fabsf(plane.normal.y) + extents.z * fabsf(plane.normal.z);
+	float s = plane.normal.dot(center) - plane.distance;
+
+	side = (s < 0) ? -1.0f : 1.0f;
+	return fabsf(s) <= r;
+}
+
+bool Boxf::intersect(const Vec3f& o, const Vec3f& d, float& t) const {
+	float tmin, tmax, tymin, tymax, tzmin, tzmax;
+
+	Vec3f bounds[2] = {min, max};
+
+	Vec3f invdir = 1.0f / d;
+	Vec3i raySign = Vec3i(invdir.x < 0, invdir.y < 0, invdir.z < 0);
+
+	tmin = (bounds[raySign[0]].x - o.x) * invdir.x;
+	tmax = (bounds[1 - raySign[0]].x - o.x) * invdir.x;
+	tymin = (bounds[raySign[1]].y - o.y) * invdir.y;
+	tymax = (bounds[1 - raySign[1]].y - o.y) * invdir.y;
+
+	if ((tmin > tymax) || (tymin > tmax))
+		return false;
+	if (tymin > tmin)
+		tmin = tymin;
+	if (tymax < tmax)
+		tmax = tymax;
+
+	tzmin = (bounds[raySign[2]].z - o.z) * invdir.z;
+	tzmax = (bounds[1 - raySign[2]].z - o.z) * invdir.z;
+
+	if ((tmin > tzmax) || (tzmin > tmax))
+		return false;
+	if (tzmin > tmin)
+		tmin = tzmin;
+	if (tzmax < tmax)
+		tmax = tzmax;
+
+	t = tmin;
+	return true;
 }
 
 // Recti
@@ -329,6 +518,89 @@ const char* Plane::toCString() {
 }
 std::string Plane::toString() {
 	return "Plane(normal" + std::string(normal.toString()) + ", distance = " + std::to_string(distance) + ")";
+}
+
+Plane Plane::transform(const Matrix4x4f& transf) {
+	Matrix4x4f inv = transf.inverseAffine();
+	inv.transpose();
+	return Plane(inv * normalDistance);
+}
+
+bool Plane::intersect(const Boxi& box) const {
+	return box.intersect(*this);
+}
+bool Plane::intersect(const Boxf& box) const {
+	return box.intersect(*this);
+}
+bool Plane::intersect(const Ray3f& ray) const {
+	float t = 0.0f;
+	return intersect(ray.origin, ray.direction, t) && t >= 0.0f;
+}
+bool Plane::intersect(const Line3f& line) const {
+	float t;
+	return intersect(line.p1, (line.p2 - line.p1).normalized(), t);
+}
+bool Plane::intersect(const Segment3f& segment) const {
+	float t;
+	Vec3f segmentDir = segment.p2 - segment.p1;
+	float segLength = segmentDir.magnitude();
+	segmentDir /= segLength;
+	return intersect(segment.p1, segmentDir, t) && t >= 0.0f && t <= segLength;
+}
+
+bool Plane::intersect(const Boxi& box, float& side) const {
+	return box.intersect(*this, side);
+}
+bool Plane::intersect(const Boxf& box, float& side) const {
+	return box.intersect(*this, side);
+}
+bool Plane::intersect(const Ray3f& ray, Vec3f& i) const {
+	float t = 0.0f;
+	if (intersect(ray.origin, ray.direction, t) && t >= 0.0f) {
+		i = ray.origin + ray.direction * t;
+		return true;
+	}
+	return false;
+}
+bool Plane::intersect(const Line3f& line, Vec3f& i) const {
+	float t = 0.0f;
+	Vec3f lineDir = line.p2 - line.p1;
+	lineDir.normalize();
+	if (intersect(line.p1, lineDir, t)) {
+		i = line.p1 + lineDir * t;
+		return true;
+	}
+	return false;
+}
+bool Plane::intersect(const Segment3f& segment, Vec3f& i) const {
+	float t = 0.0f;
+	Vec3f segmentDir = segment.p2 - segment.p1;
+	float segLength = segmentDir.magnitude();
+	segmentDir /= segLength;
+	if (intersect(segment.p1, segmentDir, t) && t >= 0.0f && t <= segLength) {
+		i = segment.p1 + segmentDir * t;
+		return true;
+	}
+	return false;
+}
+
+bool Plane::intersect(const Vec3f& origin, const Vec3f& direction, float& t) const {
+	float denom = normal.dot(direction);
+	if (denom > 1e-6) {
+		Vec3f po = (normal * distance) - origin;
+		t = po.dot(normal) / denom;
+		return true;
+	}
+
+	return false;
+}
+
+Vec3f Plane::project(const Vec3f& v) const {
+	return v - v.dot(normal) * normal;
+}
+
+Vec3f Plane::projectPoint(const Vec3f& p) const {
+	return project(p) + normal * distance;
 }
 
 // OBB2D
@@ -407,4 +679,63 @@ const char* OBB3D::toCString() {
 }
 std::string OBB3D::toString() {
 	return "OBB3D(center" + center.toString() + ", size" + size.toString() + ", rotation" + rotation.toString() + ")";
+}
+
+// Frustum3f
+const char* Frustum3f::toCString() {
+	return toString().c_str();
+}
+std::string Frustum3f::toString() {
+	return "Frustum(near=" + std::to_string(near) + ", far=" + std::to_string(far) + ", horiFOV=" + std::to_string(horiFOV) + ", aspect=" + std::to_string(aspect) + ")";
+}
+
+void Frustum3f::updatePlanes(const Matrix4x4f& viewMatrix) {
+	Matrix4x4f combined = projectionMatrix * viewMatrix;
+	Matrix4x4f inv = viewMatrix.inverseAffine() * projectionMatrix.inversePerspective();
+	Vec3f nbl = (inv * Vec4f(-near, -near, -near, near)).xyz; // nbl
+	Vec3f ntl = (inv * Vec4f(-near, near, -near, near)).xyz; // ntl
+	Vec3f ntr = (inv * Vec4f(near, near, -near, near)).xyz; // ntr
+	Vec3f nbr = (inv * Vec4f(near, -near, -near, near)).xyz; // nbr
+	Vec3f fbl = (inv * Vec4f(-far, -far, far, far)).xyz; // fbl
+	Vec3f ftl = (inv * Vec4f(-far, far, far, far)).xyz; // ftl
+	Vec3f ftr = (inv * Vec4f(far, far, far, far)).xyz; // ftr
+	Vec3f fbr = (inv * Vec4f(far, -far, far, far)).xyz; // fbr
+	leftPlane = Plane(nbl, ntl, ftl);
+	rightPlane = Plane(nbr, fbr, ftr);
+	bottomPlane = Plane(nbl, fbr, nbr);
+	topPlane = Plane(ntl, ftr, ftl);
+	nearPlane = Plane(nbl, nbr, ntl);
+	farPlane = Plane(fbr, ftl, ftr);
+
+	// TODO use method to extract from combined viewProjection matrix directly
+	//leftPlane = Plane(Vec4f(combined.m30 + combined.m00, combined.m31 + combined.m01, combined.m32 + combined.m02, combined.m33 + combined.m03));
+	//rightPlane = Plane(Vec4f(combined.m30 - combined.m00, combined.m31 - combined.m01, combined.m32 - combined.m02, combined.m33 - combined.m03));
+	//bottomPlane = Plane(Vec4f(combined.m30 + combined.m10, combined.m31 + combined.m11, combined.m32 + combined.m12, combined.m33 + combined.m13));
+	//topPlane = Plane(Vec4f(combined.m30 - combined.m10, combined.m31 - combined.m11, combined.m32 - combined.m12, combined.m33 - combined.m13));
+	//nearPlane = Plane(Vec4f(combined.m30 + combined.m20, combined.m31 + combined.m21, combined.m32 + combined.m22, combined.m33 + combined.m23));
+	//farPlane = Plane(Vec4f(combined.m30 - combined.m20, combined.m31 - combined.m21, combined.m32 - combined.m22, combined.m33 - combined.m23));
+	//Matrix4x4f planeTransf = viewMatrix.transposed();
+	//leftPlane.normalDistance = planeTransf * leftPlane.normalDistance;
+	//rightPlane.normalDistance = planeTransf * rightPlane.normalDistance;
+	//bottomPlane.normalDistance = planeTransf * bottomPlane.normalDistance;
+	//topPlane.normalDistance = planeTransf * topPlane.normalDistance;
+	//nearPlane.normalDistance = planeTransf * nearPlane.normalDistance;
+	//farPlane.normalDistance = planeTransf * farPlane.normalDistance;
+
+	leftPlane.normalize();
+	rightPlane.normalize();
+	bottomPlane.normalize();
+	topPlane.normalize();
+	nearPlane.normalize();
+	farPlane.normalize();
+}
+
+bool Frustum3f::intersect(const Boxf& box) const {
+	float side;
+	for (int i = 0; i < 6; i++) {
+		if (!planes[i].intersect(box, side) && side > 0.0f) { // Does not intersect and is in front
+			return false;
+		}
+	}
+	return true;
 }

@@ -22,6 +22,9 @@ public:
 	static void drawWireMesh(const Mesh* mesh, const Vec3f& position, const Rotor3f& rotation, const Vec3f& scale, const Color& color);
 	static void drawWireMesh(const Mesh* mesh, const Matrix4x4f& ltwMatrix, const Color& color);
 	static void drawWireSphere(const Vec3f& center, float radius, const Color& color);
+	static void drawWireDisk(const Vec3f& center, const Vec3f& normal, float radius, const Color& color);
+	static void drawWirePlaneDisk(const Plane& plane, float normalLength, float diskRadius, const Color& color);
+	static void drawWirePlaneDisk(const Plane& plane, const Vec3f& unprojetedCenter, float normalLength, float diskRadius, const Color& color);
 	// Solid
 	static void drawCube(const Vec3f& center, const Vec3f& size, const Color& color);
 	static void drawMesh(const Mesh* mesh, const Vec3f& position, const Rotor3f& rotation, const Vec3f& scale, const Color& color);

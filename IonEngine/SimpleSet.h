@@ -50,6 +50,15 @@ public:
 		count = 0;
 	}
 
+	bool contains(T item) const {
+		for (unsigned int i = 0; i < count; i++) {
+			if (arr[i] == item) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	inline T& operator[](unsigned int index) {
 		return arr[index];
 	}

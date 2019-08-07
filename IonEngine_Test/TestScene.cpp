@@ -18,6 +18,7 @@
 #include <VisualDebug.h>
 #include <Light.h>
 #include <MeshImporter.h>
+#include <Input.h>
 #include "NoclipController.h"
 #include "TestRotator.h"
 
@@ -152,9 +153,52 @@ void TestScene::load() {
 	mirCubeRenderer->setMaterial(testMaterial);
 	mirCubeRenderer->setMesh(cubeMesh);
 
+	tests = new Entity("Tests");
+
+	intersecter = new Entity("Intersecter");
+	intersecter->setParent(tests);
+	intersecter->transform->setPosition(Vec3f(3, 0, 0));
+
+	rayEntity = new Entity("Ray");
+	rayEntity->setParent(tests);
+	rayEntity->transform->setPosition(Vec3f(5, 0, 0));
+
 }
 
+//Frustum3f frustum = Frustum3f(0.1f, 20, 110, 1);
+//Vec3f refCenter = Vec3f::zero;
 void TestScene::update() {
+	VisualDebug::drawLine(Vec3f::zero, Vec3f::forward, Color::blue);
+	VisualDebug::drawLine(Vec3f::zero, Vec3f::right, Color::red);
+	VisualDebug::drawLine(Vec3f::zero, Vec3f::up, Color::green);
+
+	//Camera* cam = camera->getComponent<Camera>();
+	//if (Input::getKeyDown(KeyCode::SPACE)) {
+	//	frustum = Frustum3f(cam->getNearPlane(), 20, cam->getFov(), cam->getAspect());
+	//	frustum.updateProjectionMatrix();
+	//	frustum.updatePlanes(cam->getViewMatrix());
+	//	refCenter = cam->transform->getPosition();
+	//}
+	//Debug::log("Frustum", "near" + (frustum.projectionMatrix * Vec4f(0, 0, -cam->getNearPlane(), 1)).toString());
+	//Debug::log("Frustum", "far" + (frustum.projectionMatrix * Vec4f(0, 0, -20, 1)).toString());
+	//VisualDebug::drawWirePlaneDisk(frustum.leftPlane, refCenter, 2, 6, Color::blue);
+	//VisualDebug::drawWirePlaneDisk(frustum.rightPlane, refCenter, 2, 6, Color::cyan);
+	//VisualDebug::drawWirePlaneDisk(frustum.topPlane, refCenter, 2, 6, Color::yellow);
+	//VisualDebug::drawWirePlaneDisk(frustum.bottomPlane, refCenter, 2, 6, Color::orange);
+	//VisualDebug::drawWirePlaneDisk(frustum.nearPlane, refCenter, 2, 6, Color::purple);
+	//VisualDebug::drawWirePlaneDisk(frustum.farPlane, refCenter, 2, 6, Color::red);
+
+	//Vec3f hit;
+	//Boxf box = Boxf::fromCenterExtents(intersecter->transform->getPosition(), Vec3f::one * 0.5f);
+	//VisualDebug::drawCube(box.getCenter(), box.getSize(), Color::orange);
+	//Ray3f ray(rayEntity->transform->getPosition(), rayEntity->transform->forward());
+	//if (box.intersect(ray, hit)) {
+	//	VisualDebug::drawRay(ray, 10.0f, Color::red);
+	//} else {
+	//	VisualDebug::drawRay(ray, 10.0f, Color::blue);
+	//}
+	//VisualDebug::drawCube(hit, Vec3f::one * 0.05f, Color::magenta);
+
 	//sun->getComponent<Light>()->intensity = sinf(Time::time) * 0.5f + 0.5f;
 	//sun->getComponent<Light>()->color.r = sinf(Time::time) * .5f + .5f;
 	//sun->getComponent<Light>()->color.g = sinf(Time::time + M_PI * 0.333f) * .5f + .5f;
@@ -176,12 +220,11 @@ void TestScene::update() {
 	//	Debug::log("ROTOR", "different extracted rotor! original:" + rotor.toString() + "  extracted:" + extractedRotor.toString());
 	//}
 
-	Random rng(666);
-	for (int i = 0; i < 666; i++) {
-		Vec3f pos = toVec3f(rng.inCircle());
-		VisualDebug::drawCube(pos, Vec3f::one * 0.01f, rng.color());
-		//VisualDebug::drawSphere(pos, 0.05f, rng.color());
-	}
+	//Random rng(666);
+	//for (int i = 0; i < 666; i++) {
+	//	Vec3f pos = toVec3f(rng.inCircle());
+	//	VisualDebug::drawCube(pos, Vec3f::one * 0.01f, rng.color());
+	//}
 
 	//VisualDebug::drawFrustum(camera->getComponent<Camera>()->getViewMatrix(), camera->getComponent<Camera>()->getProjectionMatrix(), camera->getComponent<Camera>()->getNearPlane(), camera->getComponent<Camera>()->getFarPlane() - 500, Color::red);
 }

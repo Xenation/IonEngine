@@ -20,7 +20,7 @@ public:
 	inline void setWorldPosition(Vec3f pos) { localToWorldMatrix.translation() = pos; updateMatricesFromLTW(); }
 	inline void translate(Vec3f translation) { localToParentMatrix.translation() += translation; updateMatricesFromLTP(); }
 	inline void setScale(Vec3f sca) { scale = sca; localToParentMatrix = Matrix4x4f::transformation(localToParentMatrix.translation(), scale, rotation); updateMatricesFromLTP(); }
-	inline void setWorldScale(Vec3f sca) { localToWorldMatrix = Matrix4x4f::transformation(localToWorldMatrix.translation(), sca, localToWorldMatrix.rotor()); updateMatricesFromLTW(); }
+	inline void setWorldScale(Vec3f sca) { localToWorldMatrix = Matrix4x4f::transformation(localToWorldMatrix.translation(), sca, localToWorldMatrix.rotor()); updateMatricesFromLTW(); scale = localToParentMatrix.scale(); }
 	inline void setRotation(Rotor3f rot) { rotation = rot; localToParentMatrix = Matrix4x4f::transformation(localToParentMatrix.translation(), scale, rotation); updateMatricesFromLTP(); }
 	inline void setRotation(Quaternion rot) { localToParentMatrix = Matrix4x4f::transformation(localToParentMatrix.translation(), scale, rot); rotation = localToParentMatrix.rotor(); updateMatricesFromLTP(); }
 	inline void setWorldRotation(Rotor3f rot) { localToWorldMatrix = Matrix4x4f::transformation(localToWorldMatrix.translation(), localToWorldMatrix.scale(), rot); updateMatricesFromLTW(); rotation = localToParentMatrix.rotor(); }

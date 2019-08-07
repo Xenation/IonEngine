@@ -22,6 +22,9 @@ private:
 	Entity* ball;
 	Entity* refCube;
 	Entity* mirCube;
+	Entity* tests;
+	Entity* intersecter;
+	Entity* rayEntity;
 	Mesh* cubeMesh;
 	Mesh* sphereMesh;
 };

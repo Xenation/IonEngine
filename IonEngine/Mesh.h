@@ -50,6 +50,7 @@ public:
 	void setUsageHint(GLenum usage);
 	void setName(std::string n);
 	void resize(int vCount, int iCount, bool copy = true, ResizeMode mode = ResizeMode::Force);
+	void recalculateBounds();
 
 	void deleteLocal();
 	void uploadToGL();
@@ -65,6 +66,7 @@ public:
 	inline bool isCachedInLocal() const { return cachedInLocal; }
 	inline GLenum getTopology() const { return topology; }
 	inline std::string getName() const { return name; }
+	inline Boxf getBounds() const { return bounds; }
 
 	void* getAttributePointer(int attrIndex, int& stride) const;
 	inline unsigned int* getIndicesPointer() const { return indices; }
@@ -90,6 +92,7 @@ private:
 	GLenum usage = GL_STATIC_DRAW;
 	unsigned int loadedVertexBufferSize = 0;
 	unsigned int loadedIndexBufferSize = 0;
+	Boxf bounds = Boxf(Vec3f::zero, Vec3f::zero);
 
 	void updateLabel();
 };

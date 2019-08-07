@@ -8,10 +8,19 @@
 
 
 Renderer::Renderer(Entity* entity) : Component(entity), material(Material::errorMaterial) {
-	id = Engine::pipeline->registerRenderer(this);
+	
 }
 
 Renderer::~Renderer() {
+	
+}
+
+
+void Renderer::onEnable() {
+	id = Engine::pipeline->registerRenderer(this);
+}
+
+void Renderer::onDisable() {
 	Engine::pipeline->unregisterRenderer(id);
 }
 

@@ -283,6 +283,34 @@ void Mesh::resize(int vCount, int iCount, bool copy, ResizeMode mode) {
 	}
 }
 
+void Mesh::recalculateBounds() {
+	bounds = Boxf(Vec3f::positiveInfinity, Vec3f::negativeInfinity);
+	int stride;
+	unsigned char* posAttr = (unsigned char*) getAttributePointer(0, stride);
+	for (int vi = 0; vi < vertexCount * stride; vi += stride) {
+		Vec3f pos = *((Vec3f*) (posAttr + vi));
+		if (pos.x < bounds.min.x) {
+			bounds.min.x = pos.x;
+		}
+		if (pos.y < bounds.min.y) {
+			bounds.min.y = pos.y;
+		}
+		if (pos.z < bounds.min.z) {
+			bounds.min.z = pos.z;
+		}
+
+		if (pos.x > bounds.max.x) {
+			bounds.max.x = pos.x;
+		}
+		if (pos.y > bounds.max.y) {
+			bounds.max.y = pos.y;
+		}
+		if (pos.z > bounds.max.z) {
+			bounds.max.z = pos.z;
+		}
+	}
+}
+
 void Mesh::deleteLocal() {
 	if (attributeSizes != nullptr) {
 		delete[] attributeSizes;
@@ -308,6 +336,9 @@ void Mesh::deleteLocal() {
 }
 
 void Mesh::uploadToGL() {
+	// TODO have more control over bounds
+	recalculateBounds();
+
 	if (vao == 0) {
 		glGenVertexArrays(1, &vao);
 	}

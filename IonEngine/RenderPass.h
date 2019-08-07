@@ -2,6 +2,7 @@
 #include <string>
 #include "XTypes.h"
 #include "HollowSet.h"
+#include "SimpleSet.h"
 
 class SpecializedShaderProgram;
 class Framebuffer;
@@ -15,7 +16,7 @@ public:
 	~RenderPass();
 
 	virtual void prepare();
-	virtual void render();
+	virtual void render(const SimpleSet<unsigned int>& visibleRenderers);
 	virtual void onResize(uint width, uint height);
 };
 
@@ -40,7 +41,7 @@ public:
 	RenderPassPostprocess(const char* name, Framebuffer* renderBuffer);
 	~RenderPassPostprocess();
 
-	virtual void render() override;
+	virtual void render(const SimpleSet<unsigned int>& visibleRenderers) override;
 	virtual void onResize(uint width, uint height) override;
 
 private:

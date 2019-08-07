@@ -8,6 +8,9 @@
 #include <smmintrin.h> // SSE4.1
 #include <string> // TODO try to separate from this file
 
+#undef near
+#undef far
+
 #pragma region Constants
 const __m128 _mm_one = _mm_set1_ps(1.0f);
 const __m128 _mm_negOne = _mm_set1_ps(-1.0f);
@@ -22,8 +25,8 @@ namespace IonEngine {
 		constexpr float e = 2.7182818284590452353602874713527f;
 		constexpr float deg2rad = 0.01745329251994329576923690768489f;
 		constexpr float rad2deg = 57.295779513082320876798154814105f;
-		constexpr float positiveInfinity = INFINITY;
-		constexpr float negativeInfinity = -INFINITY;
+		constexpr float positiveInfinity = std::numeric_limits<float>::infinity();
+		constexpr float negativeInfinity = -std::numeric_limits<float>::infinity();
 	}
 }
 #pragma endregion
@@ -48,8 +51,25 @@ inline float sqrtfInline(float x) {
 	return ldexpf(y, exp / 2);
 }
 
+inline int maxi(int a, int b) {
+	return (a > b) ? a : b;
+}
+inline int maxi(int a, int b, int c) {
+	return (a > b) ? ((a > c) ? a : c) : ((b > c) ? b : c);
+}
+
+inline int mini(int a, int b) {
+	return (a < b) ? a : b;
+}
+inline int mini(int a, int b, int c) {
+	return (a < b) ? ((a < c) ? a : c) : ((b < c) ? b : c);
+}
+
 inline float maxf(float a, float b) {
 	return (a > b) ? a : b;
+}
+inline float maxf(float a, float b, float c) {
+	return (a > b) ? ((a > c) ? a : c) : ((b > c) ? b : c);
 }
 
 inline float minf(float a, float b) {
@@ -186,6 +206,8 @@ public:
 	static const Vec2i left;
 	static const Vec2i up;
 	static const Vec2i down;
+	static const Vec2i max;
+	static const Vec2i min;
 
 	/* ---- CONSTRUCTORS ---- */
 	constexpr Vec2i() : x(0), y(0) {}
@@ -323,6 +345,8 @@ public:
 	static const Vec3i down;
 	static const Vec3i forward;
 	static const Vec3i backward;
+	static const Vec3i max;
+	static const Vec3i min;
 
 	static const Vec3i north;
 	static const Vec3i east;
@@ -474,6 +498,8 @@ public:
 	static const Vec4i down;
 	static const Vec4i forward;
 	static const Vec4i backward;
+	static const Vec4i max;
+	static const Vec4i min;
 
 	/* ---- CONSTRUCTORS ---- */
 	constexpr Vec4i() : x(0), y(0), z(0), w(0) {}
@@ -607,6 +633,8 @@ public:
 	static const Vec2f left;
 	static const Vec2f up;
 	static const Vec2f down;
+	static const Vec2f positiveInfinity;
+	static const Vec2f negativeInfinity;
 
 	/* ---- CONSTRUCTORS ---- */
 	constexpr Vec2f() : x(0.0f), y(0.0f) {}
@@ -781,6 +809,8 @@ public:
 	static const Vec3f down;
 	static const Vec3f forward;
 	static const Vec3f backward;
+	static const Vec3f positiveInfinity;
+	static const Vec3f negativeInfinity;
 
 	/* ---- CONSTRUCTORS ---- */
 	constexpr Vec3f() : x(0.0f), y(0.0f), z(0.0f) { }
@@ -972,6 +1002,12 @@ public:
 	static const Vec4f down;
 	static const Vec4f forward;
 	static const Vec4f backward;
+	static const Vec4f positiveInfinity;
+	static const Vec4f negativeInfinity;
+	static const Vec4f positiveInfinityPoint;
+	static const Vec4f negativeInfinityPoint;
+	static const Vec4f positiveInfinityDir;
+	static const Vec4f negativeInfinityDir;
 
 	/* ---- CONSTRUCTORS ---- */
 	constexpr Vec4f() : x(0), y(0), z(0), w(0) { }
@@ -1460,6 +1496,18 @@ public:
 	void luDecomposition(Matrix4x4f &lu);
 	static Vec4f solve(Matrix4x4f &lu, Vec4f toSolve);
 
+	inline Matrix4x4f transposed() const {
+		return Matrix4x4f(
+			m00, m01, m02, m03,
+			m10, m11, m12, m13,
+			m20, m21, m22, m23,
+			m30, m31, m32, m33
+		);
+	}
+	inline void transpose() {
+		_MM_TRANSPOSE4_PS(_xmm[0], _xmm[1], _xmm[2], _xmm[3]);
+	}
+
 	// Access
 	inline float get(Vec2i pos) {
 		return columns[pos.x][pos.y];
@@ -1746,6 +1794,22 @@ public:
 #pragma endregion
 
 #pragma region OtherStructures
+struct Color;
+struct Boxi;
+struct Boxf;
+struct Recti;
+struct Rectf;
+struct Ray2f;
+struct Ray3f;
+struct Line2f;
+struct Line3f;
+struct Segment2f;
+struct Segment3f;
+struct Plane;
+struct OBB2D;
+struct OBB3D;
+struct Frustum3f;
+
 /* ==== COLOR ==== */
 struct Color {
 	union {
@@ -1879,25 +1943,86 @@ public:
 	inline static Boxi fromCenterExtents(Vec3i center, Vec3i extents) {
 		return Boxi(center - extents, center + extents);
 	}
+	inline static Boxi merge(const Boxi& a, const Boxi& b) {
+		Boxi box;
+		box.min.x = mini(a.min.x, b.min.x);
+		box.min.y = mini(a.min.y, b.min.y);
+		box.min.z = mini(a.min.z, b.min.z);
 
-	const char* toCString();
-	std::string toString();
-};
-
-/* ==== BOXf ==== */
-struct Boxf {
-	Vec3f center, extents;
-
-public:
-	inline Boxf() : center(Vec3f(0, 0, 0)), extents(Vec3f(0, 0, 0)) {}
-	inline Boxf(Vec3f center, Vec3f extents) : center(center), extents(extents) {}
-
-	inline static Boxf fromMinMax(Vec3f min, Vec3f max) {
-		return Boxf(Vec3f((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, (min.z + max.z) / 2.0f), Vec3f((max.x - min.x) / 2.0f, (max.y - min.y) / 2.0f, (max.z - min.z) / 2.0f));
+		box.max.x = maxi(a.max.x, b.max.x);
+		box.max.y = maxi(a.max.y, b.max.y);
+		box.max.z = maxi(a.max.z, b.max.z);
+		return box;
 	}
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Boxi& o) const;
+	bool intersect(const Boxf& o) const;
+	bool intersect(const Ray3f& ray) const;
+	bool intersect(const Line3f& line) const;
+	bool intersect(const Segment3f& segment) const;
+	bool intersect(const Plane& plane) const;
+	bool intersect(const OBB3D& obb) const;
+	bool intersect(const Frustum3f& frustum) const;
+
+	bool intersect(const Boxi& o, Boxi& i) const;
+	bool intersect(const Boxf& o, Boxf& i) const;
+	bool intersect(const Ray3f& ray, Vec3f& i) const;
+	bool intersect(const Line3f& line, Vec3f& i) const;
+	bool intersect(const Segment3f& segment, Vec3f& i) const;
+	bool intersect(const Plane& plane, float& side) const;
+};
+
+/* ==== BOXf ==== */
+struct Boxf {
+	Vec3f min, max;
+
+public:
+	inline Boxf() : min(Vec3f(0, 0, 0)), max(Vec3f(0, 0, 0)) {}
+	inline Boxf(Vec3f min, Vec3f max) : min(min), max(max) {}
+
+	inline static Boxf fromCenterExtents(Vec3f center, Vec3f extents) {
+		return Boxf(center - extents, center + extents);
+	}
+	inline static Boxf merge(const Boxf& a, const Boxf& b) {
+		Boxf box;
+		box.min.x = minf(a.min.x, b.min.x);
+		box.min.y = minf(a.min.y, b.min.y);
+		box.min.z = minf(a.min.z, b.min.z);
+
+		box.max.x = maxf(a.max.x, b.max.x);
+		box.max.y = maxf(a.max.y, b.max.y);
+		box.max.z = maxf(a.max.z, b.max.z);
+		return box;
+	}
+
+	inline Vec3f getSize() const { return max - min; }
+	inline Vec3f getExtents() const { return getSize() * 0.5f; }
+	inline Vec3f getCenter() const { return min + getExtents(); }
+
+	const char* toCString();
+	std::string toString();
+
+	bool intersect(const Boxi& o) const;
+	bool intersect(const Boxf& o) const;
+	bool intersect(const Ray3f& ray) const;
+	bool intersect(const Line3f& line) const;
+	bool intersect(const Segment3f& segment) const;
+	bool intersect(const Plane& plane) const;
+	bool intersect(const OBB3D& obb) const;
+	bool intersect(const Frustum3f& frustum) const;
+
+	bool intersect(const Boxi& o, Boxf& i) const;
+	bool intersect(const Boxf& o, Boxf& i) const;
+	bool intersect(const Ray3f& ray, Vec3f& i) const;
+	bool intersect(const Line3f& line, Vec3f& i) const;
+	bool intersect(const Segment3f& segment, Vec3f& i) const;
+	bool intersect(const Plane& plane, float& side) const;
+
+private:
+	bool intersect(const Vec3f& o, const Vec3f& d, float& t) const;
 };
 
 /* ==== RECTi ==== */
@@ -1910,6 +2035,19 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Recti& o) const;
+	bool intersect(const Rectf& o) const;
+	bool intersect(const Ray2f& ray) const;
+	bool intersect(const Line2f& line) const;
+	bool intersect(const Segment2f& segment) const;
+	bool intersect(const OBB2D& obb) const;
+
+	bool intersect(const Recti& o, Recti& i) const;
+	bool intersect(const Rectf& o, Rectf& i) const;
+	bool intersect(const Ray2f& ray, Vec2f& i) const;
+	bool intersect(const Line2f& line, Vec2f& i) const;
+	bool intersect(const Segment2f& segment, Vec2f& i) const;
 };
 
 /* ==== RECTf ==== */
@@ -1922,6 +2060,19 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Recti& o) const;
+	bool intersect(const Rectf& o) const;
+	bool intersect(const Ray2f& ray) const;
+	bool intersect(const Line2f& line) const;
+	bool intersect(const Segment2f& segment) const;
+	bool intersect(const OBB2D& obb) const;
+
+	bool intersect(const Recti& o, Rectf& i) const;
+	bool intersect(const Rectf& o, Rectf& i) const;
+	bool intersect(const Ray2f& ray, Vec2f& i) const;
+	bool intersect(const Line2f& line, Vec2f& i) const;
+	bool intersect(const Segment2f& segment, Vec2f& i) const;
 };
 
 /* ==== RAY2f ==== */
@@ -1934,6 +2085,20 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Recti& rect) const;
+	bool intersect(const Rectf& rect) const;
+	bool intersect(const Ray2f& o) const;
+	bool intersect(const Line2f& line) const;
+	bool intersect(const Segment2f& segment) const;
+	bool intersect(const OBB2D& obb) const;
+
+	bool intersect(const Recti& rect, Vec2f& i) const;
+	bool intersect(const Rectf& rect, Vec2f& i) const;
+	bool intersect(const Ray2f& o, Vec2f& i) const;
+	bool intersect(const Line2f& line, Vec2f& i) const;
+	bool intersect(const Segment2f& segment, Vec2f& i) const;
+	bool intersect(const OBB2D& obb, Vec2f& i) const;
 };
 
 /* ==== RAY3f ==== */
@@ -1946,6 +2111,18 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Boxi& box) const;
+	bool intersect(const Boxf& box) const;
+	bool intersect(const Plane& plane) const;
+	bool intersect(const OBB3D& obb) const;
+	bool intersect(const Frustum3f& frustum) const;
+
+	bool intersect(const Boxi& box, Vec3f& i) const;
+	bool intersect(const Boxf& box, Vec3f& i) const;
+	bool intersect(const Plane& plane, Vec3f& i) const;
+	bool intersect(const OBB3D& obb, Vec3f& i) const;
+	bool intersect(const Frustum3f& frustum, Vec3f& i) const;
 };
 
 /* ==== LINE2f ==== */
@@ -1958,6 +2135,20 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Recti& rect) const;
+	bool intersect(const Rectf& rect) const;
+	bool intersect(const Ray2f& ray) const;
+	bool intersect(const Line2f& line) const;
+	bool intersect(const Segment2f& segment) const;
+	bool intersect(const OBB2D& obb) const;
+
+	bool intersect(const Recti& rect, Vec2f& i) const;
+	bool intersect(const Rectf& rect, Vec2f& i) const;
+	bool intersect(const Ray2f& ray, Vec2f& i) const;
+	bool intersect(const Line2f& line, Vec2f& i) const;
+	bool intersect(const Segment2f& segment, Vec2f& i) const;
+	bool intersect(const OBB2D& obb, Vec2f& i) const;
 };
 
 /* ==== LINE3f ==== */
@@ -1970,6 +2161,18 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Boxi& box) const;
+	bool intersect(const Boxf& box) const;
+	bool intersect(const Plane& plane) const;
+	bool intersect(const OBB3D& obb) const;
+	bool intersect(const Frustum3f& frustum) const;
+
+	bool intersect(const Boxi& box, Vec3f& i) const;
+	bool intersect(const Boxf& box, Vec3f& i) const;
+	bool intersect(const Plane& plane, Vec3f& i) const;
+	bool intersect(const OBB3D& obb, Vec3f& i) const;
+	bool intersect(const Frustum3f& frustum, Vec3f& i) const;
 };
 
 /* ==== SEGMENT2f ==== */
@@ -1985,6 +2188,20 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Recti& rect) const;
+	bool intersect(const Rectf& rect) const;
+	bool intersect(const Ray2f& ray) const;
+	bool intersect(const Line2f& line) const;
+	bool intersect(const Segment2f& segment) const;
+	bool intersect(const OBB2D& obb) const;
+
+	bool intersect(const Recti& rect, Vec2f& i) const;
+	bool intersect(const Rectf& rect, Vec2f& i) const;
+	bool intersect(const Ray2f& ray, Vec2f& i) const;
+	bool intersect(const Line2f& line, Vec2f& i) const;
+	bool intersect(const Segment2f& segment, Vec2f& i) const;
+	bool intersect(const OBB2D& obb, Vec2f& i) const;
 };
 
 /* ==== SEGMENT3f ==== */
@@ -2000,6 +2217,18 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Boxi& box) const;
+	bool intersect(const Boxf& box) const;
+	bool intersect(const Plane& plane) const;
+	bool intersect(const OBB3D& obb) const;
+	bool intersect(const Frustum3f& frustum) const;
+
+	bool intersect(const Boxi& box, Vec3f& i) const;
+	bool intersect(const Boxf& box, Vec3f& i) const;
+	bool intersect(const Plane& plane, Vec3f& i) const;
+	bool intersect(const OBB3D& obb, Vec3f& i) const;
+	bool intersect(const Frustum3f& frustum, Vec3f& i) const;
 };
 
 /* ==== PLANE ==== */
@@ -2016,6 +2245,8 @@ public:
 	inline Plane() : normalDistance(0.0f, 1.0f, 0.0f, 0.0f) {}
 	inline Plane(Vec3f normal, float distance) : normal(normal), distance(distance) {}
 	inline Plane(Vec4f normalDistance) : normalDistance(normalDistance) {}
+	inline Plane(Vec3f p, Vec3f normal) : normal(normal), distance(normal.dot(p)) {}
+	inline Plane(Vec3f p1, Vec3f p2, Vec3f p3) : Plane(p1, (p2 - p1).cross(p3 - p1)) {}
 
 	inline bool intersectRay(const Ray3f& ray, Vec3f& intersect, float& t) const {
 		float denom = normalDistance.x * ray.direction.x + normalDistance.y * ray.direction.y + normalDistance.z * ray.direction.z;
@@ -2027,8 +2258,39 @@ public:
 		return true;
 	}
 
+	inline void normalize() {
+		float isqrt = invsqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
+		normal.x *= isqrt;
+		normal.y *= isqrt;
+		normal.z *= isqrt;
+		distance *= isqrt;
+	}
+
+	Plane transform(const Matrix4x4f& transf);
+
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Boxi& box) const;
+	bool intersect(const Boxf& box) const;
+	bool intersect(const Ray3f& ray) const;
+	bool intersect(const Line3f& line) const;
+	bool intersect(const Segment3f& segment) const;
+	bool intersect(const Plane& plane) const;
+	bool intersect(const OBB3D& obb) const;
+	bool intersect(const Frustum3f& frustum) const;
+
+	bool intersect(const Boxi& box, float& side) const;
+	bool intersect(const Boxf& box, float& side) const;
+	bool intersect(const Ray3f& ray, Vec3f& i) const;
+	bool intersect(const Line3f& line, Vec3f& i) const;
+	bool intersect(const Segment3f& segment, Vec3f& i) const;
+
+	Vec3f project(const Vec3f& v) const;
+	Vec3f projectPoint(const Vec3f& p) const;
+
+private:
+	bool intersect(const Vec3f& origin, const Vec3f& direction, float& t) const;
 };
 
 /* ==== OBB2D ==== */
@@ -2058,6 +2320,17 @@ public:
 	bool raycast(const Ray2f& ray, float& distance) const;
 	bool overlaps(const OBB2D& other) const;
 
+	bool intersect(const Recti& rect) const;
+	bool intersect(const Rectf& rect) const;
+	bool intersect(const Ray2f& ray) const;
+	bool intersect(const Line2f& line) const;
+	bool intersect(const Segment2f& segment) const;
+	bool intersect(const OBB2D& o) const;
+
+	bool intersect(const Ray2f& ray, Vec2f& i) const;
+	bool intersect(const Line2f& line, Vec2f& i) const;
+	bool intersect(const Segment2f& segment, Vec2f& i) const;
+
 private:
 	inline void computeAxes() {
 		axis[0] = corner[1] - corner[0];
@@ -2082,6 +2355,57 @@ public:
 
 	const char* toCString();
 	std::string toString();
+
+	bool intersect(const Boxi& box) const;
+	bool intersect(const Boxf& box) const;
+	bool intersect(const Ray3f& ray) const;
+	bool intersect(const Line3f& line) const;
+	bool intersect(const Segment3f& segment) const;
+	bool intersect(const Plane& plane) const;
+	bool intersect(const OBB3D& obb) const;
+	bool intersect(const Frustum3f& frustum) const;
+
+	bool intersect(const Ray3f& ray, Vec3f& i) const;
+	bool intersect(const Line3f& line, Vec3f& i) const;
+	bool intersect(const Segment3f& segment, Vec3f& i) const;
+};
+
+/* ==== FRUSTUM3f ==== */
+struct Frustum3f {
+	float near, far;
+	float horiFOV;
+	float aspect;
+	Matrix4x4f projectionMatrix;
+	union {
+		struct {
+			Plane leftPlane, rightPlane, nearPlane, farPlane, topPlane, bottomPlane;
+		};
+		Plane planes[6];
+	};
+	
+
+public:
+	inline Frustum3f() : projectionMatrix(Matrix4x4f::identity), near(0.01f), far(1000), horiFOV(100.0f), aspect(1) { updateProjectionMatrix(); }
+	inline Frustum3f(float near, float far, float horiFOV, float aspect) : projectionMatrix(Matrix4x4f::identity), near(near), far(far), horiFOV(horiFOV), aspect(aspect) { updateProjectionMatrix(); }
+
+	const char* toCString();
+	std::string toString();
+
+	void updateProjectionMatrix() { projectionMatrix = Matrix4x4f::perspectiveProjection(horiFOV, aspect, near, far); }
+	void updatePlanes(const Matrix4x4f& viewMatrix);
+
+	bool intersect(const Boxi& box) const;
+	bool intersect(const Boxf& box) const;
+	bool intersect(const Ray3f& ray) const;
+	bool intersect(const Line3f& line) const;
+	bool intersect(const Segment3f& segment) const;
+	bool intersect(const Plane& plane) const;
+	bool intersect(const OBB3D& obb) const;
+	bool intersect(const Frustum3f& frustum) const;
+
+	bool intersect(const Ray3f& ray, Vec3f& i) const;
+	bool intersect(const Line3f& line, Vec3f& i) const;
+	bool intersect(const Segment3f& segment, Vec3f& i) const;
 };
 #pragma endregion
 

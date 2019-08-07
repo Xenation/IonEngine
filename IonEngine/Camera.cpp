@@ -24,33 +24,40 @@ void Camera::onDisable() {
 }
 
 Matrix4x4f Camera::getProjectionMatrix() {
-	if (projectionMatrixExpired) {
-		updateProjectionMatrix();
+	if (frustumExpired) {
+		updateFrustum();
 	}
-	return projectionMatrix;
+	return frustum.projectionMatrix;
 }
 
 Matrix4x4f Camera::getViewMatrix() {
-	return entity->transform->getWorldToLocalMatrix();
+	Matrix4x4f viewMatrix = entity->transform->getWorldToLocalMatrix();
+	frustum.updatePlanes(viewMatrix);
+	return viewMatrix;
 }
 
 void Camera::setFov(float fov) {
-	this->fov = fov;
-	projectionMatrixExpired = true;
+	frustum.horiFOV = fov;
+	frustumExpired = true;
 }
 
 void Camera::setNearPlane(float near) {
-	nearPlane = near;
-	projectionMatrixExpired = true;
+	frustum.near = near;
+	frustumExpired = true;
 }
 
 void Camera::setFarPlane(float far) {
-	farPlane = far;
-	projectionMatrixExpired = true;
+	frustum.far = far;
+	frustumExpired = true;
 }
 
-void Camera::updateProjectionMatrix() {
-	aspectRatio = Engine::pipeline->getAspectRatio();
-	projectionMatrix = Matrix4x4f::perspectiveProjection(fov, aspectRatio, nearPlane, farPlane);
-	projectionMatrixExpired = false;
+void Camera::setAspect(float aspect) {
+	frustum.aspect = aspect;
+	frustumExpired = true;
+}
+
+void Camera::updateFrustum() {
+	frustum.aspect = Engine::pipeline->getAspectRatio();
+	frustum.updateProjectionMatrix();
+	frustumExpired = false;
 }

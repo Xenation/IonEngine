@@ -17,7 +17,7 @@ void RenderPass::prepare() {
 	
 }
 
-void RenderPass::render() {
+void RenderPass::render(const SimpleSet<unsigned int>& visibleRenderers) {
 	prepare();
 	unsigned int shadersRendered = 0;
 	for (unsigned int shaderIndex = 0; shaderIndex < programs.capacity && shadersRendered < programs.count; shaderIndex++) {
@@ -31,6 +31,9 @@ void RenderPass::render() {
 			material->use();
 			unsigned int renderersRendered = 0;
 			for (unsigned int rendererIndex = 0; rendererIndex < material->renderers.capacity && rendererIndex < material->renderers.count; rendererIndex++) {
+				if (!visibleRenderers.contains(material->renderers[rendererIndex]->getID())) {
+					continue; // TODO better culling
+				}
 				Renderer* renderer = material->renderers[rendererIndex];
 				if (renderer == nullptr) continue;
 				renderer->render();
@@ -77,7 +80,7 @@ RenderPassPostprocess::~RenderPassPostprocess() {
 	delete temporary2;
 }
 
-void RenderPassPostprocess::render() {
+void RenderPassPostprocess::render(const SimpleSet<unsigned int>& visibleRenderers) {
 	glDisable(GL_DEPTH_TEST);
 
 	temporary1->bind();

@@ -28,6 +28,7 @@ public:
 	void unregisterCamera(unsigned int id);
 
 	RenderPass* getRenderPass(std::string name);
+	HollowSet<Renderer*>* getRenderersSet() { return &renderers; } // Unsure
 
 private:
 	HollowSet<Renderer*> renderers;

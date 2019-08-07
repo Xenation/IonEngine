@@ -68,6 +68,18 @@ void Pipeline::render() {
 }
 
 void Pipeline::render(Camera* camera) {
+	// Frustum Culling
+	Frustum3f cameraFrustum = camera->getFrustum();
+	SimpleSet<unsigned int> visibleRenderers(32, 32);
+	unsigned int counted = 0;
+	for (unsigned int i = 0; i < renderers.capacity && counted < renderers.count; i++) {
+		if (renderers[i] == nullptr) continue;
+		if (cameraFrustum.intersect(renderers[i]->getWorldBounds())) {
+			visibleRenderers.add(i);
+		}
+		counted++;
+	}
+
 	// Camera Globals Update
 	globalUniformBuffer->getLayout(0).setMember(0, camera->getProjectionMatrix());
 	globalUniformBuffer->getLayout(0).setMember(1, camera->getViewMatrix());
@@ -82,7 +94,7 @@ void Pipeline::render(Camera* camera) {
 #ifdef _DEBUG // May be overkill
 		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, renderPass->name.length(), renderPass->name.c_str());
 #endif
-		renderPass->render();
+		renderPass->render(visibleRenderers);
 #ifdef _DEBUG
 		glPopDebugGroup();
 #endif
@@ -97,7 +109,7 @@ void Pipeline::resizeFrameBuffer(int width, int height) {
 	unsigned int adjusted = 0;
 	for (unsigned int i = 0; i < cameras.capacity && adjusted < cameras.count; i++) {
 		if (cameras[i] == nullptr) continue;
-		cameras[i]->updateProjectionMatrix();
+		cameras[i]->setAspect(aspectRatio);
 		adjusted++;
 	}
 	renderBuffer->resize(width, height);
