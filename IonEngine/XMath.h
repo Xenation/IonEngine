@@ -27,6 +27,7 @@ namespace IonEngine {
 		constexpr float rad2deg = 57.295779513082320876798154814105f;
 		constexpr float positiveInfinity = std::numeric_limits<float>::infinity();
 		constexpr float negativeInfinity = -std::numeric_limits<float>::infinity();
+		constexpr float nan = std::numeric_limits<float>::quiet_NaN();
 		#pragma endregion
 
 		#pragma region MathFunctions
@@ -633,6 +634,7 @@ namespace IonEngine {
 			static const Vec2f down;
 			static const Vec2f positiveInfinity;
 			static const Vec2f negativeInfinity;
+			static const Vec2f nan;
 
 			/* ---- CONSTRUCTORS ---- */
 			constexpr Vec2f() : x(0.0f), y(0.0f) {}
@@ -809,6 +811,7 @@ namespace IonEngine {
 			static const Vec3f backward;
 			static const Vec3f positiveInfinity;
 			static const Vec3f negativeInfinity;
+			static const Vec3f nan;
 
 			/* ---- CONSTRUCTORS ---- */
 			constexpr Vec3f() : x(0.0f), y(0.0f), z(0.0f) {}
@@ -1006,6 +1009,7 @@ namespace IonEngine {
 			static const Vec4f negativeInfinityPoint;
 			static const Vec4f positiveInfinityDir;
 			static const Vec4f negativeInfinityDir;
+			static const Vec4f nan;
 
 			/* ---- CONSTRUCTORS ---- */
 			constexpr Vec4f() : x(0), y(0), z(0), w(0) {}

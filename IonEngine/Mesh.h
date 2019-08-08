@@ -52,6 +52,7 @@ namespace IonEngine {
 		void setName(std::string n);
 		void resize(int vCount, int iCount, bool copy = true, ResizeMode mode = ResizeMode::Force);
 		void recalculateBounds();
+		void recalculateBoundsFromIndices();
 
 		void deleteLocal();
 		void uploadToGL();

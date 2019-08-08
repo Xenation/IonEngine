@@ -75,7 +75,7 @@ void Pipeline::render(Camera* camera) {
 	unsigned int counted = 0;
 	for (unsigned int i = 0; i < renderers.capacity && counted < renderers.count; i++) {
 		if (renderers[i] == nullptr) continue;
-		if (cameraFrustum.intersect(renderers[i]->getWorldBounds())) {
+		if (cameraFrustum.intersect(renderers[i]->getWorldBounds()) || renderers[i]->getWorldBounds().min == Vec3f::nan || renderers[i]->getWorldBounds().max == Vec3f::nan) {
 			visibleRenderers.add(i);
 		}
 		counted++;

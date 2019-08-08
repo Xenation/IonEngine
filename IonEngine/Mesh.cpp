@@ -312,6 +312,35 @@ void Mesh::recalculateBounds() {
 	}
 }
 
+void Mesh::recalculateBoundsFromIndices() { // Slower but prevents using vertices out of drawn indices range
+	bounds = Boxf(Vec3f::positiveInfinity, Vec3f::negativeInfinity);
+	int stride;
+	unsigned char* posAttr = (unsigned char*) getAttributePointer(0, stride);
+	unsigned int iCount = (drawnIndexCount == -1) ? indexCount : drawnIndexCount;
+	for (int ii = 0; ii < iCount; ii++) {
+		Vec3f pos = *((Vec3f*) (posAttr + indices[ii] * stride));
+		if (pos.x < bounds.min.x) {
+			bounds.min.x = pos.x;
+		}
+		if (pos.y < bounds.min.y) {
+			bounds.min.y = pos.y;
+		}
+		if (pos.z < bounds.min.z) {
+			bounds.min.z = pos.z;
+		}
+
+		if (pos.x > bounds.max.x) {
+			bounds.max.x = pos.x;
+		}
+		if (pos.y > bounds.max.y) {
+			bounds.max.y = pos.y;
+		}
+		if (pos.z > bounds.max.z) {
+			bounds.max.z = pos.z;
+		}
+	}
+}
+
 void Mesh::deleteLocal() {
 	if (attributeSizes != nullptr) {
 		delete[] attributeSizes;

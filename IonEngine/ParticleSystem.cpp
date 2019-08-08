@@ -12,14 +12,12 @@ using namespace IonEngine;
 
 
 
-ParticleSystem::ParticleSystem(Entity* entity) : Renderer(entity) {
+ParticleSystem::ParticleSystem(Entity* entity) : Renderer(entity), particles(0, 0, true) {
 	
 }
 
 ParticleSystem::~ParticleSystem() {
-	if (particles != nullptr) {
-		delete[] particles;
-	}
+	
 }
 
 void ParticleSystem::startEmit() {
@@ -27,6 +25,7 @@ void ParticleSystem::startEmit() {
 	isEmitting = true;
 	uint nMax = ceilToInt(emitRate * maxLifetime);
 	emissionInterval = 1.0f / emitRate;
+	particles = SimpleSet<Particle>(nMax, 32);
 	if (nMax != maxParticles) {
 		resizeParticleData(nMax);
 	}
@@ -34,10 +33,10 @@ void ParticleSystem::startEmit() {
 
 void ParticleSystem::onUpdate() {
 	// Kill expired Particles
-	for (uint i = 0; i < maxParticles; i++) {
-		if (!particles[i].alive) continue;
+	for (uint i = 0; i < particles.count; i++) {
 		if (Time::time - particles[i].creationTime > particles[i].lifetime) {
-			particles[i].alive = false;
+			particles.removeAt(i);
+			i--;
 		}
 	}
 
@@ -48,8 +47,7 @@ void ParticleSystem::onUpdate() {
 	}
 
 	// Particles state update
-	for (uint i = 0; i < maxParticles; i++) {
-		if (!particles[i].alive) continue; // Skip dead
+	for (uint i = 0; i < particles.count; i++) {
 		// Apply gravity
 		particles[i].velocity += Vec3f::down * 9.81f * Time::deltaTime;
 		// Change position
@@ -87,52 +85,35 @@ void ParticleSystem::render() {
 }
 
 void ParticleSystem::createParticle(const Vec3f& pos, const Vec3f& vel, float lifetime) {
-	for (uint i = 0; i < maxParticles; i++) {
-		if (particles[i].alive) continue;
-		particles[i].position = pos;
-		particles[i].velocity = vel;
-		particles[i].creationTime = Time::time;
-		particles[i].lifetime = lifetime;
-		particles[i].alive = true;
-		break;
-	}
+	particles.add({pos, vel, Time::time, lifetime});
 }
 
-void ParticleSystem::resizeParticleData(uint nCount) {
-	if (particles != nullptr) {
-		delete[] particles;
-		particles = nullptr;
+void ParticleSystem::resizeParticleData(unsigned int nCount) {
+	if (mesh == nullptr) {
+		mesh = new Mesh("Particles_" + std::string(entity->name), nCount, nCount);
+		mesh->setTopology(GL_POINTS);
+		mesh->setUsageHint(GL_DYNAMIC_DRAW);
+		mesh->setAttributesDefinition(3, new int[3]{3, 3, 2});
+		unsigned int* indices = new unsigned int[nCount];
+		for (unsigned int i = 0; i < nCount; i++) {
+			indices[i] = i;
+		}
+		mesh->setIndices(indices);
+		mesh->uploadToGL();
+	} else {
+		mesh->resize(nCount, nCount);
 	}
-	if (mesh != nullptr) {
-		delete[] mesh;
-		mesh = nullptr;
-	}
-
-	maxParticles = nCount;
-	particles = new Particle[maxParticles];
-	for (uint i = 0; i < maxParticles; i++) {
-		particles[i].alive = false;
-	}
-	
-	mesh = new Mesh("PS_" + std::string(entity->name), nCount, nCount);
-	mesh->setTopology(GL_POINTS);
-	mesh->setUsageHint(GL_DYNAMIC_DRAW);
-	mesh->setAttributesDefinition(3, new int[3]{3, 3, 2});
-	uint* indices = new uint[nCount];
-	for (uint i = 0; i < nCount; i++) {
-		indices[i] = i;
-	}
-	mesh->setIndices(indices);
-	mesh->uploadToGL();
 }
 
 void ParticleSystem::updateMesh() {
 	if (mesh == nullptr) return;
-	for (uint i = 0; i < maxParticles; i++) {
-		if (!particles[i].alive) continue;
+	for (unsigned int i = 0; i < particles.count; i++) {
 		mesh->setAttributeElement(0, i, particles[i].position);
 		mesh->setAttributeElement(1, i, particles[i].velocity);
 		mesh->setAttributeElement(2, i, Vec2f(particles[i].creationTime, particles[i].lifetime));
 	}
+	mesh->setDrawnIndexCount(particles.count);
 	mesh->updateInGL();
+	mesh->recalculateBoundsFromIndices();
+	worldBounds = mesh->getBounds();
 }

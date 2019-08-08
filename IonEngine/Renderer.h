@@ -24,7 +24,7 @@ namespace IonEngine {
 
 	protected:
 		Material* material = nullptr;
-		Boxf worldBounds = Boxf(Vec3f::zero, Vec3f::zero);
+		Boxf worldBounds = Boxf(Vec3f::nan, Vec3f::nan);
 
 	private:
 		unsigned int id;
