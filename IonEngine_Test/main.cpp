@@ -3,6 +3,7 @@
 
 #include "TestScene.h"
 #include "TestGame.h"
+using namespace IonEngine;
 
 
 int main(int argc, char** args) {

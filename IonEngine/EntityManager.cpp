@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "Time.h"
 #include "EntityEditor.h"
+using namespace IonEngine;
 
 #define ENTITY_ARRAY_START_SIZE 64
 #define ENTITY_ARRAY_INCREASE 64

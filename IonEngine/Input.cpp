@@ -6,6 +6,8 @@
 #include "Engine.h"
 #include "Window.h"
 #include "Debug.h"
+using namespace IonEngine;
+
 #undef DELETE
 
 

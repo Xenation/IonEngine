@@ -1,29 +1,30 @@
 #pragma once
 #include "HollowSet.h"
 
-class Entity;
+namespace IonEngine {
+	class Entity;
 
-class EntityManager {
-public:
-	EntityManager();
-	~EntityManager();
-	
-	void registerEntity(Entity* entity);
-	void unregisterEntity(Entity* entity);
+	class EntityManager {
+	public:
+		EntityManager();
+		~EntityManager();
 
-	void updateEntities();
+		void registerEntity(Entity* entity);
+		void unregisterEntity(Entity* entity);
 
-	HollowSet<Entity*>* getEntitiesSet() { return &entities; }
-	float* getUpdateTimesPtr() { return updateTimes; }
-	unsigned int getUpdateTimesCount() { return 300; }
-	float getMaxUpdateTime() { return maxUpdateTime; }
+		void updateEntities();
 
-private:
-	HollowSet<Entity*> entities;
+		HollowSet<Entity*>* getEntitiesSet() { return &entities; }
+		float* getUpdateTimesPtr() { return updateTimes; }
+		unsigned int getUpdateTimesCount() { return 300; }
+		float getMaxUpdateTime() { return maxUpdateTime; }
 
-	float updateTimes[300];
-	float maxUpdateTime = 0;
+	private:
+		HollowSet<Entity*> entities;
 
-	void addUpdateTime(float time);
-};
+		float updateTimes[300];
+		float maxUpdateTime = 0;
 
+		void addUpdateTime(float time);
+	};
+}

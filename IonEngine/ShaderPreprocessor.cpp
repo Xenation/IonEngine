@@ -4,6 +4,7 @@
 #include <regex>
 #include "Debug.h"
 #include "SimpleList.h"
+using namespace IonEngine;
 
 #define REGEX_GLSL_COMMENTS R"((?://.*$|/\*.*\*/))"
 #define REGEX_GLSL_TYPES "(bool|int|uint|float|double|bvec2|ivec2|uvec2|vec2|dvec2|bvec3|ivec3|uvec3|vec3|dvec3|bvec4|ivec4|uvec4|vec4|dvec4|mat2x2|mat2x3|mat2x4|mat3x2|mat3x3|mat3x4|mat4x2|mat4x3|mat4x4|mat2|mat3|mat4|dmat2x2|dmat2x3|dmat2x4|dmat3x2|dmat3x3|dmat3x4|dmat4x2|dmat4x3|dmat4x4|dmat2|dmat3|dmat4|sampler1D|sampler2D|sampler3D|samplerCube|sampler2DRect|sampler1DArray|sampler2DArray|samplerCubeArray|samplerBuffer|sampler2DMS|sampler2DMSArray|sampler1DShadow|sampler2DShadow|samplerCubeShadow|sampler2DRectShadow|sampler1DArrayShadow|sampler2DArrayShadow|samplerCubeArrayShadow|isampler1D|isampler2D|isampler3D|isamplerCube|isampler2DRect|isampler1DArray|isampler2DArray|isamplerCubeArray|isamplerBuffer|isampler2DMS|isampler2DMSArray|usampler1D|usampler2D|usampler3D|usamplerCube|usampler2DRect|usampler1DArray|usampler2DArray|usamplerCubeArray|usamplerBuffer|usampler2DMS|usampler2DMSArray|image1D|image2D|image3D|imageCube|image2DRect|image1DArray|image2DArray|imageCubeArray|imageBuffer|image2DMS|image2DMSArray|iimage1D|iimage2D|iimage3D|iimageCube|iimage2DRect|iimage1DArray|iimage2DArray|iimageCubeArray|iimageBuffer|iimage2DMS|iimage2DMSArray|uimage1D|uimage2D|uimage3D|uimageCube|uimage2DRect|uimage1DArray|uimage2DArray|uimageCubeArray|uimageBuffer|uimage2DMS|uimage2DMSArray|atomic_uint)"

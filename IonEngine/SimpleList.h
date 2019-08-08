@@ -1,76 +1,78 @@
 #pragma once
 #include "Debug.h"
 
-// A Collection that guaranties order and contiguity
-template<typename T>
-class SimpleList {
-public:
-	unsigned int capacity;
-	unsigned int count;
-	unsigned int growAmount;
+namespace IonEngine {
+	// A Collection that guaranties order and contiguity
+	template<typename T>
+	class SimpleList {
+	public:
+		unsigned int capacity;
+		unsigned int count;
+		unsigned int growAmount;
 
-	SimpleList() = delete;
-	SimpleList(const SimpleList<T>&) = delete;
-	SimpleList(unsigned int capacity, unsigned int growAmount, bool lazyInit = false) 
-		: capacity(capacity), arr((lazyInit) ? nullptr : new T[capacity]), count(0), growAmount(growAmount) {
+		SimpleList() = delete;
+		SimpleList(const SimpleList<T>&) = delete;
+		SimpleList(unsigned int capacity, unsigned int growAmount, bool lazyInit = false)
+			: capacity(capacity), arr((lazyInit) ? nullptr : new T[capacity]), count(0), growAmount(growAmount) {
 
-	}
-	~SimpleList() {
-		delete[] arr;
-	}
-
-	unsigned int add(T elem) {
-		if (arr == nullptr) { // Lazy initialize
-			arr = new T[capacity];
 		}
-		if (count == capacity) {
-			growArray();
+		~SimpleList() {
+			delete[] arr;
 		}
-		int index = count++;
-		arr[index] = elem;
-		return index;
-	}
 
-	void removeAt(unsigned int index) {
-		for (unsigned int i = index + 1; i < count; i++) {
-			arr[i - 1] = arr[i];
+		unsigned int add(T elem) {
+			if (arr == nullptr) { // Lazy initialize
+				arr = new T[capacity];
+			}
+			if (count == capacity) {
+				growArray();
+			}
+			int index = count++;
+			arr[index] = elem;
+			return index;
 		}
-		count--;
-	}
 
-	void remove(T item) {
-		unsigned int i;
-		for (i = 0; i < count; i++) {
-			if (arr[i] == item) break;
+		void removeAt(unsigned int index) {
+			for (unsigned int i = index + 1; i < count; i++) {
+				arr[i - 1] = arr[i];
+			}
+			count--;
 		}
-		if (i < count) {
-			removeAt(i);
+
+		void remove(T item) {
+			unsigned int i;
+			for (i = 0; i < count; i++) {
+				if (arr[i] == item) break;
+			}
+			if (i < count) {
+				removeAt(i);
+			}
 		}
-	}
 
-	void clear() {
-		count = 0;
-	}
-
-	inline T& operator[](unsigned int index) {
-		return arr[index];
-	}
-
-private:
-	T* arr;
-
-	void growArray() {
-		capacity += growAmount;
-		T* nArr = new T[capacity];
-		if (nArr == nullptr) {
-			Debug::logError("SimpleList", "Could not allocate memory for array growth!");
-			return;
+		void clear() {
+			count = 0;
 		}
-		unsigned int index = 0;
-		for (; index < count; index++) {
-			nArr[index] = arr[index];
+
+		inline T& operator[](unsigned int index) {
+			return arr[index];
 		}
-		delete[] arr;
-		arr = nArr;
-	}
-};
+
+	private:
+		T* arr;
+
+		void growArray() {
+			capacity += growAmount;
+			T* nArr = new T[capacity];
+			if (nArr == nullptr) {
+				Debug::logError("SimpleList", "Could not allocate memory for array growth!");
+				return;
+			}
+			unsigned int index = 0;
+			for (; index < count; index++) {
+				nArr[index] = arr[index];
+			}
+			delete[] arr;
+			arr = nArr;
+		}
+	};
+}

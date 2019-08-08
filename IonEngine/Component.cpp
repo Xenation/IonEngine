@@ -2,6 +2,7 @@
 
 #include "Entity.h"
 #include "Transform.h"
+using namespace IonEngine;
 
 
 

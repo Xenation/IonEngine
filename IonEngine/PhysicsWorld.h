@@ -9,32 +9,34 @@ class btDiscreteDynamicsWorld;
 class btCollisionShape;
 template<typename T>
 class btAlignedObjectArray;
-class Rigidbody;
 
-class PhysicsWorld {
-public:
-	bool debug = false;
+namespace IonEngine {
+	class Rigidbody;
 
-	PhysicsWorld();
-	~PhysicsWorld();
+	class PhysicsWorld {
+	public:
+		bool debug = false;
 
-	void simulate(float dt);
+		PhysicsWorld();
+		~PhysicsWorld();
 
-	void registerRigidbody(Rigidbody* rigidbody);
-	void unregisterRigidbody(Rigidbody* rigidbody);
+		void simulate(float dt);
 
-private:
-	btDefaultCollisionConfiguration* collisionConfiguration;
-	btCollisionDispatcher* dispatcher;
-	btBroadphaseInterface* overlappingPairCache;
-	btSequentialImpulseConstraintSolver* solver;
-	btDiscreteDynamicsWorld* dynamicsWorld;
+		void registerRigidbody(Rigidbody* rigidbody);
+		void unregisterRigidbody(Rigidbody* rigidbody);
 
-	btAlignedObjectArray<btCollisionShape*>* collisionShapes;
+	private:
+		btDefaultCollisionConfiguration* collisionConfiguration;
+		btCollisionDispatcher* dispatcher;
+		btBroadphaseInterface* overlappingPairCache;
+		btSequentialImpulseConstraintSolver* solver;
+		btDiscreteDynamicsWorld* dynamicsWorld;
 
-	void InitializeDebugWorldContents();
-	void DisplayDebugWorldContents();
-	void CleanDebugWorldContents();
-	void AddDebugRigidBody(btCollisionShape* colShape, Vec3f pos, float mass);
-};
+		btAlignedObjectArray<btCollisionShape*>* collisionShapes;
 
+		void InitializeDebugWorldContents();
+		void DisplayDebugWorldContents();
+		void CleanDebugWorldContents();
+		void AddDebugRigidBody(btCollisionShape* colShape, Vec3f pos, float mass);
+	};
+}

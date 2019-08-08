@@ -1,5 +1,7 @@
 #include "ShaderMetaInfo.h"
 
+using namespace IonEngine;
+
 
 
 ShaderFileMetaInfo::ShaderFileMetaInfo() {

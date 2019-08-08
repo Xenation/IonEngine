@@ -1,6 +1,7 @@
 #include "BoxCollider.h"
 
 #include "bullet/btBulletDynamicsCommon.h"
+using namespace IonEngine;
 
 
 

@@ -1,10 +1,12 @@
 #pragma once
 #include <Game.h>
 
-class ShaderProgram;
-class Material;
+namespace IonEngine {
+	class ShaderProgram;
+	class Material;
+}
 
-class TestGame : public Game {
+class TestGame : public IonEngine::Game {
 public:
 	TestGame();
 	~TestGame();
@@ -15,13 +17,13 @@ public:
 	virtual void cleanUp() override;
 
 private:
-	ShaderProgram* postTestShader;
-	Material* postTestMaterial;
-	ShaderProgram* testShader;
-	Material* testMaterial;
-	ShaderProgram* particleShader;
-	Material* particleMaterial;
-	Material* groundMaterial;
-	Material* wallMaterial;
+	IonEngine::ShaderProgram* postTestShader;
+	IonEngine::Material* postTestMaterial;
+	IonEngine::ShaderProgram* testShader;
+	IonEngine::Material* testMaterial;
+	IonEngine::ShaderProgram* particleShader;
+	IonEngine::Material* particleMaterial;
+	IonEngine::Material* groundMaterial;
+	IonEngine::Material* wallMaterial;
 };
 

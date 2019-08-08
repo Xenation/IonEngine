@@ -1,6 +1,7 @@
 #include "CompoundCollider.h"
 
 #include <bullet/btBulletCollisionCommon.h>
+using namespace IonEngine;
 
 
 

@@ -5,6 +5,8 @@
 #include "Entity.h"
 #include "BaseComponentInspector.h"
 #include "ComponentInspector.h"
+using namespace IonEngine;
+using namespace IonEngine::Editor;
 
 
 

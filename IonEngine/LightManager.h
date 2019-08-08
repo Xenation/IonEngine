@@ -1,22 +1,22 @@
 #pragma once
-
 #include "SimpleSet.h"
 
-class Light;
+namespace IonEngine {
+	class Light;
 
-class LightManager {
-public:
-	LightManager();
-	~LightManager();
+	class LightManager {
+	public:
+		LightManager();
+		~LightManager();
 
-	void registerLight(Light* light);
-	void unregisterLight(Light* light);
+		void registerLight(Light* light);
+		void unregisterLight(Light* light);
 
-	Light* getMainDirectional();
+		Light* getMainDirectional();
 
-private:
-	SimpleSet<Light*> directionalLights = SimpleSet<Light*>(4, 4);
-	SimpleSet<Light*> pointLights = SimpleSet<Light*>(16, 16);
-	SimpleSet<Light*> spotLights = SimpleSet<Light*>(16, 16);
-};
-
+	private:
+		SimpleSet<Light*> directionalLights = SimpleSet<Light*>(4, 4);
+		SimpleSet<Light*> pointLights = SimpleSet<Light*>(16, 16);
+		SimpleSet<Light*> spotLights = SimpleSet<Light*>(16, 16);
+	};
+}

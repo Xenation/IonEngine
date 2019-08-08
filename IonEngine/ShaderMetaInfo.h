@@ -4,117 +4,119 @@
 #include "GLUtils.h"
 
 
-// ---- Field Info ----
-enum class ShaderFieldType {
-	In,
-	InLayout,
-	Out,
-	Uniform,
-	UniformLayout,
-	UniformBufferLayout,
-	NativeType,
-};
-
-struct ShaderFieldInfo {
-	ShaderFieldType fieldType;
-	std::string name;
-
-public:
-	ShaderFieldInfo() {}
-	ShaderFieldInfo(ShaderFieldType fieldType, std::string name) : fieldType(fieldType), name(name) {}
-
-	inline virtual ShaderFieldInfo* copy() {
-		return new ShaderFieldInfo(fieldType, std::string(name));
+namespace IonEngine {
+	// ---- Field Info ----
+	enum class ShaderFieldType {
+		In,
+		InLayout,
+		Out,
+		Uniform,
+		UniformLayout,
+		UniformBufferLayout,
+		NativeType,
 	};
-};
 
-struct ShaderNativeTypeFieldInfo : public ShaderFieldInfo {
-	GLSLType type = GLSL_UNKNOWN;
+	struct ShaderFieldInfo {
+		ShaderFieldType fieldType;
+		std::string name;
 
-public:
-	ShaderNativeTypeFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type) : ShaderFieldInfo(fieldType, name), type(type) {}
+	public:
+		ShaderFieldInfo() {}
+		ShaderFieldInfo(ShaderFieldType fieldType, std::string name) : fieldType(fieldType), name(name) {}
 
-	inline virtual ShaderFieldInfo* copy() override {
-		return new ShaderNativeTypeFieldInfo(fieldType, std::string(name), type);
-	}
-};
+		inline virtual ShaderFieldInfo* copy() {
+			return new ShaderFieldInfo(fieldType, std::string(name));
+		};
+	};
 
-struct ShaderInLayoutFieldInfo : public ShaderNativeTypeFieldInfo {
-	uint location = 0;
+	struct ShaderNativeTypeFieldInfo : public ShaderFieldInfo {
+		GLSLType type = GLSL_UNKNOWN;
 
-public:
-	ShaderInLayoutFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, uint location) : ShaderNativeTypeFieldInfo(fieldType, name, type), location(location) {}
-	
-	inline virtual ShaderFieldInfo* copy() override {
-		return new ShaderInLayoutFieldInfo(fieldType, std::string(name), type, location);
-	}
-};
+	public:
+		ShaderNativeTypeFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type) : ShaderFieldInfo(fieldType, name), type(type) {}
 
-struct ShaderUniformLayoutFieldInfo : public ShaderNativeTypeFieldInfo {
-	uint binding = 0;
+		inline virtual ShaderFieldInfo* copy() override {
+			return new ShaderNativeTypeFieldInfo(fieldType, std::string(name), type);
+		}
+	};
 
-public:
-	ShaderUniformLayoutFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, uint binding) : ShaderNativeTypeFieldInfo(fieldType, name, type), binding(binding) {}
+	struct ShaderInLayoutFieldInfo : public ShaderNativeTypeFieldInfo {
+		uint location = 0;
 
-	inline virtual ShaderFieldInfo* copy() override {
-		return new ShaderUniformLayoutFieldInfo(fieldType, name, type, binding);
-	}
-};
+	public:
+		ShaderInLayoutFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, uint location) : ShaderNativeTypeFieldInfo(fieldType, name, type), location(location) {}
 
-struct ShaderUniformBufferLayoutFieldInfo : public ShaderFieldInfo {
-	UniformLayoutType layoutType = UniformLayoutType::STD140;
-	uint binding = 0;
-	ShaderFieldInfo** subFields = nullptr;
-	uint subFieldCount = 0;
+		inline virtual ShaderFieldInfo* copy() override {
+			return new ShaderInLayoutFieldInfo(fieldType, std::string(name), type, location);
+		}
+	};
 
-public:
-	ShaderUniformBufferLayoutFieldInfo(ShaderFieldType fieldType, std::string name, UniformLayoutType layoutType, uint binding) : ShaderFieldInfo(fieldType, name), layoutType(layoutType), binding(binding) {}
-	~ShaderUniformBufferLayoutFieldInfo() {
-		if (subFields != nullptr) {
-			for (uint i = 0; i < subFieldCount; i++) {
-				delete subFields[i];
+	struct ShaderUniformLayoutFieldInfo : public ShaderNativeTypeFieldInfo {
+		uint binding = 0;
+
+	public:
+		ShaderUniformLayoutFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, uint binding) : ShaderNativeTypeFieldInfo(fieldType, name, type), binding(binding) {}
+
+		inline virtual ShaderFieldInfo* copy() override {
+			return new ShaderUniformLayoutFieldInfo(fieldType, name, type, binding);
+		}
+	};
+
+	struct ShaderUniformBufferLayoutFieldInfo : public ShaderFieldInfo {
+		UniformLayoutType layoutType = UniformLayoutType::STD140;
+		uint binding = 0;
+		ShaderFieldInfo** subFields = nullptr;
+		uint subFieldCount = 0;
+
+	public:
+		ShaderUniformBufferLayoutFieldInfo(ShaderFieldType fieldType, std::string name, UniformLayoutType layoutType, uint binding) : ShaderFieldInfo(fieldType, name), layoutType(layoutType), binding(binding) {}
+		~ShaderUniformBufferLayoutFieldInfo() {
+			if (subFields != nullptr) {
+				for (uint i = 0; i < subFieldCount; i++) {
+					delete subFields[i];
+				}
+				delete[] subFields;
 			}
-			delete[] subFields;
 		}
-	}
 
-	inline virtual ShaderFieldInfo* copy() override {
-		ShaderUniformBufferLayoutFieldInfo* c = new ShaderUniformBufferLayoutFieldInfo(fieldType, std::string(name), layoutType, binding);
-		c->subFields = new ShaderFieldInfo*[subFieldCount];
-		c->subFieldCount = subFieldCount;
-		for (uint i = 0; i < subFieldCount; i++) {
-			c->subFields[i] = subFields[i]->copy();
+		inline virtual ShaderFieldInfo* copy() override {
+			ShaderUniformBufferLayoutFieldInfo* c = new ShaderUniformBufferLayoutFieldInfo(fieldType, std::string(name), layoutType, binding);
+			c->subFields = new ShaderFieldInfo*[subFieldCount];
+			c->subFieldCount = subFieldCount;
+			for (uint i = 0; i < subFieldCount; i++) {
+				c->subFields[i] = subFields[i]->copy();
+			}
+			return c;
 		}
-		return c;
-	}
 
-	inline GLSLType* getMembersTypes() {
-		GLSLType* types = new GLSLType[subFieldCount];
-		for (uint i = 0; i < subFieldCount; i++) {
-			types[i] = ((ShaderNativeTypeFieldInfo*) subFields[i])->type;
+		inline GLSLType* getMembersTypes() {
+			GLSLType* types = new GLSLType[subFieldCount];
+			for (uint i = 0; i < subFieldCount; i++) {
+				types[i] = ((ShaderNativeTypeFieldInfo*) subFields[i])->type;
+			}
+			return types;
 		}
-		return types;
-	}
-};
+	};
 
 
-// ---- Meta Info ----
-struct ShaderFileMetaInfo { // TODO rename
-	ShaderFieldInfo** shaderFields = nullptr;
-	uint shaderFieldCount = 0;
+	// ---- Meta Info ----
+	struct ShaderFileMetaInfo { // TODO rename
+		ShaderFieldInfo** shaderFields = nullptr;
+		uint shaderFieldCount = 0;
 
-public:
-	ShaderFileMetaInfo();
-	~ShaderFileMetaInfo();
-};
+	public:
+		ShaderFileMetaInfo();
+		~ShaderFileMetaInfo();
+	};
 
-struct ShaderProgramMetaInfo {
-	std::string* passNames = nullptr;
-	uint passCount = 0;
-	ShaderFieldInfo** programFields = nullptr;
-	uint programFieldCount = 0;
+	struct ShaderProgramMetaInfo {
+		std::string* passNames = nullptr;
+		uint passCount = 0;
+		ShaderFieldInfo** programFields = nullptr;
+		uint programFieldCount = 0;
 
-public:
-	ShaderProgramMetaInfo();
-	~ShaderProgramMetaInfo();
-};
+	public:
+		ShaderProgramMetaInfo();
+		~ShaderProgramMetaInfo();
+	};
+}

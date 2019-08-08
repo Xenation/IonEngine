@@ -4,6 +4,7 @@
 #include "Pipeline.h"
 #include "Entity.h"
 #include "Transform.h"
+using namespace IonEngine;
 
 
 

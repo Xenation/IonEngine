@@ -16,6 +16,8 @@
 #include "MaterialEditor.h"
 #include "StatsEditor.h"
 #include "ConsoleWindow.h"
+using namespace IonEngine;
+using namespace IonEngine::Editor;
 
 
 

@@ -1,12 +1,14 @@
 #pragma once
-#include "Scene.h"
+#include <Scene.h>
 
-class Mesh;
-class Entity;
-class ShaderProgram;
-class Material;
+namespace IonEngine {
+	class Mesh;
+	class Entity;
+	class ShaderProgram;
+	class Material;
+}
 
-class TestScene : public Scene {
+class TestScene : public IonEngine::Scene {
 public:
 	TestScene();
 	~TestScene();
@@ -15,17 +17,17 @@ public:
 	virtual void update() override;
 	virtual void destroy() override;
 private:
-	Entity* camera;
-	Entity* sun;
-	Entity* rotatingEnt;
-	Entity* ground;
-	Entity* ball;
-	Entity* refCube;
-	Entity* mirCube;
-	Entity* tests;
-	Entity* intersecter;
-	Entity* rayEntity;
-	Mesh* cubeMesh;
-	Mesh* sphereMesh;
+	IonEngine::Entity* camera;
+	IonEngine::Entity* sun;
+	IonEngine::Entity* rotatingEnt;
+	IonEngine::Entity* ground;
+	IonEngine::Entity* ball;
+	IonEngine::Entity* refCube;
+	IonEngine::Entity* mirCube;
+	IonEngine::Entity* tests;
+	IonEngine::Entity* intersecter;
+	IonEngine::Entity* rayEntity;
+	IonEngine::Mesh* cubeMesh;
+	IonEngine::Mesh* sphereMesh;
 };
 

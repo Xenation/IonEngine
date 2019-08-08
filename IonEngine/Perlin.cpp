@@ -2,10 +2,11 @@
 
 #include <cmath>
 #include "XMath.h"
+using namespace IonEngine;
 
 
 
-double perlind(double x, double y, double z) {
+double IonEngine::perlind(double x, double y, double z) {
 	int xi = floorToInt(x) & 255;
 	int yi = floorToInt(y) & 255;
 	int zi = floorToInt(z) & 255;
@@ -43,7 +44,7 @@ double perlind(double x, double y, double z) {
 		w);
 }
 
-float perlinf(float x, float y, float z) {
+float IonEngine::perlinf(float x, float y, float z) {
 	int xi = floorToInt(x) & 255;
 	int yi = floorToInt(y) & 255;
 	int zi = floorToInt(z) & 255;
@@ -81,7 +82,7 @@ float perlinf(float x, float y, float z) {
 		w);
 }
 
-float perlinFBM(float x, float y, float z, int octaves, float lacunarity, float gain) {
+float IonEngine::perlinFBM(float x, float y, float z, int octaves, float lacunarity, float gain) {
 	float noise = perlinf(x, y, z);
 	float amp = gain;
 	float freq = lacunarity;

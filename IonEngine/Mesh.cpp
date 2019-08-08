@@ -3,6 +3,7 @@
 #include <string>
 #include "GLUtils.h"
 #include "Debug.h"
+using namespace IonEngine;
 
 
 

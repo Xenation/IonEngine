@@ -1,6 +1,6 @@
 #include "Random.h"
 
-using namespace IonEngine::Math;
+using namespace IonEngine;
 
 
 

@@ -3,6 +3,8 @@
 #include <imgui.h>
 #include "Mesh.h"
 #include "Material.h"
+using namespace IonEngine;
+using namespace IonEngine::Editor;
 
 
 

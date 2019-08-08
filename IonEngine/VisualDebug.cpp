@@ -4,6 +4,7 @@
 #include "ShaderProgram.h"
 #include "SpecializedShaderProgram.h"
 #include "Material.h"
+using namespace IonEngine;
 
 #undef far
 #undef near

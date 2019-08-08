@@ -4,6 +4,7 @@
 #include "Pipeline.h"
 #include "ShaderProgram.h"
 #include "Material.h"
+using namespace IonEngine;
 
 
 

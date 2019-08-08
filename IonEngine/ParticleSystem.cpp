@@ -8,6 +8,7 @@
 #include "SpecializedShaderProgram.h"
 #include "Perlin.h"
 #include "Random.h"
+using namespace IonEngine;
 
 
 

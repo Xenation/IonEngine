@@ -1,12 +1,14 @@
 #pragma once
-class Game {
-public:
-	Game();
-	~Game();
 
-	virtual void initialize() = 0;
-	virtual void preUpdate() = 0;
-	virtual void postUpdate() = 0;
-	virtual void cleanUp() = 0;
-};
+namespace IonEngine {
+	class Game {
+	public:
+		Game();
+		~Game();
 
+		virtual void initialize() = 0;
+		virtual void preUpdate() = 0;
+		virtual void postUpdate() = 0;
+		virtual void cleanUp() = 0;
+	};
+}

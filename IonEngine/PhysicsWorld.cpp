@@ -4,6 +4,7 @@
 #include "Debug.h"
 #include "Rigidbody.h"
 #include "PhysicsDebugger.h"
+using namespace IonEngine;
 
 
 

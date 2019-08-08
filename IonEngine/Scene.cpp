@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+using namespace IonEngine;
+
 
 
 Scene::Scene() {

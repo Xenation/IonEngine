@@ -1,45 +1,45 @@
 #pragma once
-
 #include "bullet/btBulletDynamicsCommon.h"
 #include "Component.h"
 
-class Transform;
-class Entity;
-class Collider;
+namespace IonEngine {
+	class Transform;
+	class Entity;
+	class Collider;
 
-class SynchronizedTransform : public btMotionState {
-public:
-	Transform* transform;
+	class SynchronizedTransform : public btMotionState {
+	public:
+		Transform* transform;
 
-	SynchronizedTransform(Transform* transform);
-	~SynchronizedTransform();
+		SynchronizedTransform(Transform* transform);
+		~SynchronizedTransform();
 
-	void getWorldTransform(btTransform& worldTransform) const override;
-	void setWorldTransform(const btTransform& worldTransform) override;
-};
+		void getWorldTransform(btTransform& worldTransform) const override;
+		void setWorldTransform(const btTransform& worldTransform) override;
+	};
 
-class Rigidbody : public Component {
-public:
+	class Rigidbody : public Component {
+	public:
 
-	Rigidbody(Entity* entity);
-	Rigidbody(Entity* entity, Collider* collider);
-	~Rigidbody();
-	
-	void setMass(float mass);
-	inline float getMass() { return mass; }
-	void setKinematic(bool kinematic);
-	void setCollider(Collider* collider);
-	inline Collider* getCollider() { return collider; }
+		Rigidbody(Entity* entity);
+		Rigidbody(Entity* entity, Collider* collider);
+		~Rigidbody();
 
-	virtual void onEnable() override;
-	virtual void onDisable() override;
+		void setMass(float mass);
+		inline float getMass() { return mass; }
+		void setKinematic(bool kinematic);
+		void setCollider(Collider* collider);
+		inline Collider* getCollider() { return collider; }
 
-	inline btRigidBody* getBulletBody() { return body; }
+		virtual void onEnable() override;
+		virtual void onDisable() override;
 
-protected:
-	float mass = 0.0f;
-	Collider* collider = nullptr;
-	SynchronizedTransform syncTransform;
-	btRigidBody* body;
-};
+		inline btRigidBody* getBulletBody() { return body; }
 
+	protected:
+		float mass = 0.0f;
+		Collider* collider = nullptr;
+		SynchronizedTransform syncTransform;
+		btRigidBody* body;
+	};
+}

@@ -2,6 +2,7 @@
 
 #include "Debug.h"
 #include "Entity.h"
+using namespace IonEngine;
 
 #define CHILD_ARRAY_START_SIZE 4
 #define CHILD_ARRAY_INCREASE 4

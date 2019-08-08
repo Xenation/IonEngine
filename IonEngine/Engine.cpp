@@ -11,6 +11,8 @@
 #include "PhysicsWorld.h"
 #include "VisualDebug.h"
 #include "LightManager.h"
+using namespace IonEngine;
+using namespace IonEngine::Editor;
 
 
 

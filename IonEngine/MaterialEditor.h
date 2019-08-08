@@ -1,11 +1,12 @@
 #pragma once
 #include "EditorWindow.h"
 
-class MaterialEditor : public EditorWindow {
-public:
-	MaterialEditor();
-	~MaterialEditor();
+namespace IonEngine::Editor {
+	class MaterialEditor : public EditorWindow {
+	public:
+		MaterialEditor();
+		~MaterialEditor();
 
-	void drawGui() override;
-};
-
+		void drawGui() override;
+	};
+}

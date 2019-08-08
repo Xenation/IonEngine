@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Debug.h"
 #include "StringUtils.h"
+using namespace IonEngine;
 
 
 

@@ -1,35 +1,39 @@
 #pragma once
 #include "HollowSet.h"
 
-class Window;
-class EditorWindow;
-class SceneEditor;
-class MaterialEditor;
-class StatsEditor;
-class ConsoleWindow;
+namespace IonEngine {
+	class Window;
+}
 
-class Gui {
-public:
-	Gui(Window* window);
-	~Gui();
+namespace IonEngine::Editor {
+	class EditorWindow;
+	class SceneEditor;
+	class MaterialEditor;
+	class StatsEditor;
+	class ConsoleWindow;
 
-	unsigned int registerEditorWindow(EditorWindow* editor);
-	void unregisterEditorWindow(unsigned int id);
+	class Gui {
+	public:
+		Gui(Window* window);
+		~Gui();
 
-	void initialize();
-	void update();
-	virtual void onUpdate();
-	void render();
+		unsigned int registerEditorWindow(EditorWindow* editor);
+		void unregisterEditorWindow(unsigned int id);
 
-private:
-	Window* window;
+		void initialize();
+		void update();
+		virtual void onUpdate();
+		void render();
 
-	HollowSet<EditorWindow*> editorWindows;
-	SceneEditor* sceneEditor;
-	MaterialEditor* materialEditor;
-	StatsEditor* statsEditor;
-	ConsoleWindow* consoleWindow;
-	bool debugDisplayed;
-	bool physicsDisplayed;
-};
+	private:
+		Window* window;
 
+		HollowSet<EditorWindow*> editorWindows;
+		SceneEditor* sceneEditor;
+		MaterialEditor* materialEditor;
+		StatsEditor* statsEditor;
+		ConsoleWindow* consoleWindow;
+		bool debugDisplayed;
+		bool physicsDisplayed;
+	};
+}

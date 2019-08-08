@@ -2,6 +2,7 @@
 
 #include <bullet/btBulletCollisionCommon.h>
 #include "Mesh.h"
+using namespace IonEngine;
 
 
 

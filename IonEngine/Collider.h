@@ -1,21 +1,23 @@
 #pragma once
 
 class btCollisionShape;
-class CompoundCollider;
 
-class Collider {
-public:
-	static Collider*const empty;
+namespace IonEngine {
+	class CompoundCollider;
 
-	CompoundCollider* _parent = nullptr; // TODO ugly and does not allow multiple compound to use a same shape
+	class Collider {
+	public:
+		static Collider*const empty;
 
-	Collider();
-	Collider(btCollisionShape* shape);
-	~Collider();
+		CompoundCollider* _parent = nullptr; // TODO ugly and does not allow multiple compound to use a same shape
 
-	inline btCollisionShape* getBulletShape() const { return shape; }
+		Collider();
+		Collider(btCollisionShape* shape);
+		~Collider();
 
-protected:
-	btCollisionShape* shape = nullptr;
-};
+		inline btCollisionShape* getBulletShape() const { return shape; }
 
+	protected:
+		btCollisionShape* shape = nullptr;
+	};
+}

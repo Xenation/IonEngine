@@ -1,9 +1,9 @@
 #pragma once
 #include <Component.h>
 
-class TestRotator : public Component {
+class TestRotator : public IonEngine::Component {
 public:
-	TestRotator(Entity* entity);
+	TestRotator(IonEngine::Entity* entity);
 	~TestRotator();
 
 	virtual void onUpdate() override;

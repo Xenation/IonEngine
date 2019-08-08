@@ -1,6 +1,8 @@
 #include "NoclipControllerInspector.h"
 
 #include <imgui.h>
+using namespace IonEngine;
+using namespace IonEngine::Editor;
 
 
 

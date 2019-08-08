@@ -4,6 +4,8 @@
 #include "Entity.h"
 #include "EntityManager.h"
 #include "EntityEditor.h"
+using namespace IonEngine;
+using namespace IonEngine::Editor;
 
 
 

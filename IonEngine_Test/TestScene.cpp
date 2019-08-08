@@ -21,6 +21,7 @@
 #include <Input.h>
 #include "NoclipController.h"
 #include "TestRotator.h"
+using namespace IonEngine;
 
 
 

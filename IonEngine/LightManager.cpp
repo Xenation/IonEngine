@@ -1,6 +1,7 @@
 #include "LightManager.h"
 
 #include "Light.h"
+using namespace IonEngine;
 
 
 

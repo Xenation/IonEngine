@@ -1,6 +1,8 @@
 #include "CameraInspector.h"
 
 #include <imgui.h>
+using namespace IonEngine;
+using namespace IonEngine::Editor;
 
 
 

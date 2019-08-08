@@ -2,8 +2,9 @@
 #include "ComponentInspector.h"
 #include "NoclipController.h"
 
-ION_INSPECTOR(NoclipControllerInspector, NoclipController,
-public:
-	virtual void drawGui(Component* component) override;
-)
-
+namespace IonEngine::Editor {
+	ION_INSPECTOR(NoclipControllerInspector, NoclipController,
+	public:
+		virtual void drawGui(Component* component) override;
+	)
+}

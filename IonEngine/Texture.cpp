@@ -4,6 +4,7 @@
 #include <lodepng.h>
 #include "Debug.h"
 #include "GLUtils.h"
+using namespace IonEngine;
 
 
 

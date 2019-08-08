@@ -7,6 +7,7 @@
 #include "RenderPass.h"
 #include "Texture.h"
 #include "UniformBuffer.h"
+using namespace IonEngine::Editor;
 
 
 

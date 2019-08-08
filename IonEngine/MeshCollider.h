@@ -1,16 +1,17 @@
 #pragma once
 #include "Collider.h"
 
-class Mesh;
+namespace IonEngine {
+	class Mesh;
 
-class MeshCollider : public Collider {
-public:
-	MeshCollider(Mesh* mesh);
-	~MeshCollider();
+	class MeshCollider : public Collider {
+	public:
+		MeshCollider(Mesh* mesh);
+		~MeshCollider();
 
-	inline Mesh* getMesh() const { return mesh; }
+		inline Mesh* getMesh() const { return mesh; }
 
-protected:
-	Mesh* mesh;
-};
-
+	protected:
+		Mesh* mesh;
+	};
+}

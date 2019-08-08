@@ -5,6 +5,7 @@
 #include "RenderPass.h"
 #include "Pipeline.h"
 #include "Material.h"
+using namespace IonEngine;
 
 #define SHADER_CODE_ERROR_VS "#version 420 core\n#pragma pass opaque\nlayout (location = 0) in vec3 vp;\nlayout (std140, binding = 1) uniform CameraMatrices {\nmat4x4 projectionMatrix;\nmat4x4 viewMatrix;\n};\nuniform mat4x4 modelMatrix;\nlayout (std140, binding = 10) uniform Material {\nfloat placeholder;\n};\nvoid main() { gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vp, 1.0); }\n\0"
 #define SHADER_CODE_ERROR_FS "#version 420 core\nout vec4 fc;\nvoid main() { fc = vec4(1.0, 0.0, 1.0, 1.0); }\n\0"

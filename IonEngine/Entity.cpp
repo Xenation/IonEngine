@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "EntityManager.h"
 #include "Transform.h"
+using namespace IonEngine;
 
 #define COMPONENTS_ARRAY_START_SIZE 4
 #define COMPONENTS_ARRAY_INCREASE 1

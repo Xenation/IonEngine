@@ -2,24 +2,27 @@
 #include <typeindex>
 #include "SimpleSet.h"
 
-class Component;
+namespace IonEngine {
+	class Component;
+}
 
-class BaseComponentInspector {
-public:
-	static SimpleSet<BaseComponentInspector*> availableInspectors;
+namespace IonEngine::Editor {
+	class BaseComponentInspector {
+	public:
+		static SimpleSet<BaseComponentInspector*> availableInspectors;
 
-	static BaseComponentInspector* getInspector(std::type_index type) {
-		for (unsigned int i = 0; i < availableInspectors.count; i++) {
-			if (availableInspectors[i]->getInspectedType() == type) {
-				return availableInspectors[i]; // TODO switch to having one inspector instance per component for more flexibility
+		static BaseComponentInspector* getInspector(std::type_index type) {
+			for (unsigned int i = 0; i < availableInspectors.count; i++) {
+				if (availableInspectors[i]->getInspectedType() == type) {
+					return availableInspectors[i]; // TODO switch to having one inspector instance per component for more flexibility
+				}
 			}
+			return nullptr;
 		}
-		return nullptr;
-	}
 
-	virtual void drawGui(Component* component) = 0;
-	
-protected:
-	virtual std::type_index getInspectedType() = 0;
-};
+		virtual void drawGui(Component* component) = 0;
 
+	protected:
+		virtual std::type_index getInspectedType() = 0;
+	};
+}

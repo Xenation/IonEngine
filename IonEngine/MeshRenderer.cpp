@@ -5,6 +5,7 @@
 #include "Transform.h"
 #include "Material.h"
 #include "SpecializedShaderProgram.h"
+using namespace IonEngine;
 
 
 

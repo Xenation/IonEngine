@@ -13,6 +13,7 @@
 #include "SpecializedShaderProgram.h"
 #include "LightManager.h"
 #include "Light.h"
+using namespace IonEngine;
 
 #define RENDERERS_START_SIZE 32
 #define RENDERERS_INCREASE 32

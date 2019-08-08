@@ -1,28 +1,30 @@
 #pragma once
 #include <chrono>
 #include "SimpleList.h"
-class Time {
-public:
-	static float time;
-	static float deltaTime;
-	static int frameCount;
 
-	static void computeFrameTimes();
-	static float getExactTime();
-	static void beginTimeMesure();
-	static float endTimeMesure();
-	static int getInstantFPS();
+namespace IonEngine {
+	class Time {
+	public:
+		static float time;
+		static float deltaTime;
+		static int frameCount;
 
-	Time() = delete;
-	Time(const Time&) = delete;
-	~Time() = delete;
+		static void computeFrameTimes();
+		static float getExactTime();
+		static void beginTimeMesure();
+		static float endTimeMesure();
+		static int getInstantFPS();
 
-private:
-	static std::chrono::high_resolution_clock::time_point startTime;
-	static std::chrono::high_resolution_clock::time_point currentTime;
-	static std::chrono::duration<float> durationSinceStart;
-	static std::chrono::duration<float> durationFrame;
+		Time() = delete;
+		Time(const Time&) = delete;
+		~Time() = delete;
 
-	static SimpleList<std::chrono::high_resolution_clock::time_point> timeStack;
-};
+	private:
+		static std::chrono::high_resolution_clock::time_point startTime;
+		static std::chrono::high_resolution_clock::time_point currentTime;
+		static std::chrono::duration<float> durationSinceStart;
+		static std::chrono::duration<float> durationFrame;
 
+		static SimpleList<std::chrono::high_resolution_clock::time_point> timeStack;
+	};
+}

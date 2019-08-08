@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Renderer.h"
 #include "VisualDebug.h"
+using namespace IonEngine::Editor;
 
 
 

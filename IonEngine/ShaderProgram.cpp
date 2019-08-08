@@ -6,6 +6,7 @@
 #include "SpecializedShaderProgram.h"
 #include "Pipeline.h"
 #include "RenderPass.h"
+using namespace IonEngine;
 
 #define SHADER_DIRECTORY "res/shaders/"
 

@@ -1,6 +1,7 @@
 #include "Debug.h"
 
 #include <sstream>
+using namespace IonEngine;
 
 
 
