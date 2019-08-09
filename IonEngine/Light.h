@@ -5,10 +5,10 @@
 namespace IonEngine {
 	class Light : public Component {
 	public:
-		enum Type {
-			Directional,
-			Point,
-			Spot
+		enum Type : unsigned int {
+			Directional = 0,
+			Point = 1,
+			Spot = 2
 		};
 
 		const Type type = Type::Point;

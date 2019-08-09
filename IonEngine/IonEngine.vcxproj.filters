@@ -288,6 +288,9 @@
     <ClCompile Include="NoclipControllerInspector.cpp">
       <Filter>Source Files\Engine\Editor\Components</Filter>
     </ClCompile>
+    <ClCompile Include="LightInspector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -520,6 +523,9 @@
     </ClInclude>
     <ClInclude Include="NoclipControllerInspector.h">
       <Filter>Header Files\Engine\Editor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="LightInspector.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
