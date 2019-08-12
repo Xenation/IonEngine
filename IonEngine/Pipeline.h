@@ -11,10 +11,13 @@ namespace IonEngine {
 	class RenderPass;
 	class Framebuffer;
 	class LightManager;
+	class Material;
+	class SpecializedShaderProgram;
 
 	class Pipeline {
 	public:
 		SimpleList<RenderPass*> renderPasses;
+		LightManager* lightManager; // Maybe hide
 
 		Pipeline(int width, int height, LightManager* lightManager);
 		Pipeline(const Pipeline&) = delete;
@@ -36,10 +39,10 @@ namespace IonEngine {
 		HollowSet<Renderer*> renderers;
 		HollowSet<Camera*> cameras;
 		UniformBuffer* globalUniformBuffer;
-		Framebuffer* renderBuffer;
 		float aspectRatio = 1.0f;
+		unsigned int width;
+		unsigned int height;
 		unsigned int samples = 4;
-		LightManager* lightManager;
 
 		void render(Camera* camera);
 	};

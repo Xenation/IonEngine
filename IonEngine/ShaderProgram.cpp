@@ -97,11 +97,18 @@ void ShaderProgram::load() {
 	if (reader == nullptr) return;
 	info = reader->programInfo;
 	
-	specializedProgramsCount = info->passCount;
-	specializedPrograms = new SpecializedShaderProgram*[specializedProgramsCount];
-	for (uint i = 0; i < specializedProgramsCount; i++) {
-		specializedPrograms[i] = new SpecializedShaderProgram(this, defaultPipeline->getRenderPass(info->passNames[i]));
-		specializedPrograms[i]->load((reader->vsSources == nullptr) ? nullptr : reader->vsSources[i].source, (reader->tcsSources == nullptr) ? nullptr : reader->tcsSources[i].source, (reader->tesSources == nullptr) ? nullptr : reader->tesSources[i].source, (reader->gsSources == nullptr) ? nullptr : reader->gsSources[i].source, (reader->fsSources == nullptr) ? nullptr : reader->fsSources[i].source);
+	if (info->passCount == 0) { // No pass specified, create a single specialized program
+		specializedProgramsCount = 1;
+		specializedPrograms = new SpecializedShaderProgram*[specializedProgramsCount];
+		specializedPrograms[0] = new SpecializedShaderProgram(this, nullptr);
+		specializedPrograms[0]->load((reader->vsSources == nullptr) ? nullptr : reader->vsSources[0].source, (reader->tcsSources == nullptr) ? nullptr : reader->tcsSources[0].source, (reader->tesSources == nullptr) ? nullptr : reader->tesSources[0].source, (reader->gsSources == nullptr) ? nullptr : reader->gsSources[0].source, (reader->fsSources == nullptr) ? nullptr : reader->fsSources[0].source);
+	} else {
+		specializedProgramsCount = info->passCount;
+		specializedPrograms = new SpecializedShaderProgram*[specializedProgramsCount];
+		for (uint i = 0; i < specializedProgramsCount; i++) {
+			specializedPrograms[i] = new SpecializedShaderProgram(this, defaultPipeline->getRenderPass(info->passNames[i]));
+			specializedPrograms[i]->load((reader->vsSources == nullptr) ? nullptr : reader->vsSources[i].source, (reader->tcsSources == nullptr) ? nullptr : reader->tcsSources[i].source, (reader->tesSources == nullptr) ? nullptr : reader->tesSources[i].source, (reader->gsSources == nullptr) ? nullptr : reader->gsSources[i].source, (reader->fsSources == nullptr) ? nullptr : reader->fsSources[i].source);
+		}
 	}
 
 	loaded = true;

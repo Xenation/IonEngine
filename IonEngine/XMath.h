@@ -2510,6 +2510,35 @@ namespace IonEngine {
 		inline Vec4f toVec4f(const Vec4i& v) {
 			return Vec4f((float) v.x, (float) v.y, (float) v.z, (float) v.w);
 		}
+
+		// Others
+		// Normal Encoding into a Vec2f by keeping only xy
+		// and encoding the sign of z in the least significant bit of x
+		inline Vec2f encodeNormal(const Vec3f& v) {
+			union {
+				float f;
+				unsigned int i;
+			} conv;
+
+			conv.f = v.x;
+			conv.i &= 0xfffffffe;
+			conv.i |= (v.z < 0) ? 0x00000000 : 0x00000001;
+
+			return Vec2f(conv.f, v.y);
+		}
+		inline Vec3f decodeNormal(const Vec2f& v) {
+			union {
+				float f;
+				unsigned int i;
+			} conv;
+
+			Vec3f n = Vec3f(v.x, v.y, sqrt(1 - v.x * v.x - v.y * v.y));
+			conv.f = v.x;
+			if (conv.i & 0x00000001 == 0) {
+				n.z = -n.z;
+			}
+			return n;
+		}
 		#pragma endregion
 
 		#pragma region Structures Math Functions

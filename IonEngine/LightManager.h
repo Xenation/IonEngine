@@ -13,6 +13,9 @@ namespace IonEngine {
 		void unregisterLight(Light* light);
 
 		Light* getMainDirectional();
+		SimpleSet<Light*>& getDirectionalLights() { return directionalLights; }
+		SimpleSet<Light*>& getPointLights() { return pointLights; }
+		SimpleSet<Light*>& getSpotLights() { return spotLights; }
 
 	private:
 		SimpleSet<Light*> directionalLights = SimpleSet<Light*>(4, 4);

@@ -289,7 +289,7 @@
       <Filter>Source Files\Engine\Editor\Components</Filter>
     </ClCompile>
     <ClCompile Include="LightInspector.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Engine\Editor\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -525,7 +525,7 @@
       <Filter>Header Files\Engine\Editor\Components</Filter>
     </ClInclude>
     <ClInclude Include="LightInspector.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Engine\Editor\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

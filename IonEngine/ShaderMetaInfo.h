@@ -14,6 +14,7 @@ namespace IonEngine {
 		UniformLayout,
 		UniformBufferLayout,
 		NativeType,
+		NativeTypeArray,
 	};
 
 	struct ShaderFieldInfo {
@@ -37,6 +38,17 @@ namespace IonEngine {
 
 		inline virtual ShaderFieldInfo* copy() override {
 			return new ShaderNativeTypeFieldInfo(fieldType, std::string(name), type);
+		}
+	};
+
+	struct ShaderNativeTypeArrayFieldInfo : public ShaderNativeTypeFieldInfo {
+		unsigned int arraySize = 0;
+
+	public:
+		ShaderNativeTypeArrayFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, unsigned int arraySize) : ShaderNativeTypeFieldInfo(fieldType, name, type), arraySize(arraySize) {}
+
+		inline virtual ShaderFieldInfo* copy() override {
+			return new ShaderNativeTypeArrayFieldInfo(fieldType, std::string(name), type, arraySize);
 		}
 	};
 

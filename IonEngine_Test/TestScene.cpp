@@ -141,6 +141,12 @@ void TestScene::load() {
 	ballRb->setCollider(ballCollider);
 	ballRb->setMass(1.0f);
 	ballRb->disable();
+	Light* pointLight = new Light(ball, Light::Spot);
+	pointLight->range = 10.0f;
+	pointLight->angle = quarter_pi;
+	pointLight->innerAngle = quarter_pi * 0.5f;
+	ball->addComponent(pointLight);
+
 
 	refCube = new Entity("RefCube");
 	refCube->transform->setPosition(Vec3f(5, 5, 0));
@@ -207,7 +213,7 @@ void TestScene::update() {
 	//sun->transform->setWorldRotation(Rotor3f::euler(M_PI_4, Time::time, 0));
 
 	Rigidbody* ballRb = ball->getComponent<Rigidbody>();
-	if (Time::time > 15.0f && !ballRb->isEnabled()) {
+	if (Time::time > 5.0f && !ballRb->isEnabled()) {
 		ballRb->enable();
 	}
 

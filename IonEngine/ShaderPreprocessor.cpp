@@ -18,7 +18,7 @@ using namespace IonEngine;
 #define REGEX_GLSL_FIELD_UNIFORM R"([ \t]*uniform[ \t]+)" REGEX_GLSL_TYPES R"([ \t]+(\w+);)"
 #define REGEX_GLSL_FIELD_UNIFORM_LAYOUT R"([ \t]*layout[ \t]*\([ \t]*binding[ \t]*=[ \t]([0-9]+)[ \t]*\)[ \t]*uniform[ \t]*)" REGEX_GLSL_TYPES R"([ \t]*(\w+);)"
 #define REGEX_GLSL_FIELD_UNIFORM_BUFFER_LAYOUT R"([ \t]*layout[ \t]*\([ \t]*(std140|packed|shared)[ \t]*,[ \t]*binding[ \t]*=[ \t]*([0-9]+)[ \t]*\)[ \t]*uniform[ \t]+(\w+)[ \t\n]*\{[\n]*([^}]*)\};)"
-#define REGEX_GLSL_FIELD_NATIVE_TYPE R"([ \t]*)" REGEX_GLSL_TYPES R"([ \t]+(\w+);)"
+#define REGEX_GLSL_FIELD_NATIVE_TYPE R"([ \t]*)" REGEX_GLSL_TYPES R"([ \t]+(\w+)(\[([0-9]+)\])?;)"
 
 
 
@@ -301,7 +301,11 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 		uint subFieldIndex = 0;
 		currentContents = contents;
 		while (std::regex_search(currentContents, uniformLayoutMemberMatch, nativeTypeRegex)) {
-			uniformBufferLayoutInfo->subFields[subFieldIndex++] = new ShaderNativeTypeFieldInfo(ShaderFieldType::NativeType, uniformLayoutMemberMatch[2], glslTypeFromString(uniformLayoutMemberMatch[1]));
+			if (uniformLayoutMemberMatch[4].length() != 0) { // Is an array
+				uniformBufferLayoutInfo->subFields[subFieldIndex++] = new ShaderNativeTypeArrayFieldInfo(ShaderFieldType::NativeTypeArray, uniformLayoutMemberMatch[2], glslTypeFromString(uniformLayoutMemberMatch[1]), std::atoi(uniformLayoutMemberMatch[4].str().c_str()));
+			} else {
+				uniformBufferLayoutInfo->subFields[subFieldIndex++] = new ShaderNativeTypeFieldInfo(ShaderFieldType::NativeType, uniformLayoutMemberMatch[2], glslTypeFromString(uniformLayoutMemberMatch[1]));
+			}
 			currentContents = uniformLayoutMemberMatch.suffix();
 		}
 		fields.add(uniformBufferLayoutInfo);
@@ -517,19 +521,30 @@ void ShaderPreprocessor::mergeMetaInfo() {
 }
 
 void ShaderPreprocessor::generateSpecializedSources(ShaderFile* shaderFile, SpecializedShaderSource*& specializedSources) {
-	specializedSources = new SpecializedShaderSource[programInfo->passCount];
-	for (uint passIndex = 0; passIndex < programInfo->passCount; passIndex++) {
-		std::string passUpper = std::string(programInfo->passNames[passIndex]);
-		for (char& c : passUpper) { c = toupper((unsigned char) c); }
-		std::string defines("\n#define PASS_" + passUpper + "\n");
-		specializedSources[passIndex].version = new char[shaderFile->version.size() + 1];
-		specializedSources[passIndex].version[shaderFile->version.size()] = '\0';
-		specializedSources[passIndex].defines = new char[defines.size() + 1];
-		specializedSources[passIndex].defines[defines.size()] = '\0';
-		specializedSources[passIndex].noVersionSource = new char[shaderFile->rawSource.size() + 1];
-		specializedSources[passIndex].noVersionSource[shaderFile->rawSource.size()] = '\0';
-		shaderFile->version.copy(specializedSources[passIndex].version, shaderFile->version.size());
-		defines.copy(specializedSources[passIndex].defines, defines.size());
-		shaderFile->rawSource.copy(specializedSources[passIndex].noVersionSource, shaderFile->rawSource.size());
+	if (programInfo->passCount == 0) { // No passes, generate a single specialized source
+		specializedSources = new SpecializedShaderSource[1];
+		specializedSources[0].version = new char[shaderFile->version.size() + 1];
+		specializedSources[0].version[shaderFile->version.size()] = '\0';
+		specializedSources[0].defines = new char[2] {'\n', '\0'};
+		specializedSources[0].noVersionSource = new char[shaderFile->rawSource.size() + 1];
+		specializedSources[0].noVersionSource[shaderFile->rawSource.size()] = '\0';
+		shaderFile->version.copy(specializedSources[0].version, shaderFile->version.size());
+		shaderFile->rawSource.copy(specializedSources[0].noVersionSource, shaderFile->rawSource.size());
+	} else {
+		specializedSources = new SpecializedShaderSource[programInfo->passCount];
+		for (uint passIndex = 0; passIndex < programInfo->passCount; passIndex++) {
+			std::string passUpper = std::string(programInfo->passNames[passIndex]);
+			for (char& c : passUpper) { c = toupper((unsigned char) c); }
+			std::string defines("\n#define PASS_" + passUpper + "\n");
+			specializedSources[passIndex].version = new char[shaderFile->version.size() + 1];
+			specializedSources[passIndex].version[shaderFile->version.size()] = '\0';
+			specializedSources[passIndex].defines = new char[defines.size() + 1];
+			specializedSources[passIndex].defines[defines.size()] = '\0';
+			specializedSources[passIndex].noVersionSource = new char[shaderFile->rawSource.size() + 1];
+			specializedSources[passIndex].noVersionSource[shaderFile->rawSource.size()] = '\0';
+			shaderFile->version.copy(specializedSources[passIndex].version, shaderFile->version.size());
+			defines.copy(specializedSources[passIndex].defines, defines.size());
+			shaderFile->rawSource.copy(specializedSources[passIndex].noVersionSource, shaderFile->rawSource.size());
+		}
 	}
 }

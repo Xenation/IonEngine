@@ -169,13 +169,16 @@ void VisualDebug::drawWireMesh(const Mesh* mesh, const Matrix4x4f& ltwMatrix, co
 
 void VisualDebug::drawWireSphere(const Vec3f& center, float radius, const Color& color) {
 	initialize();
-	// TODO optimize
-	drawWireMesh(sphereMesh, Matrix4x4f::transformation(center, Vec3f::one * radius, Rotor3f::identity), color);
+	drawWireDisk(center, Vec3f::up, radius, color);
+	drawWireDisk(center, Vec3f::right, radius, color);
+	drawWireDisk(center, Vec3f::forward, radius, color);
+	drawWireDisk(center, Vec3f(0.7071067f, 0, 0.7071067f), radius, color);
+	drawWireDisk(center, Vec3f(-0.7071067f, 0, 0.7071067f), radius, color);
 }
 
 void VisualDebug::drawWireDisk(const Vec3f& center, const Vec3f& normal, float radius, const Color& color) {
 	Vec3f right;
-	if (normal == Vec3f::up) {
+	if (normal == Vec3f::up || normal == Vec3f::down) {
 		right = Vec3f::forward.cross(normal);
 	} else {
 		right = Vec3f::up.cross(normal);
@@ -208,6 +211,24 @@ void VisualDebug::drawWirePlaneDisk(const Plane& plane, const Vec3f& unprojected
 	drawLine(center, center + plane.normal * normalLength, color);
 	drawWireDisk(center, plane.normal, diskRadius, color);
 	drawWireDisk(center, plane.normal, diskRadius * 0.66f, color);
+}
+
+void VisualDebug::drawWireCone(const Vec3f& top, const Vec3f& base, float baseRadius, const Color& color) {
+	Vec3f toBase = (base - top).normalized();
+	drawWireDisk(base, toBase, baseRadius, color);
+	Vec3f right;
+	if (toBase == Vec3f::up || toBase == Vec3f::down) {
+		right = toBase.cross(Vec3f::forward);
+	} else {
+		right = toBase.cross(Vec3f::up);
+	}
+	right.normalize();
+	Vec3f up = right.cross(toBase);
+	up.normalize();
+	drawLine(top, base + right * baseRadius, color);
+	drawLine(top, base - right * baseRadius, color);
+	drawLine(top, base + up * baseRadius, color);
+	drawLine(top, base - up * baseRadius, color);
 }
 
 void VisualDebug::drawCube(const Vec3f& center, const Vec3f& size, const Color& color) {

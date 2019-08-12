@@ -5,18 +5,18 @@
 #include "Material.h"
 #include "Renderer.h"
 #include "Framebuffer.h"
+#include "ShaderProgram.h"
+#include "Pipeline.h"
+#include "LightManager.h"
+#include "Light.h"
 using namespace IonEngine;
 
 
 
-RenderPass::RenderPass(const char* name) : name(name), programs(4, 16) {}
+RenderPass::RenderPass(const char* name, Pipeline* pipeline) : name(name), pipeline(pipeline), programs(4, 16) {}
 
 RenderPass::~RenderPass() {}
 
-
-void RenderPass::prepare() {
-	
-}
 
 void RenderPass::render(const SimpleSet<unsigned int>& visibleRenderers) {
 	prepare();
@@ -42,25 +42,97 @@ void RenderPass::render(const SimpleSet<unsigned int>& visibleRenderers) {
 		}
 		shaderProgram->unuse();
 	}
-}
-
-void RenderPass::onResize(uint width, uint height) {
-
+	finish();
 }
 
 
 
-RenderPassOpaque::RenderPassOpaque(const char* name) : RenderPass(name) {}
+RenderPassOpaque::RenderPassOpaque(const char* name, Pipeline* pipeline, unsigned int width, unsigned int height, unsigned int samples) : RenderPass(name, pipeline), deferredMaterial(deferredMaterial) {
+	renderBuffer = new Framebuffer("RenderBuffer", width, height, samples);
+	renderBuffer->createAttachments(4, new Framebuffer::Attachment[4]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT1, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT2, GL_RGB16F), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
+	renderBuffer->clearColor = Color(0.52f, 0.80f, 0.97f, 0.0); //135-206-250
+}
 
 RenderPassOpaque::~RenderPassOpaque() {}
 
+
+void RenderPassOpaque::onShadersInitialized() {
+	ShaderProgram* deferredShader = ShaderProgram::find("lightpass");
+	deferredShader->load();
+	unsigned int count;
+	deferredSpecShader = deferredShader->getAllSpecializedPrograms(count)[0];
+	deferredMaterial = new Material("DeferredLight", deferredSpecShader);
+}
+
+void RenderPassOpaque::prepareFrame() {
+	updateLightsData();
+}
+
 void RenderPassOpaque::prepare() {
 	glDisable(GL_BLEND);
+	renderBuffer->bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
+
+void RenderPassOpaque::finish() {
+	renderBuffer->unbind();
+	deferredSpecShader->use();
+	renderBuffer->blitTo(nullptr, deferredMaterial);
+}
+
+void RenderPassOpaque::onResize(unsigned int width, unsigned int height) {
+	renderBuffer->resize(width, height);
+}
+
+void RenderPassOpaque::updateLightsData() {
+	SimpleSet<Light*>& directionals = pipeline->lightManager->getDirectionalLights();
+	SimpleSet<Light*>& points = pipeline->lightManager->getPointLights();
+	SimpleSet<Light*>& spots = pipeline->lightManager->getSpotLights();
+
+	deferredMaterial->setField(0, directionals.count);
+	for (unsigned int i = 0; i < directionals.count; i++) {
+		deferredMaterial->setField(1, directionals[i]->color, i);
+	}
+	for (unsigned int i = 0; i < directionals.count; i++) {
+		deferredMaterial->setField(2, toVec4f(directionals[i]->getDirection()), i);
+	}
+	deferredMaterial->setField(3, points.count);
+	for (unsigned int i = 0; i < points.count; i++) {
+		deferredMaterial->setField(4, points[i]->color, i);
+	}
+	for (unsigned int i = 0; i < points.count; i++) {
+		Vec3f pos = points[i]->getPosition();
+		deferredMaterial->setField(5, Vec4f(pos.x, pos.y, pos.z, points[i]->range), i);
+	}
+	deferredMaterial->setField(6, spots.count);
+	for (unsigned int i = 0; i < spots.count; i++) {
+		deferredMaterial->setField(7, spots[i]->color, i);
+	}
+	for (unsigned int i = 0; i < spots.count; i++) {
+		Vec3f pos = spots[i]->getPosition();
+		deferredMaterial->setField(8, Vec4f(pos.x, pos.y, pos.z, spots[i]->range), i);
+	}
+	for (unsigned int i = 0; i < spots.count; i++) {
+		Vec2f dir = encodeNormal(spots[i]->getDirection());
+		deferredMaterial->setField(9, Vec4f(dir.x, dir.y, spots[i]->innerAngle, spots[i]->angle), i);
+	}
+
+	// Test data
+	//deferredMaterial->setField(6, 32);
+	//for (unsigned int i = 0; i < 32; i++) {
+	//	deferredMaterial->setField(7, Color::white, i);
+	//}
+	//for (unsigned int i = 0; i < 32; i++) {
+	//	deferredMaterial->setField(8, Vec4f((i % 6) * 7, -3, (i / 6) * 7, 10), i);
+	//}
+	//for (unsigned int i = 0; i < 32; i++) {
+	//	deferredMaterial->setField(9, Vec4f(0.707106f, -0.707106f, 0.785398f, 1.570796f), i);
+	//}
 }
 
 
 
-RenderPassTransparent::RenderPassTransparent(const char* name) : RenderPass(name) {}
+RenderPassTransparent::RenderPassTransparent(const char* name, Pipeline* pipeline) : RenderPass(name, pipeline) {}
 
 RenderPassTransparent::~RenderPassTransparent() {}
 
@@ -71,7 +143,7 @@ void RenderPassTransparent::prepare() {
 
 
 
-RenderPassPostprocess::RenderPassPostprocess(const char* name, Framebuffer* renderBuffer) : RenderPass(name), renderBuffer(renderBuffer) {
+RenderPassPostprocess::RenderPassPostprocess(const char* name, Pipeline* pipeline, Framebuffer* renderBuffer) : RenderPass(name, pipeline), renderBuffer(renderBuffer) {
 	temporary1 = renderBuffer->copy("PostProcess1");
 	temporary2 = renderBuffer->copy("PostProcess2");
 }

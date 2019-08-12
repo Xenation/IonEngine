@@ -29,6 +29,8 @@ SpecializedShaderProgram::~SpecializedShaderProgram() {}
 void SpecializedShaderProgram::load(const char* vsSource[3], const char* tcsSource[3], const char* tesSource[3], const char* gsSource[3], const char* fsSource[3]) {
 	if (renderPass != nullptr) {
 		Debug::log("SpecShaderProgram", "Loading Program for " + renderPass->name + " pass ...");
+	} else {
+		Debug::log("SpecShaderProgram", "Loading Program ...");
 	}
 
 	if (vsSource != nullptr) {
@@ -156,7 +158,12 @@ void SpecializedShaderProgram::load(GLuint vs, GLuint tcs, GLuint tes, GLuint gs
 	if (vs <= 0 || fs <= 0) return;
 
 	program = glCreateProgram();
-	std::string label("Program " + parentShader->name + "/" + renderPass->name);
+	std::string label;
+	if (renderPass != nullptr) {
+		label = std::string("Program " + parentShader->name + "/" + renderPass->name);
+	} else {
+		label = std::string("Program " + parentShader->name + "/_");
+	}
 	glObjectLabel(GL_PROGRAM, program, label.size(), label.c_str());
 	if (vs > 0) {
 		glAttachShader(program, vs);
@@ -261,7 +268,12 @@ GLuint SpecializedShaderProgram::loadShaderFromSourceArray(GLenum type, const ch
 		if (!silent) Debug::logError("ShaderLoad", "Program  " + parentShader->name + " could not create " + typeStr + " Shader");
 		return 0;
 	}
-	std::string label("Shader " + parentShader->name + "/" + renderPass->name + "/" + shortTypeStr);
+	std::string label;
+	if (renderPass != nullptr) {
+		label = std::string("Shader " + parentShader->name + "/" + renderPass->name + "/" + shortTypeStr);
+	} else {
+		label = std::string("Shader " + parentShader->name + "/_/" + shortTypeStr);
+	}
 	glObjectLabel(GL_SHADER, shader, label.size(), label.c_str());
 
 	glShaderSource(shader, srcPiecesCount, (const GLchar**) src, NULL);

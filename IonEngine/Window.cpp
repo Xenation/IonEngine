@@ -33,7 +33,7 @@ void Window::initializeGLFW() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-	glfwWindowHint(GLFW_SAMPLES, 4); // TODO Have better control over the window's buffer
+	//glfwWindowHint(GLFW_SAMPLES, 4); // TODO Remove to have a multisampled framebuffer blited to the default singlesampled
 }
 
 void Window::resizeFrameCallback(GLFWwindow* window, int width, int height) {

@@ -51,6 +51,7 @@ namespace IonEngine {
 		unsigned int samples = 0;
 		Attachment* attachments = nullptr;
 		unsigned int attachmentCount = 0;
+		GLenum* drawBuffers = nullptr;
 
 		void createAttachment(int index);
 	};

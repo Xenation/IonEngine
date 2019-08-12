@@ -11,7 +11,6 @@ namespace IonEngine {
 			Spot = 2
 		};
 
-		const Type type = Type::Point;
 		union { // Use the alpha for intensity to save space
 			Color color;
 			struct { float colr, colg, colb, intensity; };
@@ -24,6 +23,15 @@ namespace IonEngine {
 		Light(Entity* entity, Type type);
 		~Light();
 
+		void onEnable() override;
+		void onDisable() override;
+
+		Type getType() { return type; }
+		void setType(Type type);
 		Vec3f getDirection();
+		Vec3f getPosition();
+
+	private:
+		Type type = Type::Point;
 	};
 }

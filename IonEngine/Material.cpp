@@ -101,6 +101,58 @@ void Material::setField(unsigned int index, Vec4i value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
+void Material::setField(unsigned int index, bool value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, int value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, unsigned int value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, float value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, double value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, Vec2f value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, Vec3f value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, Vec4f value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, Color value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value.vec, arrayIndex);
+}
+void Material::setField(unsigned int index, Matrix4x4f value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, Vec2i value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, Vec3i value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
+void Material::setField(unsigned int index, Vec4i value, unsigned int arrayIndex) {
+	fieldsExpired = true;
+	uniformLayout->setMember(index, value, arrayIndex);
+}
 GLuint Material::getTextureLocation(std::string uniformName) {
 	return specializedProgram->getUniformLocation(uniformName);
 }

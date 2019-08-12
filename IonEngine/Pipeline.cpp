@@ -27,28 +27,30 @@ using namespace IonEngine;
 Pipeline::Pipeline(int width, int height, LightManager* lightManager)
 	: lightManager(lightManager), renderers(RENDERERS_START_SIZE, RENDERERS_INCREASE), cameras(CAMERAS_START_SIZE, CAMERAS_INCREASE), renderPasses(RENDERPASSES_START_SIZE, RENDERERS_INCREASE) {
 
-	renderBuffer = new Framebuffer("RenderBuffer", width, height, samples);
-	renderBuffer->createAttachments(2, new Framebuffer::Attachment[2]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
-	renderBuffer->clearColor = Color(0.52f, 0.80f, 0.97f, 1); //135-206-250
 	resizeFrameBuffer(width, height);
 
-	renderPasses.add(new RenderPassOpaque("opaque"));
-	renderPasses.add(new RenderPassTransparent("transparent"));
+	renderPasses.add(new RenderPassOpaque("opaque", this, width, height, samples));
+	renderPasses.add(new RenderPassTransparent("transparent", this));
 	//renderPasses.add(new RenderPassPostprocess("postprocess", renderBuffer));
 
 	SpecializedShaderProgram::initialize(this);
 	ShaderProgram::initializeAll(this);
 
+	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
+		renderPasses[passIndex]->onShadersInitialized();
+	}
+
+	// Global Buffers Setup
 	globalUniformBuffer = new UniformBuffer("Global");
 	globalUniformBuffer->setLayouts(2, new UniformLayout[2]{UniformLayout(1, 4, new GLSLType[4]{GLSL_MAT4, GLSL_MAT4, GLSL_IVEC2, GLSL_UINT}), UniformLayout(2, 3, new GLSLType[3]{GLSL_FLOAT, GLSL_VEC4, GLSL_VEC4})});
 	globalUniformBuffer->uploadToGL();
+
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 }
 
 Pipeline::~Pipeline() {
 	delete globalUniformBuffer;
-	delete renderBuffer;
 }
 
 
@@ -56,9 +58,15 @@ void Pipeline::render() {
 	// Globals Update
 	Light* mainDirectional = lightManager->getMainDirectional();
 	globalUniformBuffer->getLayout(1).setMember(0, Time::time);
-	globalUniformBuffer->getLayout(1).setMember(1, mainDirectional->color.vec);
-	globalUniformBuffer->getLayout(1).setMember(2, toVec4f(mainDirectional->getDirection()));
+	if (mainDirectional != nullptr) {
+		globalUniformBuffer->getLayout(1).setMember(1, mainDirectional->color.vec);
+		globalUniformBuffer->getLayout(1).setMember(2, toVec4f(mainDirectional->getDirection()));
+	}
 	globalUniformBuffer->updateLayout(1);
+
+	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
+		renderPasses[passIndex]->prepareFrame();
+	}
 
 	unsigned int rendered = 0;
 	for (unsigned int i = 0; i < cameras.capacity && rendered < cameras.count; i++) {
@@ -84,12 +92,10 @@ void Pipeline::render(Camera* camera) {
 	// Camera Globals Update
 	globalUniformBuffer->getLayout(0).setMember(0, camera->getProjectionMatrix());
 	globalUniformBuffer->getLayout(0).setMember(1, camera->getViewMatrix());
-	globalUniformBuffer->getLayout(0).setMember(2, Vec2i(renderBuffer->getWidth(), renderBuffer->getHeight()));
+	globalUniformBuffer->getLayout(0).setMember(2, Vec2i(width, height));
 	globalUniformBuffer->getLayout(0).setMember(3, samples);
 	globalUniformBuffer->updateLayout(0);
 
-	renderBuffer->bind();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		RenderPass* renderPass = renderPasses[passIndex];
 #ifdef _DEBUG // May be overkill
@@ -100,11 +106,12 @@ void Pipeline::render(Camera* camera) {
 		glPopDebugGroup();
 #endif
 	}
-	renderBuffer->unbind();
-	renderBuffer->blitTo(nullptr);
+	
 }
 
 void Pipeline::resizeFrameBuffer(int width, int height) {
+	this->width = width;
+	this->height = height;
 	glViewport(0, 0, width, height);
 	aspectRatio = ((float) width) / ((float) height);
 	unsigned int adjusted = 0;
@@ -113,7 +120,6 @@ void Pipeline::resizeFrameBuffer(int width, int height) {
 		cameras[i]->setAspect(aspectRatio);
 		adjusted++;
 	}
-	renderBuffer->resize(width, height);
 	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		RenderPass* renderPass = renderPasses[passIndex];
 		renderPass->onResize(width, height);

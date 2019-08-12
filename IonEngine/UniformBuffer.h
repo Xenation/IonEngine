@@ -14,6 +14,7 @@ namespace IonEngine {
 		GLSLType* members = nullptr;
 		std::string* memberNames = nullptr;
 		unsigned int* membersOffsets = nullptr;
+		unsigned int* memberArraySizes = nullptr;
 		unsigned int memberCount = 0;
 		unsigned int size = 0;
 		unsigned int offset = 0;
@@ -37,7 +38,20 @@ namespace IonEngine {
 		void setMember(unsigned int index, Vec3i value);
 		void setMember(unsigned int index, Vec4i value);
 		void setMember(unsigned int index, Matrix4x4f value);
+		void setMember(unsigned int index, bool value, unsigned int arrayIndex);
+		void setMember(unsigned int index, int value, unsigned int arrayIndex);
+		void setMember(unsigned int index, unsigned int value, unsigned int arrayIndex);
+		void setMember(unsigned int index, float value, unsigned int arrayIndex);
+		void setMember(unsigned int index, double value, unsigned int arrayIndex);
+		void setMember(unsigned int index, Vec2f value, unsigned int arrayIndex);
+		void setMember(unsigned int index, Vec3f value, unsigned int arrayIndex);
+		void setMember(unsigned int index, Vec4f value, unsigned int arrayIndex);
+		void setMember(unsigned int index, Vec2i value, unsigned int arrayIndex);
+		void setMember(unsigned int index, Vec3i value, unsigned int arrayIndex);
+		void setMember(unsigned int index, Vec4i value, unsigned int arrayIndex);
+		void setMember(unsigned int index, Matrix4x4f value, unsigned int arrayIndex);
 		void setMember(unsigned int index, unsigned char* bytes, unsigned int byteSize);
+		void setMember(unsigned int index, unsigned int arrayIndex, unsigned char* bytes, unsigned int byteSize);
 		void copyFrom(UniformLayout& layout);
 		int indexOf(std::string memberName) const;
 		inline bool getBool(unsigned int index) const { return *getBoolPtr(index); }

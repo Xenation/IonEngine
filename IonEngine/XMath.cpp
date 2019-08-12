@@ -1,7 +1,6 @@
 #include "XMath.h"
 
 #include <string>
-
 using namespace IonEngine::Math;
 
 

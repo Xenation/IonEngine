@@ -12,6 +12,14 @@ UniformLayout::UniformLayout(unsigned int binding, ShaderUniformBufferLayoutFiel
 	for (uint i = 0; i < bufferField->subFieldCount; i++) {
 		memberNames[i] = bufferField->subFields[i]->name;
 	}
+	memberArraySizes = new unsigned int[bufferField->subFieldCount];
+	for (unsigned int i = 0; i < bufferField->subFieldCount; i++) {
+		if (bufferField->subFields[i]->fieldType == ShaderFieldType::NativeTypeArray) {
+			memberArraySizes[i] = ((ShaderNativeTypeArrayFieldInfo*) bufferField->subFields[i])->arraySize;
+		} else {
+			memberArraySizes[i] = 0;
+		}
+	}
 }
 
 UniformLayout::UniformLayout(unsigned int binding, unsigned int memberCount, GLSLType* members)
@@ -72,10 +80,58 @@ void UniformLayout::setMember(unsigned int index, Vec4i value) {
 void UniformLayout::setMember(unsigned int index, Matrix4x4f value) {
 	setMember(index, (unsigned char*) &value, 64);
 }
+void UniformLayout::setMember(unsigned int index, bool value, unsigned int arrayIndex) {
+	unsigned char bytes[4]{value, 0, 0, 0}; // Required because booleans are 4bytes in glsl
+	setMember(index, arrayIndex, bytes, 4);
+}
+void UniformLayout::setMember(unsigned int index, int value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 4);
+}
+void UniformLayout::setMember(unsigned int index, unsigned int value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 4);
+}
+void UniformLayout::setMember(unsigned int index, float value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 4);
+}
+void UniformLayout::setMember(unsigned int index, double value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 8);
+}
+void UniformLayout::setMember(unsigned int index, Vec2f value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 8);
+}
+void UniformLayout::setMember(unsigned int index, Vec3f value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 12);
+}
+void UniformLayout::setMember(unsigned int index, Vec4f value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 16);
+}
+void UniformLayout::setMember(unsigned int index, Vec2i value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 8);
+}
+void UniformLayout::setMember(unsigned int index, Vec3i value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 12);
+}
+void UniformLayout::setMember(unsigned int index, Vec4i value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 16);
+}
+void UniformLayout::setMember(unsigned int index, Matrix4x4f value, unsigned int arrayIndex) {
+	setMember(index, arrayIndex, (unsigned char*) &value, 64);
+}
 
 void UniformLayout::setMember(unsigned int index, unsigned char* bytes, unsigned int byteSize) {
 	for (unsigned int i = 0; i < byteSize; i++) {
 		buffer[membersOffsets[index] + i] = bytes[i];
+	}
+}
+
+void UniformLayout::setMember(unsigned int index, unsigned int arrayIndex, unsigned char* bytes, unsigned int byteSize) {
+	// TODO not flexible, expects a std140 layout
+	unsigned int stride = byteSize;
+	if (stride % 16 != 0) {
+		stride += 16 - stride % 16;
+	}
+	for (unsigned int i = 0; i < byteSize; i++) {
+		buffer[membersOffsets[index] + stride * arrayIndex + i] = bytes[i];
 	}
 }
 
@@ -114,12 +170,19 @@ void UniformLayout::computeLayoutOffsets() {
 	case UniformLayoutType::STD140:
 		for (unsigned int i = 0; i < memberCount; i++) {
 			unsigned int alignment = glslTypeBaseAlignment(members[i]);
+			if (memberArraySizes != nullptr && memberArraySizes[i] != 0 && alignment % 16 != 0) { // when member is an array the alignment is rounded up to vec4 alignment (16B)
+				alignment += 16 - alignment % 16;
+			}
 			unsigned int unaligment = currentOffset % alignment;
 			if (unaligment > 0) {
 				currentOffset += alignment - unaligment;
 			}
 			membersOffsets[i] = currentOffset;
-			currentOffset += alignment;
+			if (memberArraySizes != nullptr && memberArraySizes[i] != 0) {
+				currentOffset += alignment * memberArraySizes[i];
+			} else {
+				currentOffset += alignment;
+			}
 		}
 		size = currentOffset;
 		break;

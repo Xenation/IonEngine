@@ -11,7 +11,7 @@ LightManager::~LightManager() {}
 
 
 void LightManager::registerLight(Light* light) {
-	switch (light->type) {
+	switch (light->getType()) {
 	case Light::Directional:
 		directionalLights.add(light);
 		break;
@@ -25,7 +25,7 @@ void LightManager::registerLight(Light* light) {
 }
 
 void LightManager::unregisterLight(Light* light) {
-	switch (light->type) {
+	switch (light->getType()) {
 	case Light::Directional:
 		directionalLights.remove(light);
 		break;

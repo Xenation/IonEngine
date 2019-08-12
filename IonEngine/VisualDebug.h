@@ -26,6 +26,7 @@ namespace IonEngine {
 		static void drawWireDisk(const Vec3f& center, const Vec3f& normal, float radius, const Color& color);
 		static void drawWirePlaneDisk(const Plane& plane, float normalLength, float diskRadius, const Color& color);
 		static void drawWirePlaneDisk(const Plane& plane, const Vec3f& unprojetedCenter, float normalLength, float diskRadius, const Color& color);
+		static void drawWireCone(const Vec3f& top, const Vec3f& base, float baseRadius, const Color& color);
 		// Solid
 		static void drawCube(const Vec3f& center, const Vec3f& size, const Color& color);
 		static void drawMesh(const Mesh* mesh, const Vec3f& position, const Rotor3f& rotation, const Vec3f& scale, const Color& color);

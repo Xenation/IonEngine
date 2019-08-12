@@ -51,6 +51,18 @@ void Framebuffer::createAttachments(uint count, Attachment* attachments) {
 		createAttachment(i);
 	}
 
+	unsigned int drawBufferCount = 0;
+	for (uint i = 0; i < attachmentCount; i++) {
+		if (attachments[i].slot == GL_DEPTH_STENCIL_ATTACHMENT || attachments[i].slot == GL_DEPTH_ATTACHMENT || attachments[i].slot == GL_STENCIL_ATTACHMENT) continue;
+		drawBufferCount++;
+	}
+	drawBuffers = new GLenum[drawBufferCount];
+	for (uint i = 0; i < attachmentCount; i++) {
+		if (attachments[i].slot == GL_DEPTH_STENCIL_ATTACHMENT || attachments[i].slot == GL_DEPTH_ATTACHMENT || attachments[i].slot == GL_STENCIL_ATTACHMENT) continue;
+		drawBuffers[i] = attachments[i].slot;
+	}
+	glDrawBuffers(drawBufferCount, drawBuffers);
+
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
 		Debug::logError("FrameBuffer", "Framebuffer " + glFramebufferStatusString(status));
@@ -127,13 +139,12 @@ void Framebuffer::blitTo(Framebuffer* framebuffer, Material* material) {
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, otherFBO);
 	glBlitFramebuffer(0, 0, width, height, 0, 0, destWidth, destHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-	material->setTextureByUnit(0, attachments[0].texture);
-	material->setTextureByUnit(1, attachments[1].texture);
+	unsigned int currentBinding = 0;
+	for (unsigned int i = 0; i < attachmentCount; i++) {
+		if (attachments[i].slot == GL_DEPTH_STENCIL_ATTACHMENT || attachments[i].slot == GL_DEPTH_ATTACHMENT || attachments[i].slot == GL_STENCIL_ATTACHMENT) continue;
+		material->setTextureByUnit(currentBinding++, attachments[i].texture);
+	}
 	material->use();
-	/*glActiveTexture(GL_TEXTURE0);
-	glBindTexture(attachments[0].texture->getTextureTarget(), attachments[0].texture->getTextureID());
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(attachments[1].texture->getTextureTarget(), attachments[1].texture->getTextureID());*/
 	fullscreenQuadMesh->render();
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);

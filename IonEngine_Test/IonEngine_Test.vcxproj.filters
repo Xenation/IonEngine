@@ -31,6 +31,9 @@
     <Filter Include="Resource Files\shaders\particle_basic">
       <UniqueIdentifier>{d00d84fa-1e6c-4f23-8db2-b413e84b40d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\lightpass">
+      <UniqueIdentifier>{21170f90-6ecc-48bd-b2ed-3aed3b7d59ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -81,6 +84,12 @@
     </None>
     <None Include="res\shaders\test\gs.glsl">
       <Filter>Resource Files\shaders\test</Filter>
+    </None>
+    <None Include="res\shaders\lightpass\fs.glsl">
+      <Filter>Resource Files\shaders\lightpass</Filter>
+    </None>
+    <None Include="res\shaders\lightpass\vs.glsl">
+      <Filter>Resource Files\shaders\lightpass</Filter>
     </None>
   </ItemGroup>
 </Project>
