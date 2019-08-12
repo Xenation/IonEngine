@@ -42,7 +42,7 @@ Pipeline::Pipeline(int width, int height, LightManager* lightManager)
 
 	// Global Buffers Setup
 	globalUniformBuffer = new UniformBuffer("Global");
-	globalUniformBuffer->setLayouts(2, new UniformLayout[2]{UniformLayout(1, 4, new GLSLType[4]{GLSL_MAT4, GLSL_MAT4, GLSL_IVEC2, GLSL_UINT}), UniformLayout(2, 3, new GLSLType[3]{GLSL_FLOAT, GLSL_VEC4, GLSL_VEC4})});
+	globalUniformBuffer->setLayouts(2, new UniformLayout[2]{UniformLayout(1, 6, new GLSLType[6]{GLSL_MAT4, GLSL_MAT4, GLSL_FLOAT, GLSL_FLOAT, GLSL_IVEC2, GLSL_UINT}), UniformLayout(2, 3, new GLSLType[3]{GLSL_FLOAT, GLSL_VEC4, GLSL_VEC4})});
 	globalUniformBuffer->uploadToGL();
 
 	glEnable(GL_CULL_FACE);
@@ -92,8 +92,10 @@ void Pipeline::render(Camera* camera) {
 	// Camera Globals Update
 	globalUniformBuffer->getLayout(0).setMember(0, camera->getProjectionMatrix());
 	globalUniformBuffer->getLayout(0).setMember(1, camera->getViewMatrix());
-	globalUniformBuffer->getLayout(0).setMember(2, Vec2i(width, height));
-	globalUniformBuffer->getLayout(0).setMember(3, samples);
+	globalUniformBuffer->getLayout(0).setMember(2, camera->getNearPlane());
+	globalUniformBuffer->getLayout(0).setMember(3, camera->getFarPlane());
+	globalUniformBuffer->getLayout(0).setMember(4, Vec2i(width, height));
+	globalUniformBuffer->getLayout(0).setMember(5, samples);
 	globalUniformBuffer->updateLayout(0);
 
 	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {

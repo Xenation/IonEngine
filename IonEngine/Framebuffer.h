@@ -36,7 +36,7 @@ namespace IonEngine {
 		void bind();
 		void unbind();
 		void blitTo(Framebuffer* framebuffer);
-		void blitTo(Framebuffer* framebuffer, Material* material);
+		void blitTo(Framebuffer* framebuffer, Material* material, bool bindDepth = false);
 
 		inline uint getWidth() const { return width; }
 		inline uint getHeight() const { return height; }

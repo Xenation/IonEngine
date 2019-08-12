@@ -9,13 +9,15 @@ layout (std140, binding = 2) uniform GlobalsVars {
 layout (std140, binding = 1) uniform Camera {
 	mat4x4 projectionMatrix;
 	mat4x4 viewMatrix;
+	float zNear;
+	float zFar;
 	ivec2 resolution;
 	uint sampleCount;
 };
 
 layout (binding = 0) uniform sampler2DMS gAlbedo;
 layout (binding = 1) uniform sampler2DMS gNormal;
-layout (binding = 2) uniform sampler2DMS gWorldPos;
+layout (binding = 2) uniform sampler2DMS gDepth;
 
 layout (std140, binding = 10) uniform Material {
 	uint directionalCount;
@@ -54,7 +56,12 @@ void main() {
 	for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 		vec4 albedo = texelFetch(gAlbedo, pixel, sampleIndex);
 		vec3 normal = texelFetch(gNormal, pixel, sampleIndex).rgb * 2.0 - 1.0;
-		vec3 worldPos = texelFetch(gWorldPos, pixel, sampleIndex).xyz;
+		float depth = texelFetch(gDepth, pixel, sampleIndex).x * 2.0 - 1.0;
+
+		// TODO take inverted matrices as input
+		vec4 worldPos = inverse(projectionMatrix) * vec4((uv * 2 - 1), depth, 1.0);
+		worldPos /= worldPos.w;
+		worldPos = inverse(viewMatrix) * worldPos;
 
 		if (albedo.w < 0.5) {
 			fColor += albedo.rgb;

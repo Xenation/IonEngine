@@ -6,6 +6,8 @@ layout (triangle_strip, max_vertices = 4) out;
 layout (std140, binding = 1) uniform Camera {
 	mat4x4 projectionMatrix;
 	mat4x4 viewMatrix;
+	float zNear;
+	float zFar;
 	ivec2 resolution;
 	uint sampleCount;
 };

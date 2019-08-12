@@ -127,7 +127,7 @@ void Framebuffer::blitTo(Framebuffer* framebuffer) {
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }
 
-void Framebuffer::blitTo(Framebuffer* framebuffer, Material* material) {
+void Framebuffer::blitTo(Framebuffer* framebuffer, Material* material, bool bindDepth) {
 	GLuint otherFBO = 0;
 	GLint destWidth = width;
 	GLint destHeight = height;
@@ -141,11 +141,14 @@ void Framebuffer::blitTo(Framebuffer* framebuffer, Material* material) {
 	glBlitFramebuffer(0, 0, width, height, 0, 0, destWidth, destHeight, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 	unsigned int currentBinding = 0;
 	for (unsigned int i = 0; i < attachmentCount; i++) {
-		if (attachments[i].slot == GL_DEPTH_STENCIL_ATTACHMENT || attachments[i].slot == GL_DEPTH_ATTACHMENT || attachments[i].slot == GL_STENCIL_ATTACHMENT) continue;
+		if (!bindDepth && (attachments[i].slot == GL_DEPTH_STENCIL_ATTACHMENT || attachments[i].slot == GL_DEPTH_ATTACHMENT || attachments[i].slot == GL_STENCIL_ATTACHMENT)) continue;
 		material->setTextureByUnit(currentBinding++, attachments[i].texture);
 	}
 	material->use();
+	glDepthMask(GL_FALSE);
+	glDisable(GL_DEPTH_TEST);
 	fullscreenQuadMesh->render();
+	glEnable(GL_DEPTH_TEST);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 }

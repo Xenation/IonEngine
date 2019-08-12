@@ -8,6 +8,8 @@ layout (location = 2) in vec2 particleParams;
 layout (std140, binding = 1) uniform Camera {
 	mat4x4 projectionMatrix;
 	mat4x4 viewMatrix;
+	float zNear;
+	float zFar;
 	ivec2 resolution;
 	uint sampleCount;
 };

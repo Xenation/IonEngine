@@ -49,7 +49,7 @@ void RenderPass::render(const SimpleSet<unsigned int>& visibleRenderers) {
 
 RenderPassOpaque::RenderPassOpaque(const char* name, Pipeline* pipeline, unsigned int width, unsigned int height, unsigned int samples) : RenderPass(name, pipeline), deferredMaterial(deferredMaterial) {
 	renderBuffer = new Framebuffer("RenderBuffer", width, height, samples);
-	renderBuffer->createAttachments(4, new Framebuffer::Attachment[4]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT1, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT2, GL_RGB16F), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
+	renderBuffer->createAttachments(3, new Framebuffer::Attachment[3]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT1, GL_RGBA), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
 	renderBuffer->clearColor = Color(0.52f, 0.80f, 0.97f, 0.0); //135-206-250
 }
 
@@ -77,7 +77,7 @@ void RenderPassOpaque::prepare() {
 void RenderPassOpaque::finish() {
 	renderBuffer->unbind();
 	deferredSpecShader->use();
-	renderBuffer->blitTo(nullptr, deferredMaterial);
+	renderBuffer->blitTo(nullptr, deferredMaterial, true);
 }
 
 void RenderPassOpaque::onResize(unsigned int width, unsigned int height) {
