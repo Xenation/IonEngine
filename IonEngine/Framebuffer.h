@@ -40,6 +40,7 @@ namespace IonEngine {
 
 		inline uint getWidth() const { return width; }
 		inline uint getHeight() const { return height; }
+		Texture* getTexture(unsigned int index);
 
 	private:
 		static void createFullscreenQuadMesh();

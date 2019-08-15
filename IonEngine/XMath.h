@@ -1786,6 +1786,17 @@ namespace IonEngine {
 					0, 0, -(2.0f * farPlane * nearPlane) / zRange, 0
 				);
 			}
+			static Matrix4x4f orthogonalProjection(float right, float left, float top, float bottom, float near, float far) {
+				float horizRange = right - left;
+				float vertiRange = top - bottom;
+				float depthRange = far - near;
+				return Matrix4x4f(
+					2 / horizRange, 0, 0, 0,
+					0, 2 / vertiRange, 0, 0,
+					0, 0, 2 / depthRange, 0,
+					-(right + left) / horizRange, -(top + bottom) / vertiRange, -(far + near) / depthRange, 1
+				);
+			}
 
 			const char* toCString();
 			std::string toString();

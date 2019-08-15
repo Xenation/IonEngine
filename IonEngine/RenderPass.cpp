@@ -9,6 +9,11 @@
 #include "Pipeline.h"
 #include "LightManager.h"
 #include "Light.h"
+#include "UniformBuffer.h"
+#include "Transform.h"
+#include "ShadowCaster.h"
+#include "ShadowAtlas.h"
+#include "Time.h" //
 using namespace IonEngine;
 
 
@@ -18,7 +23,7 @@ RenderPass::RenderPass(const char* name, Pipeline* pipeline) : name(name), pipel
 RenderPass::~RenderPass() {}
 
 
-void RenderPass::render(const SimpleSet<unsigned int>& visibleRenderers) {
+void RenderPass::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
 	prepare();
 	unsigned int shadersRendered = 0;
 	for (unsigned int shaderIndex = 0; shaderIndex < programs.capacity && shadersRendered < programs.count; shaderIndex++) {
@@ -47,6 +52,27 @@ void RenderPass::render(const SimpleSet<unsigned int>& visibleRenderers) {
 
 
 
+/* ==== SHADOWS ====*/
+RenderPassShadows::RenderPassShadows(Pipeline* pipeline, HollowSet<Renderer*>& renderers) : RenderPass("shadows", pipeline), renderers(renderers) {
+	
+}
+
+RenderPassShadows::~RenderPassShadows() {
+	
+}
+
+
+void RenderPassShadows::onShadersInitialized() {
+	pipeline->shadowAtlas->initializeShaders();
+}
+
+void RenderPassShadows::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+	pipeline->shadowAtlas->renderShadows(camera, renderers);
+}
+
+
+
+/* ==== OPAQUE ==== */
 RenderPassOpaque::RenderPassOpaque(const char* name, Pipeline* pipeline, unsigned int width, unsigned int height, unsigned int samples) : RenderPass(name, pipeline), deferredMaterial(deferredMaterial) {
 	renderBuffer = new Framebuffer("RenderBuffer", width, height, samples);
 	renderBuffer->createAttachments(3, new Framebuffer::Attachment[3]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT1, GL_RGBA), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
@@ -85,53 +111,83 @@ void RenderPassOpaque::onResize(unsigned int width, unsigned int height) {
 }
 
 void RenderPassOpaque::updateLightsData() {
+	if (pipeline->shadowAtlas != nullptr) {
+		ShadowAtlas* shadowAtlas = pipeline->shadowAtlas;
+		deferredMaterial->setTextureByUnit(3, shadowAtlas->getTexture());
+		
+	}
+
 	SimpleSet<Light*>& directionals = pipeline->lightManager->getDirectionalLights();
 	SimpleSet<Light*>& points = pipeline->lightManager->getPointLights();
 	SimpleSet<Light*>& spots = pipeline->lightManager->getSpotLights();
 
 	deferredMaterial->setField(0, directionals.count);
 	for (unsigned int i = 0; i < directionals.count; i++) {
-		deferredMaterial->setField(1, directionals[i]->color, i);
-	}
-	for (unsigned int i = 0; i < directionals.count; i++) {
-		deferredMaterial->setField(2, toVec4f(directionals[i]->getDirection()), i);
+		deferredMaterial->setField(1, i, directionals[i]->color);
+		deferredMaterial->setField(2, i, toVec4f(directionals[i]->getDirection()));
+		Vec4i indicesSlice = deferredMaterial->getUniformLayout()->getVec4i(10, i);
+		if (directionals[i]->isCastingShadow()) {
+			indicesSlice.x = directionals[i]->getShadowCaster()->getAtlasIndex();
+			deferredMaterial->setField(11, indicesSlice.x, directionals[i]->getShadowCaster()->getAtlasCoords());
+			deferredMaterial->setField(12, indicesSlice.x, directionals[i]->getShadowCaster()->getWorldToLightMatrix());
+		} else {
+			indicesSlice.x = -1;
+		}
+		deferredMaterial->setField(10, i, indicesSlice);
 	}
 	deferredMaterial->setField(3, points.count);
 	for (unsigned int i = 0; i < points.count; i++) {
-		deferredMaterial->setField(4, points[i]->color, i);
-	}
-	for (unsigned int i = 0; i < points.count; i++) {
+		deferredMaterial->setField(4, i, points[i]->color);
 		Vec3f pos = points[i]->getPosition();
-		deferredMaterial->setField(5, Vec4f(pos.x, pos.y, pos.z, points[i]->range), i);
+		deferredMaterial->setField(5, i, Vec4f(pos.x, pos.y, pos.z, points[i]->range));
+		Vec4i indicesSlice = deferredMaterial->getUniformLayout()->getVec4i(10, i);
+		if (points[i]->isCastingShadow()) {
+			indicesSlice.y = points[i]->getShadowCaster()->getAtlasIndex();
+			deferredMaterial->setField(11, indicesSlice.y, points[i]->getShadowCaster()->getAtlasCoords());
+			deferredMaterial->setField(12, indicesSlice.y, points[i]->getShadowCaster()->getWorldToLightMatrix());
+		} else {
+			indicesSlice.y = -1;
+		}
+		deferredMaterial->setField(10, i, indicesSlice);
 	}
 	deferredMaterial->setField(6, spots.count);
 	for (unsigned int i = 0; i < spots.count; i++) {
-		deferredMaterial->setField(7, spots[i]->color, i);
-	}
-	for (unsigned int i = 0; i < spots.count; i++) {
+		deferredMaterial->setField(7, i, spots[i]->color);
 		Vec3f pos = spots[i]->getPosition();
-		deferredMaterial->setField(8, Vec4f(pos.x, pos.y, pos.z, spots[i]->range), i);
-	}
-	for (unsigned int i = 0; i < spots.count; i++) {
+		deferredMaterial->setField(8, i, Vec4f(pos.x, pos.y, pos.z, spots[i]->range));
 		Vec2f dir = encodeNormal(spots[i]->getDirection());
-		deferredMaterial->setField(9, Vec4f(dir.x, dir.y, spots[i]->innerAngle, spots[i]->angle), i);
+		deferredMaterial->setField(9, i, Vec4f(dir.x, dir.y, spots[i]->innerAngle, spots[i]->angle));
+		Vec4i indicesSlice = deferredMaterial->getUniformLayout()->getVec4i(10, i);
+		if (spots[i]->isCastingShadow()) {
+			indicesSlice.z = spots[i]->getShadowCaster()->getAtlasIndex();
+			deferredMaterial->setField(11, indicesSlice.z, spots[i]->getShadowCaster()->getAtlasCoords());
+			deferredMaterial->setField(12, indicesSlice.z, spots[i]->getShadowCaster()->getWorldToLightMatrix());
+		} else {
+			indicesSlice.z = -1;
+		}
+		deferredMaterial->setField(10, i, indicesSlice);
 	}
 
 	// Test data
-	//deferredMaterial->setField(6, 32);
-	//for (unsigned int i = 0; i < 32; i++) {
-	//	deferredMaterial->setField(7, Color::white, i);
+	//deferredMaterial->setField(6, 25);
+	//for (unsigned int i = 0; i < 25; i++) {
+	//	Color color = Color::white;
+	//	color.a = 2.0f;
+	//	deferredMaterial->setField(7, color, i);
 	//}
-	//for (unsigned int i = 0; i < 32; i++) {
-	//	deferredMaterial->setField(8, Vec4f((i % 6) * 7, -3, (i / 6) * 7, 10), i);
+	//for (unsigned int i = 0; i < 25; i++) {
+	//	deferredMaterial->setField(8, Vec4f(10 + (i % 5) * 7, -3, 10 + (i / 5) * 7, 20), i);
 	//}
-	//for (unsigned int i = 0; i < 32; i++) {
-	//	deferredMaterial->setField(9, Vec4f(0.707106f, -0.707106f, 0.785398f, 1.570796f), i);
+	//for (unsigned int i = 0; i < 25; i++) {
+	//	//Vec2f dir = encodeNormal(Vec3f(0.577350f, -0.577350f, 0.577350f));
+	//	Vec2f dir = encodeNormal(Vec3f(cosf(Time::time), -1, sinf(Time::time)).normalized());
+	//	deferredMaterial->setField(9, Vec4f(dir.x, dir.y, 1.099557f, 1.256637f), i);
 	//}
 }
 
 
 
+/* ==== TRANSARENT ==== */
 RenderPassTransparent::RenderPassTransparent(const char* name, Pipeline* pipeline) : RenderPass(name, pipeline) {}
 
 RenderPassTransparent::~RenderPassTransparent() {}
@@ -153,7 +209,7 @@ RenderPassPostprocess::~RenderPassPostprocess() {
 	delete temporary2;
 }
 
-void RenderPassPostprocess::render(const SimpleSet<unsigned int>& visibleRenderers) {
+void RenderPassPostprocess::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
 	glDisable(GL_DEPTH_TEST);
 
 	temporary1->bind();

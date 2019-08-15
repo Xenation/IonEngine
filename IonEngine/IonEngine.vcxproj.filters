@@ -291,6 +291,12 @@
     <ClCompile Include="LightInspector.cpp">
       <Filter>Source Files\Engine\Editor\Components</Filter>
     </ClCompile>
+    <ClCompile Include="ShadowCaster.cpp">
+      <Filter>Source Files\Engine\Render\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowAtlas.cpp">
+      <Filter>Source Files\Engine\Render\Lighting</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -526,6 +532,12 @@
     </ClInclude>
     <ClInclude Include="LightInspector.h">
       <Filter>Header Files\Engine\Editor\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowCaster.h">
+      <Filter>Header Files\Engine\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowAtlas.h">
+      <Filter>Header Files\Engine\Render\Lighting</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

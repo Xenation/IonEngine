@@ -379,6 +379,61 @@ namespace IonEngine {
 		}
 	}
 
+	inline unsigned int glslstd140TypeSize(GLSLType type, unsigned int arrSize = 0) {
+		if (type == GLSL_UNKNOWN) {
+			//Debug::logError("GLUtils", "glslstd140TypeSize(): Unknown input type!");
+			return 0;
+		}
+		const unsigned int vec4Size = 16;
+		unsigned compSize = 0;
+		if (arrSize == 0) {
+			if (type & (GLSL_IS_BOOL | GLSL_IS_FLOAT | GLSL_IS_INT | GLSL_IS_UINT)) {
+				compSize = 4;
+			} else if (type & GLSL_IS_DOUBLE) {
+				compSize = 8;
+			}
+			if (type & GLSL_IS_SCALAR) {
+				return compSize;
+			} else if (type & GLSL_IS_VEC) {
+				if (type & GLSL_COMP1_SIZE2) {
+					return compSize * 2;
+				} else if (type & (GLSL_COMP1_SIZE3 | GLSL_COMP1_SIZE4)) {
+					return compSize * 4;
+				}
+			} else if (type & GLSL_IS_MAT) {
+				unsigned int colSize = 0;
+				if (type & GLSL_COMP1_SIZE2) {
+					colSize = compSize * 2;
+				} else if (type & GLSL_COMP1_SIZE3) {
+					colSize = compSize * 3;
+				} else if (type & GLSL_COMP1_SIZE4) {
+					colSize = compSize * 4;
+				}
+				if (colSize % vec4Size != 0) {
+					colSize += vec4Size - (colSize % vec4Size);
+				}
+				if (type & GLSL_COMP2_SIZE2) {
+					return colSize * 2;
+				} else if (type & GLSL_COMP2_SIZE3) {
+					return colSize * 3;
+				} else if (type & GLSL_COMP2_SIZE4) {
+					return colSize * 4;
+				}
+			} else if (type & (GLSL_IS_SAMPLER | GLSL_IS_IMAGE | GLSL_IS_ATOMIC)) {
+				return 4;
+			}
+		} else {
+			unsigned int elemSize = glslstd140TypeSize(type);
+			if (elemSize % vec4Size != 0) {
+				elemSize += vec4Size - (elemSize % vec4Size);
+			}
+			return elemSize * arrSize;
+		}
+
+		//Debug::logError("GLUtils", "glslType(): Unknown input type!");
+		return 0;
+	}
+
 	inline unsigned int glslTypeBaseAlignment(GLSLType type);
 	inline unsigned int glslTypeBaseAlignment(GLSLType type, unsigned int arrSize) {
 		const unsigned int vec4Align = glslTypeBaseAlignment(GLSL_VEC4);
@@ -442,10 +497,10 @@ namespace IonEngine {
 		} else {
 			// Rule 4
 			unsigned int typeAlign = glslTypeBaseAlignment(type);
-			if (typeAlign < vec4Align) {
-				typeAlign = vec4Align;
+			if (typeAlign % vec4Align != 0) {
+				typeAlign += vec4Align - typeAlign % vec4Align;
 			}
-			return typeAlign * arrSize;
+			return typeAlign;
 		}
 	}
 

@@ -13,11 +13,13 @@ namespace IonEngine {
 	class LightManager;
 	class Material;
 	class SpecializedShaderProgram;
+	class ShadowAtlas;
 
 	class Pipeline {
 	public:
 		SimpleList<RenderPass*> renderPasses;
 		LightManager* lightManager; // Maybe hide
+		ShadowAtlas* shadowAtlas; // Maybe hide
 
 		Pipeline(int width, int height, LightManager* lightManager);
 		Pipeline(const Pipeline&) = delete;

@@ -13,6 +13,7 @@
 #include "SpecializedShaderProgram.h"
 #include "LightManager.h"
 #include "Light.h"
+#include "ShadowAtlas.h"
 using namespace IonEngine;
 
 #define RENDERERS_START_SIZE 32
@@ -29,6 +30,8 @@ Pipeline::Pipeline(int width, int height, LightManager* lightManager)
 
 	resizeFrameBuffer(width, height);
 
+	shadowAtlas = new ShadowAtlas();
+	renderPasses.add(new RenderPassShadows(this, renderers));
 	renderPasses.add(new RenderPassOpaque("opaque", this, width, height, samples));
 	renderPasses.add(new RenderPassTransparent("transparent", this));
 	//renderPasses.add(new RenderPassPostprocess("postprocess", renderBuffer));
@@ -100,13 +103,13 @@ void Pipeline::render(Camera* camera) {
 
 	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		RenderPass* renderPass = renderPasses[passIndex];
-#ifdef _DEBUG // May be overkill
+		#ifdef _DEBUG // May be overkill
 		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, renderPass->name.length(), renderPass->name.c_str());
-#endif
-		renderPass->render(visibleRenderers);
-#ifdef _DEBUG
+		#endif
+		renderPass->render(camera, visibleRenderers);
+		#ifdef _DEBUG
 		glPopDebugGroup();
-#endif
+		#endif
 	}
 	
 }

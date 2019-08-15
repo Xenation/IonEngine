@@ -38,7 +38,9 @@ void TestScene::load() {
 	camera->transform->setRotation(Rotor3f::euler({ M_PI_4, -M_PI_4, 0 }));
 
 	sun = new Entity("Sun");
+	sun->transform->setPosition({-10, 10, -10});
 	Light* sunLight = new Light(sun, Light::Directional);
+	sunLight->setCastShadow(true);
 	sun->addComponent(sunLight);
 	sun->transform->setRotation(Rotor3f::euler({M_PI_4, M_PI_4 * 0.5f, 0}));
 
@@ -141,11 +143,16 @@ void TestScene::load() {
 	ballRb->setCollider(ballCollider);
 	ballRb->setMass(1.0f);
 	ballRb->disable();
-	Light* pointLight = new Light(ball, Light::Spot);
+
+	Entity* dynLightEntity = new Entity("Light");
+	dynLightEntity->transform->setPosition({6, 10, 0});
+	dynLightEntity->transform->setRotation(Rotor3f::euler(half_pi, 0, 0));
+	Light* pointLight = new Light(dynLightEntity, Light::Spot);
 	pointLight->range = 10.0f;
 	pointLight->angle = quarter_pi;
 	pointLight->innerAngle = quarter_pi * 0.5f;
-	ball->addComponent(pointLight);
+	pointLight->setCastShadow(true);
+	dynLightEntity->addComponent(pointLight);
 
 
 	refCube = new Entity("RefCube");

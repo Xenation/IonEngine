@@ -164,25 +164,28 @@ unsigned char* UniformLayout::getBytes(unsigned int index) const {
 	return &buffer[membersOffsets[index]];
 }
 
+unsigned char* UniformLayout::getBytes(unsigned int index, unsigned int arrayIndex) const {
+	return &buffer[membersOffsets[index] + memberArraySizes[index] * 16]; // TODO unsafe, expects array elem stride to be 16 (vec4) but might be bigger
+}
+
 void UniformLayout::computeLayoutOffsets() {
 	unsigned int currentOffset = 0;
 	switch (type) {
 	case UniformLayoutType::STD140:
 		for (unsigned int i = 0; i < memberCount; i++) {
-			unsigned int alignment = glslTypeBaseAlignment(members[i]);
-			if (memberArraySizes != nullptr && memberArraySizes[i] != 0 && alignment % 16 != 0) { // when member is an array the alignment is rounded up to vec4 alignment (16B)
-				alignment += 16 - alignment % 16;
+			unsigned int baseAlignment;
+			if (memberArraySizes != nullptr && memberArraySizes[i] != 0) {
+				baseAlignment = glslTypeBaseAlignment(members[i], memberArraySizes[i]);
+			} else {
+				baseAlignment = glslTypeBaseAlignment(members[i]);
 			}
-			unsigned int unaligment = currentOffset % alignment;
+			unsigned int unaligment = currentOffset % baseAlignment;
 			if (unaligment > 0) {
-				currentOffset += alignment - unaligment;
+				currentOffset += baseAlignment - unaligment;
 			}
 			membersOffsets[i] = currentOffset;
-			if (memberArraySizes != nullptr && memberArraySizes[i] != 0) {
-				currentOffset += alignment * memberArraySizes[i];
-			} else {
-				currentOffset += alignment;
-			}
+			unsigned int memberSize = glslstd140TypeSize(members[i], (memberArraySizes != nullptr) ? memberArraySizes[i] : 0);
+			currentOffset += memberSize;
 		}
 		size = currentOffset;
 		break;

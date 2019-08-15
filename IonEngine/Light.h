@@ -3,6 +3,8 @@
 #include "XMath.h"
 
 namespace IonEngine {
+	class ShadowCaster;
+
 	class Light : public Component {
 	public:
 		enum Type : unsigned int {
@@ -15,7 +17,6 @@ namespace IonEngine {
 			Color color;
 			struct { float colr, colg, colb, intensity; };
 		};
-		bool castShadow = false;
 		float range;
 		float angle;
 		float innerAngle;
@@ -26,12 +27,16 @@ namespace IonEngine {
 		void onEnable() override;
 		void onDisable() override;
 
-		Type getType() { return type; }
+		Type getType() const { return type; }
 		void setType(Type type);
-		Vec3f getDirection();
-		Vec3f getPosition();
+		Vec3f getDirection() const;
+		Vec3f getPosition() const;
+		bool isCastingShadow() const { return shadowCaster != nullptr; }
+		void setCastShadow(bool castShadow);
+		ShadowCaster* getShadowCaster() { return shadowCaster; }
 
 	private:
 		Type type = Type::Point;
+		ShadowCaster* shadowCaster = nullptr;
 	};
 }

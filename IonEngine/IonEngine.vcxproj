@@ -233,6 +233,8 @@
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="ShaderMetaInfo.cpp" />
     <ClCompile Include="ShaderPreprocessor.cpp" />
+    <ClCompile Include="ShadowAtlas.cpp" />
+    <ClCompile Include="ShadowCaster.cpp" />
     <ClCompile Include="SpecializedShaderProgram.cpp" />
     <ClCompile Include="SphereCollider.cpp" />
     <ClCompile Include="StatsEditor.cpp" />
@@ -307,6 +309,8 @@
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="ShaderMetaInfo.h" />
     <ClInclude Include="ShaderPreprocessor.h" />
+    <ClInclude Include="ShadowAtlas.h" />
+    <ClInclude Include="ShadowCaster.h" />
     <ClInclude Include="SimpleSet.h" />
     <ClInclude Include="SpecializedShaderProgram.h" />
     <ClInclude Include="SphereCollider.h" />

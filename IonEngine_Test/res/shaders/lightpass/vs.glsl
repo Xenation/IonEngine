@@ -14,6 +14,9 @@ layout (std140, binding = 10) uniform Material {
 	vec4 spotColors[32];
 	vec4 spotPos[32];
 	vec4 spotParams[32];
+	ivec4 shadowAtlasIndices[32];
+	vec4 shadowAtlasCoords[34];
+	mat4x4 shadowAtlasWTLMatrices[34];
 };
 
 out vec2 uv;

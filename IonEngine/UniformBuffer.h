@@ -66,6 +66,18 @@ namespace IonEngine {
 		inline Vec3i getVec3i(unsigned int index) const { return *getVec3iPtr(index); }
 		inline Vec4i getVec4i(unsigned int index) const { return *getVec4iPtr(index); }
 		inline Matrix4x4f getMatrix4x4f(unsigned int index) const { return *getMatrix4x4fPtr(index); }
+		inline bool getBool(unsigned int index, unsigned int arrayIndex) const { return *getBoolPtr(index, arrayIndex); }
+		inline int getInt(unsigned int index, unsigned int arrayIndex) const { return *getIntPtr(index, arrayIndex); }
+		inline unsigned int getUint(unsigned int index, unsigned int arrayIndex) const { return *getUintPtr(index, arrayIndex); }
+		inline float getFloat(unsigned int index, unsigned int arrayIndex) const { return *getFloatPtr(index, arrayIndex); }
+		inline double getDouble(unsigned int index, unsigned int arrayIndex) const { return *getDoublePtr(index, arrayIndex); }
+		inline Vec2f getVec2f(unsigned int index, unsigned int arrayIndex) const { return *getVec2fPtr(index, arrayIndex); }
+		inline Vec3f getVec3f(unsigned int index, unsigned int arrayIndex) const { return *getVec3fPtr(index, arrayIndex); }
+		inline Vec4f getVec4f(unsigned int index, unsigned int arrayIndex) const { return *getVec4fPtr(index, arrayIndex); }
+		inline Vec2i getVec2i(unsigned int index, unsigned int arrayIndex) const { return *getVec2iPtr(index, arrayIndex); }
+		inline Vec3i getVec3i(unsigned int index, unsigned int arrayIndex) const { return *getVec3iPtr(index, arrayIndex); }
+		inline Vec4i getVec4i(unsigned int index, unsigned int arrayIndex) const { return *getVec4iPtr(index, arrayIndex); }
+		inline Matrix4x4f getMatrix4x4f(unsigned int index, unsigned int arrayIndex) const { return *getMatrix4x4fPtr(index, arrayIndex); }
 		inline bool* getBoolPtr(unsigned int index) const { return (bool*) getBytes(index); }
 		inline int* getIntPtr(unsigned int index) const { return (int*) getBytes(index); }
 		inline unsigned int* getUintPtr(unsigned int index) const { return (unsigned int*) getBytes(index); }
@@ -78,7 +90,20 @@ namespace IonEngine {
 		inline Vec3i* getVec3iPtr(unsigned int index) const { return (Vec3i*) getBytes(index); }
 		inline Vec4i* getVec4iPtr(unsigned int index) const { return (Vec4i*) getBytes(index); }
 		inline Matrix4x4f* getMatrix4x4fPtr(unsigned int index) const { return (Matrix4x4f*) getBytes(index); }
+		inline bool* getBoolPtr(unsigned int index, unsigned int arrayIndex) const { return (bool*) getBytes(index, arrayIndex); }
+		inline int* getIntPtr(unsigned int index, unsigned int arrayIndex) const { return (int*) getBytes(index, arrayIndex); }
+		inline unsigned int* getUintPtr(unsigned int index, unsigned int arrayIndex) const { return (unsigned int*) getBytes(index, arrayIndex); }
+		inline float* getFloatPtr(unsigned int index, unsigned int arrayIndex) const { return (float*) getBytes(index, arrayIndex); }
+		inline double* getDoublePtr(unsigned int index, unsigned int arrayIndex) const { return (double*) getBytes(index, arrayIndex); }
+		inline Vec2f* getVec2fPtr(unsigned int index, unsigned int arrayIndex) const { return (Vec2f*) getBytes(index, arrayIndex); }
+		inline Vec3f* getVec3fPtr(unsigned int index, unsigned int arrayIndex) const { return (Vec3f*) getBytes(index, arrayIndex); }
+		inline Vec4f* getVec4fPtr(unsigned int index, unsigned int arrayIndex) const { return (Vec4f*) getBytes(index, arrayIndex); }
+		inline Vec2i* getVec2iPtr(unsigned int index, unsigned int arrayIndex) const { return (Vec2i*) getBytes(index, arrayIndex); }
+		inline Vec3i* getVec3iPtr(unsigned int index, unsigned int arrayIndex) const { return (Vec3i*) getBytes(index, arrayIndex); }
+		inline Vec4i* getVec4iPtr(unsigned int index, unsigned int arrayIndex) const { return (Vec4i*) getBytes(index, arrayIndex); }
+		inline Matrix4x4f* getMatrix4x4fPtr(unsigned int index, unsigned int arrayIndex) const { return (Matrix4x4f*) getBytes(index, arrayIndex); }
 		unsigned char* getBytes(unsigned int index) const;
+		unsigned char* getBytes(unsigned int index, unsigned int arrayIndex) const;
 
 		void computeLayoutOffsets();
 	};

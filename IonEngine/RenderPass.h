@@ -10,6 +10,10 @@ namespace IonEngine {
 	class Pipeline;
 	class Material;
 	class SpecializedShaderProgram;
+	class UniformBuffer;
+	class Renderer;
+	class ShadowCaster;
+	class Camera;
 
 	class RenderPass {
 	public:
@@ -22,12 +26,24 @@ namespace IonEngine {
 		virtual void onShadersInitialized() {}
 		virtual void prepareFrame() {}
 		virtual void prepare() {}
-		virtual void render(const SimpleSet<unsigned int>& visibleRenderers);
+		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers);
 		virtual void finish() {}
 		virtual void onResize(uint width, uint height) {}
 
 	protected:
 		Pipeline* pipeline;
+	};
+
+	class RenderPassShadows : public RenderPass {
+	public:
+		RenderPassShadows(Pipeline* pipeline, HollowSet<Renderer*>& renderers);
+		~RenderPassShadows();
+
+		virtual void onShadersInitialized() override;
+		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
+
+	private:
+		HollowSet<Renderer*>& renderers;
 	};
 
 	class RenderPassOpaque : public RenderPass {
@@ -62,7 +78,7 @@ namespace IonEngine {
 		RenderPassPostprocess(const char* name, Pipeline* pipeline, Framebuffer* renderBuffer);
 		~RenderPassPostprocess();
 
-		virtual void render(const SimpleSet<unsigned int>& visibleRenderers) override;
+		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
 		virtual void onResize(uint width, uint height) override;
 
 	private:

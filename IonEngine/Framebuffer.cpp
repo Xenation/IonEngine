@@ -56,12 +56,17 @@ void Framebuffer::createAttachments(uint count, Attachment* attachments) {
 		if (attachments[i].slot == GL_DEPTH_STENCIL_ATTACHMENT || attachments[i].slot == GL_DEPTH_ATTACHMENT || attachments[i].slot == GL_STENCIL_ATTACHMENT) continue;
 		drawBufferCount++;
 	}
-	drawBuffers = new GLenum[drawBufferCount];
-	for (uint i = 0; i < attachmentCount; i++) {
-		if (attachments[i].slot == GL_DEPTH_STENCIL_ATTACHMENT || attachments[i].slot == GL_DEPTH_ATTACHMENT || attachments[i].slot == GL_STENCIL_ATTACHMENT) continue;
-		drawBuffers[i] = attachments[i].slot;
+	if (drawBufferCount != 0) {
+		drawBuffers = new GLenum[drawBufferCount];
+		for (uint i = 0; i < attachmentCount; i++) {
+			if (attachments[i].slot == GL_DEPTH_STENCIL_ATTACHMENT || attachments[i].slot == GL_DEPTH_ATTACHMENT || attachments[i].slot == GL_STENCIL_ATTACHMENT) continue;
+			drawBuffers[i] = attachments[i].slot;
+		}
+		glDrawBuffers(drawBufferCount, drawBuffers);
+	} else { // Depth only
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
 	}
-	glDrawBuffers(drawBufferCount, drawBuffers);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
@@ -103,6 +108,7 @@ void Framebuffer::resize(uint width, uint height) {
 }
 
 void Framebuffer::bind() {
+	glViewport(0, 0, width, height);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
 }
@@ -149,8 +155,14 @@ void Framebuffer::blitTo(Framebuffer* framebuffer, Material* material, bool bind
 	glDisable(GL_DEPTH_TEST);
 	fullscreenQuadMesh->render();
 	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+}
+
+Texture* Framebuffer::getTexture(unsigned int index) {
+	if (index >= attachmentCount) return nullptr;
+	return attachments[index].texture;
 }
 
 void Framebuffer::createFullscreenQuadMesh() {

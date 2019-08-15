@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "Engine.h"
 #include "LightManager.h"
+#include "ShadowCaster.h"
 using namespace IonEngine;
 
 
@@ -12,7 +13,9 @@ Light::Light(Entity* entity, Type type) : Component(entity), type(type), color(C
 }
 
 Light::~Light() {
-	
+	if (shadowCaster != nullptr) {
+		delete shadowCaster;
+	}
 }
 
 
@@ -30,10 +33,19 @@ void Light::setType(Light::Type type) {
 	Engine::lightManager->registerLight(this);
 }
 
-Vec3f Light::getDirection() {
+Vec3f Light::getDirection() const {
 	return transform->forward();
 }
 
-Vec3f Light::getPosition() {
+Vec3f Light::getPosition() const {
 	return transform->getPosition();
+}
+
+void Light::setCastShadow(bool castShadow) {
+	if (shadowCaster == nullptr && castShadow) {
+		shadowCaster = new ShadowCaster(this);
+	} else if (shadowCaster != nullptr && !castShadow) {
+		delete shadowCaster;
+		shadowCaster = nullptr;
+	}
 }

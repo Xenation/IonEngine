@@ -34,6 +34,9 @@
     <Filter Include="Resource Files\shaders\lightpass">
       <UniqueIdentifier>{21170f90-6ecc-48bd-b2ed-3aed3b7d59ca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\depth">
+      <UniqueIdentifier>{e94bc9aa-44df-4d4f-852e-159c6ec61c86}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -90,6 +93,12 @@
     </None>
     <None Include="res\shaders\lightpass\vs.glsl">
       <Filter>Resource Files\shaders\lightpass</Filter>
+    </None>
+    <None Include="res\shaders\depth\fs.glsl">
+      <Filter>Resource Files\shaders\depth</Filter>
+    </None>
+    <None Include="res\shaders\depth\vs.glsl">
+      <Filter>Resource Files\shaders\depth</Filter>
     </None>
   </ItemGroup>
 </Project>

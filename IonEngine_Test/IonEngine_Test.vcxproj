@@ -299,6 +299,8 @@ exit 0
     <ClCompile Include="TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\depth\fs.glsl" />
+    <None Include="res\shaders\depth\vs.glsl" />
     <None Include="res\shaders\lightpass\fs.glsl" />
     <None Include="res\shaders\lightpass\vs.glsl" />
     <None Include="res\shaders\test\fs.glsl">

@@ -178,7 +178,7 @@ void VisualDebug::drawWireSphere(const Vec3f& center, float radius, const Color&
 
 void VisualDebug::drawWireDisk(const Vec3f& center, const Vec3f& normal, float radius, const Color& color) {
 	Vec3f right;
-	if (normal == Vec3f::up || normal == Vec3f::down) {
+	if (normal.x == 0 && normal.z == 0) {
 		right = Vec3f::forward.cross(normal);
 	} else {
 		right = Vec3f::up.cross(normal);
@@ -217,7 +217,7 @@ void VisualDebug::drawWireCone(const Vec3f& top, const Vec3f& base, float baseRa
 	Vec3f toBase = (base - top).normalized();
 	drawWireDisk(base, toBase, baseRadius, color);
 	Vec3f right;
-	if (toBase == Vec3f::up || toBase == Vec3f::down) {
+	if (toBase.x == 0 && toBase.z == 0) {
 		right = toBase.cross(Vec3f::forward);
 	} else {
 		right = toBase.cross(Vec3f::up);

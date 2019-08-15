@@ -11,6 +11,10 @@ void LightInspector::drawGui(Component* component) {
 	Light* light = (Light*) component;
 	ImGui::ColorEdit3("Color", light->color.vec.data);
 	ImGui::SliderFloat("Intensity", &light->intensity, 0.0f, 5.0f);
+	bool castShadow = light->isCastingShadow();
+	if (ImGui::Checkbox("Shadows", &castShadow)) {
+		light->setCastShadow(castShadow);
+	}
 	const char* types[3] = {"Directional", "Point", "Spot"};
 	int type = light->getType();
 	if (ImGui::Combo("Type", &type, types, 3)) {
