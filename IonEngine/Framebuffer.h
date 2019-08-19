@@ -14,11 +14,13 @@ namespace IonEngine {
 		struct Attachment {
 			GLenum slot;
 			GLenum format;
+			GLenum internalFormat;
 			Texture* texture;
 
 		public:
 			Attachment() : slot(0), format(GL_RGBA), texture(nullptr) {}
-			Attachment(GLenum attachPoint, GLenum format) : slot(attachPoint), format(format), texture(nullptr) {}
+			Attachment(GLenum attachPoint, GLenum format) : slot(attachPoint), format(format), internalFormat(0), texture(nullptr) {}
+			Attachment(GLenum attachPoint, GLenum format, GLenum internalFormat) : slot(attachPoint), format(format), internalFormat(internalFormat), texture(nullptr) {}
 		};
 
 		static Mesh* fullscreenQuadMesh;

@@ -39,7 +39,7 @@ void TestScene::load() {
 
 	sun = new Entity("Sun");
 	sun->transform->setPosition({-10, 10, -10});
-	Light* sunLight = new Light(sun, Light::Directional);
+	Light* sunLight = new Light(sun, LightType::Directional);
 	sunLight->setCastShadow(true);
 	sun->addComponent(sunLight);
 	sun->transform->setRotation(Rotor3f::euler({M_PI_4, M_PI_4 * 0.5f, 0}));
@@ -86,19 +86,25 @@ void TestScene::load() {
 	Entity* noTransfChild = new Entity("EntityNoTransform", false);
 	noTransfChild->setParent(rotatingEnt);
 
-	Entity* particlesEnt = new Entity("Particles");
-	particlesEnt->setParent(noTransfChild);
-	particlesEnt->transform->setPosition(Vec3f(0, 2, 0));
-	MeshRenderer* particlesRend = particlesEnt->addComponent<MeshRenderer>();
-	particlesRend->setMaterial(testMaterial);
-	particlesRend->setMesh(cubeMesh);
-	ParticleSystem* particleSystem = particlesEnt->addComponent<ParticleSystem>();
-	particleSystem->emitVelocity = Vec3f::up * 5;
-	particleSystem->emitRate = 30;
-	particleSystem->minLifetime = 3;
-	particleSystem->maxLifetime = 5;
-	particleSystem->setMaterial(Material::find("ParticleBasic"));
-	particleSystem->startEmit();
+	//Entity* particlesEnt = new Entity("Particles");
+	//particlesEnt->setParent(noTransfChild);
+	//particlesEnt->transform->setPosition(Vec3f(0, 2, 0));
+	//MeshRenderer* particlesRend = particlesEnt->addComponent<MeshRenderer>();
+	//particlesRend->setMaterial(testMaterial);
+	//particlesRend->setMesh(cubeMesh);
+	//ParticleSystem* particleSystem = particlesEnt->addComponent<ParticleSystem>();
+	//particleSystem->emitVelocity = Vec3f::up * 5;
+	//particleSystem->emitRate = 30;
+	//particleSystem->minLifetime = 3;
+	//particleSystem->maxLifetime = 5;
+	//particleSystem->setMaterial(Material::find("ParticleBasic"));
+	//particleSystem->startEmit();
+	Entity* childEnt = new Entity("ChildCube");
+	childEnt->setParent(noTransfChild);
+	childEnt->transform->setPosition(Vec3f(0, 2, 0));
+	MeshRenderer* childEntRend = childEnt->addComponent<MeshRenderer>();
+	childEntRend->setMaterial(testMaterial);
+	childEntRend->setMesh(cubeMesh);
 
 	Collider* groundCollider = new ConcaveMeshCollider(cubeMesh, {100, 10, 100});
 	Collider* groundWallCollider = new ConvexMeshCollider(cubeMesh, {2, 2, 10});
@@ -130,7 +136,7 @@ void TestScene::load() {
 	sphere->transform->setWorldScale({1, 1, 1});
 	MeshRenderer* sphereRenderer = sphere->addComponent<MeshRenderer>();
 	sphereRenderer->setMaterial(wallMaterial);
-	sphereMesh = MeshImporter::Import("icosphere.obj");
+	sphereMesh = MeshImporter::Import("cone.obj");
 	sphereMesh->uploadToGL();
 	sphereRenderer->setMesh(sphereMesh);
 
@@ -147,11 +153,11 @@ void TestScene::load() {
 	Entity* dynLightEntity = new Entity("Light");
 	dynLightEntity->transform->setPosition({6, 10, 0});
 	dynLightEntity->transform->setRotation(Rotor3f::euler(half_pi, 0, 0));
-	Light* pointLight = new Light(dynLightEntity, Light::Spot);
+	Light* pointLight = new Light(dynLightEntity, LightType::Spot);
 	pointLight->range = 10.0f;
 	pointLight->angle = quarter_pi;
 	pointLight->innerAngle = quarter_pi * 0.5f;
-	pointLight->setCastShadow(true);
+	//pointLight->setCastShadow(true);
 	dynLightEntity->addComponent(pointLight);
 
 

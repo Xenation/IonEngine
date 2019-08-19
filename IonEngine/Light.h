@@ -4,15 +4,36 @@
 
 namespace IonEngine {
 	class ShadowCaster;
+	class Mesh;
+
+	struct LightType {
+		static constexpr unsigned int DirectionalId = 0;
+		static const LightType*const Directional;
+		static constexpr unsigned int PointId = 1;
+		static const LightType*const Point;
+		static constexpr unsigned int SpotId = 2;
+		static const LightType*const Spot;
+
+		const unsigned int id = 0;
+		Mesh*const cullingMesh = nullptr;
+
+	public:
+		LightType(unsigned int id, Mesh* mesh) : id(id), cullingMesh(mesh) {}
+
+		static constexpr const LightType* fromId(unsigned int id) {
+			switch (id) {
+			case LightType::DirectionalId:
+				return LightType::Directional;
+			case LightType::PointId:
+				return LightType::Point;
+			case LightType::SpotId:
+				return LightType::Spot;
+			}
+		}
+	};
 
 	class Light : public Component {
 	public:
-		enum Type : unsigned int {
-			Directional = 0,
-			Point = 1,
-			Spot = 2
-		};
-
 		union { // Use the alpha for intensity to save space
 			Color color;
 			struct { float colr, colg, colb, intensity; };
@@ -21,14 +42,14 @@ namespace IonEngine {
 		float angle;
 		float innerAngle;
 
-		Light(Entity* entity, Type type);
+		Light(Entity* entity, const LightType* type);
 		~Light();
 
 		void onEnable() override;
 		void onDisable() override;
 
-		Type getType() const { return type; }
-		void setType(Type type);
+		const LightType* getType() const { return type; }
+		void setType(const LightType* type);
 		Vec3f getDirection() const;
 		Vec3f getPosition() const;
 		bool isCastingShadow() const { return shadowCaster != nullptr; }
@@ -36,7 +57,7 @@ namespace IonEngine {
 		ShadowCaster* getShadowCaster() { return shadowCaster; }
 
 	private:
-		Type type = Type::Point;
+		const LightType* type = LightType::Point;
 		ShadowCaster* shadowCaster = nullptr;
 	};
 }

@@ -16,24 +16,24 @@ void LightInspector::drawGui(Component* component) {
 		light->setCastShadow(castShadow);
 	}
 	const char* types[3] = {"Directional", "Point", "Spot"};
-	int type = light->getType();
+	int type = light->getType()->id;
 	if (ImGui::Combo("Type", &type, types, 3)) {
-		light->setType((Light::Type) type);
+		light->setType(LightType::fromId(type));
 	}
 	ImGui::Indent();
-	switch (light->getType()) {
-	case Light::Directional:
+	switch (light->getType()->id) {
+	case LightType::DirectionalId:
 		VisualDebug::drawLine(light->getPosition(), light->getPosition() + light->getDirection() * 2.0f, light->color);
 		VisualDebug::drawWireDisk(light->getPosition(), light->getDirection(), 0.25f, light->color);
 		VisualDebug::drawWireDisk(light->getPosition() + light->getDirection() * 0.3f, light->getDirection(), 0.25f, light->color);
 		VisualDebug::drawWireDisk(light->getPosition() + light->getDirection() * 0.6f, light->getDirection(), 0.25f, light->color);
 		VisualDebug::drawWireDisk(light->getPosition() + light->getDirection() * 1.0f, light->getDirection(), 0.25f, light->color);
 		break;
-	case Light::Point:
+	case LightType::PointId:
 		ImGui::DragFloat("Range", &light->range, 0.1f);
 		VisualDebug::drawWireSphere(light->getPosition(), light->range, light->color);
 		break;
-	case Light::Spot:
+	case LightType::SpotId:
 		ImGui::DragFloat("Range", &light->range, 0.1f);
 		float degAngle = light->angle * rad2deg;
 		if (ImGui::DragFloat("Angle", &degAngle, 0.1f)) {

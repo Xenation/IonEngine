@@ -1,4 +1,4 @@
-#version 420
+#version 430
 
 layout (std140, binding = 2) uniform GlobalsVars {
 	float time;
@@ -19,6 +19,7 @@ layout (binding = 0) uniform sampler2DMS gAlbedo;
 layout (binding = 1) uniform sampler2DMS gNormal;
 layout (binding = 2) uniform sampler2DMS gDepth;
 layout (binding = 3) uniform sampler2D shadowAtlas;
+layout (binding = 4) uniform sampler2D clusterDebug;
 
 layout (std140, binding = 10) uniform Material {
 	uint directionalCount;
@@ -34,6 +35,12 @@ layout (std140, binding = 10) uniform Material {
 	ivec4 shadowAtlasIndices[32];
 	vec4 shadowAtlasCoords[34];
 	mat4x4 shadowAtlasWTLMatrices[34];
+};
+
+layout (std430, binding = 4) buffer LightClusters {
+	uint listIndex;
+	uint clusters[48*24*64]; //Total:73728, [32b]:offset
+	uint indexList[48*24*64*2]; //Total:147456, [2b]:type, [10b]:lightId, [20b]:nextPtr + 1 (0 is for end)
 };
 
 in vec2 uv;
@@ -53,6 +60,22 @@ vec3 decodeNormal(vec2 v) {
 	return n;
 }
 
+vec4 viewPosFromDepth(vec2 uv, float depth, mat4 invProj) {
+	vec4 viewPos = invProj * vec4((uv * 2 - 1), depth, 1.0);
+	viewPos /= viewPos.w;
+	return viewPos;
+}
+vec4 worldPosFromView(vec4 viewPos, mat4 invView) {
+	vec4 worldPos = invView * viewPos;
+	return worldPos;
+}
+vec4 worldPosFromDepth(vec2 uv, float depth, mat4 invView, mat4 invProj) {
+	vec4 worldPos = invProj * vec4((uv * 2 - 1), depth, 1.0);
+	worldPos /= worldPos.w;
+	worldPos = invView * worldPos;
+	return worldPos;
+}
+
 float sampleShadowAtlas(vec4 viewport, vec2 pos) {
 	if (pos.x < 0 || pos.x > 1 || pos.y < 0 || pos.y > 1) return 1.0;
 	vec2 atlasPos = viewport.xy + pos * viewport.zw;
@@ -66,14 +89,14 @@ float computeShadow(uint atlasIndex, vec4 worldPos) {
 	vec4 lightPos = shadowAtlasWTLMatrices[atlasIndex] * worldPos;
 	vec3 projPos = lightPos.xyz / lightPos.w;
 	projPos = projPos * 0.5 + 0.5;
-	if (projPos.x < 0 || projPos.y < 0 || projPos.z < 0 || projPos.x > 1 || projPos.y > 1 || projPos.z > 1) return 0.0;
+	if (projPos.x < 0 || projPos.y < 0 || projPos.z < 0 || projPos.x > 1 || projPos.y > 1 || projPos.z > 1) return 1.0;
 	float currentDepth = projPos.z;
 
 	float shadow = 0;
 	for (int y = -1; y <= 1; y++) {
 		for (int x = -1; x <= 1; x++) {
 			float lightDepth = sampleShadowAtlas(shadowAtlasCoords[atlasIndex], projPos.xy + vec2(x, y) * texelSize).r;
-			shadow += (currentDepth > lightDepth) ? 1.0 : 0.0;
+			shadow += (currentDepth > lightDepth) ? 0.0 : 1.0;
 		}
 	}
 	shadow /= 9;
@@ -81,8 +104,70 @@ float computeShadow(uint atlasIndex, vec4 worldPos) {
 	return shadow;
 }
 
+float computeShadowHard(uint atlasIndex, vec4 worldPos) {
+	vec4 lightPos = shadowAtlasWTLMatrices[atlasIndex] * worldPos;
+	vec3 projPos = lightPos.xyz / lightPos.w;
+	projPos = projPos * 0.5 + 0.5;
+	if (projPos.x < 0 || projPos.y < 0 || projPos.z < 0 || projPos.x > 1 || projPos.y > 1 || projPos.z > 1) return 1.0;
+	float currentDepth = projPos.z;
+
+	float lightDepth = sampleShadowAtlas(shadowAtlasCoords[atlasIndex], projPos.xy).r;
+
+	return (currentDepth > lightDepth) ? 0.0 : 1.0;
+}
+
+uint depthSlice(float viewDepth) {
+	return uint(log(viewDepth) * (64 / log(zFar / zNear)) - ((64 * log(zNear)) / log(zFar / zNear)));
+}
+
+uvec2 tileCoords(vec2 fCoords) {
+	return uvec2(fCoords.x * 48, fCoords.y * 24);
+}
+
+uint readCluster(uvec3 clusterCoords) {
+	uint clusterIndex = clusterCoords.z * 1152 + clusterCoords.y * 48 + clusterCoords.x;
+	return clusters[clusterIndex];
+}
+
+vec3 shadePointLight(vec4 worldPos, vec3 normal, vec4 albedo, uint pointLightId) {
+	vec3 lightDir = pointParams[pointLightId].xyz - worldPos.xyz;
+	float distSqr = dot(lightDir, lightDir);
+	float rangeSqr = pointParams[pointLightId].w * pointParams[pointLightId].w;
+	if (distSqr > rangeSqr) return vec3(0);
+	vec4 lightColor = vec4(0, 0, 0, 1 - clamp(distSqr / rangeSqr, 0, 1));
+	lightDir /= sqrt(distSqr);
+	lightColor = pointColors[pointLightId] * lightColor.a;
+	return max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a;
+}
+
+vec3 shadeSpotLight(vec4 worldPos, vec3 normal, vec4 albedo, uint spotLightId) {
+	vec3 lightDir = spotPos[spotLightId].xyz - worldPos.xyz;
+	float distSqr = dot(lightDir, lightDir);
+	float rangeSqr = spotPos[spotLightId].w * spotPos[spotLightId].w;
+	if (distSqr > rangeSqr) return vec3(0);
+	lightDir /= sqrt(distSqr);
+	vec3 spotDir = decodeNormal(spotParams[spotLightId].xy);
+	float atten = clamp(remap(acos(dot(spotDir, -lightDir)), spotParams[spotLightId].w * 0.5, spotParams[spotLightId].z * 0.5, 0, 1), 0, 1);
+	if (atten < 0) return vec3(0);
+	vec4 lightColor = vec4(0, 0, 0, (1 - clamp(distSqr / rangeSqr, 0, 1)) * atten);
+	lightColor = spotColors[spotLightId] * lightColor.a;
+	float shadowMult;
+	if (shadowAtlasIndices[spotLightId].z >= 0) {
+		shadowMult = computeShadow(shadowAtlasIndices[spotLightId].z, worldPos);
+	} else {
+		shadowMult = 1.0;
+	}
+	return max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a * shadowMult;
+}
+
 void main() {
 	ivec2 pixel = ivec2(uv * resolution);
+
+	uvec2 tCoords = tileCoords(uv);
+
+	// TODO take inverted matrices as input
+	mat4 invViewMatrix = inverse(viewMatrix);
+	mat4 invProjMatrix = inverse(projectionMatrix);
 
 	vec3 fColor = vec3(0);
 	for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
@@ -90,10 +175,29 @@ void main() {
 		vec3 normal = texelFetch(gNormal, pixel, sampleIndex).rgb * 2.0 - 1.0;
 		float depth = texelFetch(gDepth, pixel, sampleIndex).x * 2.0 - 1.0;
 
-		// TODO take inverted matrices as input
-		vec4 worldPos = inverse(projectionMatrix) * vec4((uv * 2 - 1), depth, 1.0);
-		worldPos /= worldPos.w;
-		worldPos = inverse(viewMatrix) * worldPos;
+		vec4 worldPos = worldPosFromDepth(uv, depth, invViewMatrix, invProjMatrix);
+
+		vec4 viewPos = viewPosFromDepth(uv, depth, invProjMatrix);
+		uint clusterListIndex = readCluster(uvec3(tileCoords(uv), depthSlice(viewPos.z)));
+
+		//fragColor = vec4(texture(clusterDebug, uv).g / 64, 0, 0, 1);
+		//return;
+
+		//uvec3 clusterCoords = uvec3(tileCoords(uv), depthSlice(viewPos.z));
+		//uint clusterIndex = clusterCoords.z * 1024 + clusterCoords.y * 32 + clusterCoords.x;
+		//fragColor = vec4(float(clusterIndex) / 32, 0, 0, 1);
+		//fragColor = vec4(gl_FragCoord.xy / resolution, 0, 1);
+		//fragColor = vec4(vec2(tileCoords(uv)) / 32, float(depthSlice(viewPos.z)) / 64, 1);
+		//fragColor = vec4(0, 0, float(depthSlice(viewPos.z)) / 64, 1);
+		//return;
+
+//		if (clusterListIndex != 0) {
+//			fragColor = vec4(1, 0, 0, 1);
+//			return;
+//		} else {
+//			fragColor = vec4(0, 0, 1, 1);
+//			return;
+//		}
 
 		if (albedo.w < 0.5) {
 			fColor += albedo.rgb;
@@ -105,7 +209,7 @@ void main() {
 		float shadowMult;
 		for (uint i = 0; i < directionalCount; i++) {
 			if (shadowAtlasIndices[i].x >= 0) {
-				shadowMult = 1.0 - computeShadow(shadowAtlasIndices[i].x, worldPos);
+				shadowMult = computeShadow(shadowAtlasIndices[i].x, worldPos);
 			} else {
 				shadowMult = 1.0;
 			}
@@ -114,33 +218,53 @@ void main() {
 			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a * shadowMult;
 		}
 
-		for (uint i = 0; i < pointCount; i++) {
-			vec3 lightDir = pointParams[i].xyz - worldPos.xyz;
-			float dist = length(lightDir);
-			if (dist > pointParams[i].w) continue;
-			vec4 lightColor = vec4(0, 0, 0, 1 - clamp(dist / pointParams[i].w, 0, 1));
-			lightDir /= dist;
-			lightColor = pointColors[i] * lightColor.a;
-			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a;
+//		uint counted = 0;
+		while (clusterListIndex != 0) {
+//			counted++;
+			uint lightType = (indexList[clusterListIndex - 1] >> 30) & 0x00000003;
+			uint lightId = (indexList[clusterListIndex - 1] >> 20) & 0x000003ff;
+
+			if (lightType == 0) {
+				sColor += shadePointLight(worldPos, normal, albedo, lightId);
+			} else if (lightType == 1) {
+				sColor += shadeSpotLight(worldPos, normal, albedo, lightId);
+			}
+
+			clusterListIndex = indexList[clusterListIndex - 1] & 0x000fffff;
 		}
 
-		for (uint i = 0; i < spotCount; i++) {
-			vec3 lightDir = spotPos[i].xyz - worldPos.xyz;
-			float dist = length(lightDir);
-			if (dist > spotPos[i].w) continue;
-			lightDir /= dist;
-			vec3 spotDir = decodeNormal(spotParams[i].xy);
-			float atten = clamp(remap(acos(dot(spotDir, -lightDir)), spotParams[i].w * 0.5, spotParams[i].z * 0.5, 0, 1), 0, 1);
-			if (atten < 0) continue;
-			vec4 lightColor = vec4(0, 0, 0, (1 - clamp(dist / spotPos[i].w, 0, 1)) * atten);
-			lightColor = spotColors[i] * lightColor.a;
-			if (shadowAtlasIndices[i].z >= 0) {
-				shadowMult = 1.0 - computeShadow(shadowAtlasIndices[i].z, worldPos);
-			} else {
-				shadowMult = 1.0;
-			}
-			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a * shadowMult;
-		}
+//		fragColor = vec4(float(counted) / 32, 0, 0, 1);
+//		return;
+
+//		for (uint i = 0; i < pointCount; i++) {
+//			vec3 lightDir = pointParams[i].xyz - worldPos.xyz;
+//			float distSqr = dot(lightDir, lightDir);
+//			float rangeSqr = pointParams[i].w * pointParams[i].w;
+//			if (distSqr > rangeSqr) continue;
+//			vec4 lightColor = vec4(0, 0, 0, 1 - clamp(distSqr / rangeSqr, 0, 1));
+//			lightDir /= sqrt(distSqr);
+//			lightColor = pointColors[i] * lightColor.a;
+//			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a;
+//		}
+
+//		for (uint i = 0; i < spotCount; i++) {
+//			vec3 lightDir = spotPos[i].xyz - worldPos.xyz;
+//			float distSqr = dot(lightDir, lightDir);
+//			float rangeSqr = spotPos[i].w * spotPos[i].w;
+//			if (distSqr > rangeSqr) continue;
+//			lightDir /= sqrt(distSqr);
+//			vec3 spotDir = decodeNormal(spotParams[i].xy);
+//			float atten = clamp(remap(acos(dot(spotDir, -lightDir)), spotParams[i].w * 0.5, spotParams[i].z * 0.5, 0, 1), 0, 1);
+//			if (atten < 0) continue;
+//			vec4 lightColor = vec4(0, 0, 0, (1 - clamp(distSqr / rangeSqr, 0, 1)) * atten);
+//			lightColor = spotColors[i] * lightColor.a;
+//			if (shadowAtlasIndices[i].z >= 0) {
+//				shadowMult = computeShadow(shadowAtlasIndices[i].z, worldPos);
+//			} else {
+//				shadowMult = 1.0;
+//			}
+//			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a * shadowMult;
+//		}
 
 		fColor += sColor;
 	}

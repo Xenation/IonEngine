@@ -4,11 +4,17 @@
 #include "Engine.h"
 #include "LightManager.h"
 #include "ShadowCaster.h"
+#include "MeshImporter.h"
 using namespace IonEngine;
 
 
 
-Light::Light(Entity* entity, Type type) : Component(entity), type(type), color(Color::white) {
+const LightType*const LightType::Directional = new LightType(LightType::DirectionalId, nullptr);
+const LightType*const LightType::Point = new LightType(LightType::PointId, MeshImporter::Import("icosphere.obj"));
+const LightType*const LightType::Spot = new LightType(LightType::SpotId, MeshImporter::Import("cone.obj"));
+
+
+Light::Light(Entity* entity, const LightType* type) : Component(entity), type(type), color(Color::white) {
 	
 }
 
@@ -27,7 +33,7 @@ void Light::onDisable() {
 	Engine::lightManager->unregisterLight(this);
 }
 
-void Light::setType(Light::Type type) {
+void Light::setType(const LightType* type) {
 	Engine::lightManager->unregisterLight(this);
 	this->type = type;
 	Engine::lightManager->registerLight(this);

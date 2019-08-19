@@ -184,6 +184,7 @@ void Material::use() {
 	uniformBuffer->bindLayout(0);
 	// Texture Uniform Samplers
 	for (uint i = 0; i < textureFieldCount; i++) {
+		if (textureFields[i].texture == nullptr) continue;
 		glActiveTexture(GL_TEXTURE0 + textureFields[i].textureUnit);
 		textureFields[i].texture->bind();
 	}

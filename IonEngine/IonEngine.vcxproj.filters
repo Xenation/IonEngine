@@ -297,6 +297,9 @@
     <ClCompile Include="ShadowAtlas.cpp">
       <Filter>Source Files\Engine\Render\Lighting</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderStorageBuffer.cpp">
+      <Filter>Source Files\Engine\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -538,6 +541,9 @@
     </ClInclude>
     <ClInclude Include="ShadowAtlas.h">
       <Filter>Header Files\Engine\Render\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStorageBuffer.h">
+      <Filter>Header Files\Engine\Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

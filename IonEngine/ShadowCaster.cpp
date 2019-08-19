@@ -28,14 +28,14 @@ Matrix4x4f ShadowCaster::updateWorldToLightMatrix(Camera* camera) {
 	Matrix4x4f viewMatrix = Matrix4x4f::identity;
 	Matrix4x4f projectionMatrix = Matrix4x4f::identity;
 
-	switch (light->getType()) {
-	case Light::Directional:
+	switch (light->getType()->id) {
+	case LightType::DirectionalId:
 		viewMatrix = light->transform->getLocalToWorldMatrix();
 		viewMatrix.translation() = camera->transform->getPosition() - light->getDirection() * 50.0f;
 		viewMatrix = viewMatrix.inverseAffine();
 		projectionMatrix = Matrix4x4f::orthogonalProjection(50.0f, -50.0f, 50.0f, -50.0f, 0.01f, 100.0f);
 		break;
-	case Light::Spot:
+	case LightType::SpotId:
 		viewMatrix = light->transform->getWorldToLocalMatrix();
 		projectionMatrix = Matrix4x4f::perspectiveProjection(light->angle * rad2deg, 1.0f, 0.01f, light->range);
 		break;

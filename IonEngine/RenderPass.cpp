@@ -13,6 +13,9 @@
 #include "Transform.h"
 #include "ShadowCaster.h"
 #include "ShadowAtlas.h"
+#include "Mesh.h"
+#include "ShaderStorageBuffer.h"
+#include "Texture.h"
 #include "Time.h" //
 using namespace IonEngine;
 
@@ -52,7 +55,90 @@ void RenderPass::render(Camera* camera, const SimpleSet<unsigned int>& visibleRe
 
 
 
-/* ==== SHADOWS ====*/
+/* ==== LIGHT ASSIGN ==== */
+RenderPassLightAssign::RenderPassLightAssign(Pipeline* pipeline) : RenderPass("light-assign", pipeline) {
+	lightAssignBuffer = new Framebuffer("LightAssign", 48, 24);
+	lightAssignBuffer->createAttachments(1, new Framebuffer::Attachment[1]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RG, GL_RG16F)});
+	//lightAssignBuffer->clearColor = Color::clear;
+
+	clustersBuffer = new ShaderStorageBuffer("LightClusters", 73728 * 4 + 147456 * 4 + 4);
+	clustersBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(4, 0, 73728 * 4 + 147456 * 4 + 4)});
+	clustersBuffer->uploadToGL();
+	clustersBuffer->bindStorageBlock(0);
+	clustersBuffer->clearData();
+}
+
+RenderPassLightAssign::~RenderPassLightAssign() {
+	delete lightAssignBuffer;
+}
+
+
+void RenderPassLightAssign::onShadersInitialized() {
+	ShaderProgram* lightAssignShader = ShaderProgram::find("lightassign");
+	lightAssignShader->load();
+	unsigned int count;
+	lightAssignSpecShader = lightAssignShader->getAllSpecializedPrograms(count)[0];
+	lightAssignMaterial = new Material("LightAssign", lightAssignSpecShader);
+	ltwMatrixLocation = lightAssignSpecShader->getUniformLocation("modelMatrix");
+	lightTypeLocation = lightAssignSpecShader->getUniformLocation("lightType");
+	lightIdLocation = lightAssignSpecShader->getUniformLocation("lightId");
+
+	LightType::Point->cullingMesh->uploadToGL();
+	LightType::Spot->cullingMesh->uploadToGL();
+}
+
+void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+	glEnable(GL_CONSERVATIVE_RASTERIZATION_NV);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
+	
+	clustersBuffer->clearData();
+	clustersBuffer->bindStorageBlock(0);
+	lightAssignBuffer->bind();
+	glClear(GL_COLOR_BUFFER_BIT);
+	glCullFace(GL_BACK);
+	renderLightMeshes();
+
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	glCullFace(GL_FRONT);
+	renderLightMeshes();
+	glActiveTexture(GL_TEXTURE4);
+	lightAssignBuffer->getTexture(0)->bind();
+	lightAssignBuffer->unbind();
+
+	glCullFace(GL_BACK);
+	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_CONSERVATIVE_RASTERIZATION_NV);
+
+}
+
+void RenderPassLightAssign::renderLightMeshes() {
+	SimpleSet<Light*>& pointLights = pipeline->lightManager->getPointLights();
+	SimpleSet<Light*>& spotLights = pipeline->lightManager->getSpotLights();
+
+	lightAssignSpecShader->use();
+	lightAssignMaterial->use();
+	lightAssignSpecShader->loadUInt(lightTypeLocation, 0);
+	for (unsigned int i = 0; i < pointLights.count; i++) {
+		lightAssignSpecShader->loadUInt(lightIdLocation, i);
+		lightAssignSpecShader->loadMatrix4x4f(ltwMatrixLocation, Matrix4x4f::transformation(pointLights[i]->getPosition(), Vec3f::one * pointLights[i]->range * 2.0f, Rotor3f::identity));
+		pointLights[i]->getType()->cullingMesh->render();
+	}
+
+	lightAssignSpecShader->loadUInt(lightTypeLocation, 1);
+	for (unsigned int i = 0; i < spotLights.count; i++) {
+		lightAssignSpecShader->loadUInt(lightIdLocation, i);
+		float endRadius = tanf(spotLights[i]->angle * 0.5) * spotLights[i]->range;
+		lightAssignSpecShader->loadMatrix4x4f(ltwMatrixLocation, Matrix4x4f::transformation(spotLights[i]->getPosition(), Vec3f(endRadius, endRadius, spotLights[i]->range), Rotor3f(Vec3f::forward, spotLights[i]->getDirection())));
+		spotLights[i]->getType()->cullingMesh->render();
+	}
+	lightAssignSpecShader->unuse();
+
+}
+
+
+
+/* ==== SHADOWS ==== */
 RenderPassShadows::RenderPassShadows(Pipeline* pipeline, HollowSet<Renderer*>& renderers) : RenderPass("shadows", pipeline), renderers(renderers) {
 	
 }
@@ -79,7 +165,9 @@ RenderPassOpaque::RenderPassOpaque(const char* name, Pipeline* pipeline, unsigne
 	renderBuffer->clearColor = Color(0.52f, 0.80f, 0.97f, 0.0); //135-206-250
 }
 
-RenderPassOpaque::~RenderPassOpaque() {}
+RenderPassOpaque::~RenderPassOpaque() {
+	delete renderBuffer;
+}
 
 
 void RenderPassOpaque::onShadersInitialized() {
@@ -114,7 +202,6 @@ void RenderPassOpaque::updateLightsData() {
 	if (pipeline->shadowAtlas != nullptr) {
 		ShadowAtlas* shadowAtlas = pipeline->shadowAtlas;
 		deferredMaterial->setTextureByUnit(3, shadowAtlas->getTexture());
-		
 	}
 
 	SimpleSet<Light*>& directionals = pipeline->lightManager->getDirectionalLights();

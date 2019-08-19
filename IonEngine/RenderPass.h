@@ -14,6 +14,7 @@ namespace IonEngine {
 	class Renderer;
 	class ShadowCaster;
 	class Camera;
+	class ShaderStorageBuffer;
 
 	class RenderPass {
 	public:
@@ -32,6 +33,26 @@ namespace IonEngine {
 
 	protected:
 		Pipeline* pipeline;
+	};
+
+	class RenderPassLightAssign : public RenderPass {
+	public:
+		RenderPassLightAssign(Pipeline* pipeline);
+		~RenderPassLightAssign();
+
+		virtual void onShadersInitialized() override;
+		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
+
+	private:
+		Framebuffer* lightAssignBuffer;
+		SpecializedShaderProgram* lightAssignSpecShader;
+		Material* lightAssignMaterial;
+		unsigned int ltwMatrixLocation;
+		unsigned int lightTypeLocation;
+		unsigned int lightIdLocation;
+		ShaderStorageBuffer* clustersBuffer;
+
+		void renderLightMeshes();
 	};
 
 	class RenderPassShadows : public RenderPass {

@@ -11,28 +11,28 @@ LightManager::~LightManager() {}
 
 
 void LightManager::registerLight(Light* light) {
-	switch (light->getType()) {
-	case Light::Directional:
+	switch (light->getType()->id) {
+	case LightType::DirectionalId:
 		directionalLights.add(light);
 		break;
-	case Light::Point:
+	case LightType::PointId:
 		pointLights.add(light);
 		break;
-	case Light::Spot:
+	case LightType::SpotId:
 		spotLights.add(light);
 		break;
 	}
 }
 
 void LightManager::unregisterLight(Light* light) {
-	switch (light->getType()) {
-	case Light::Directional:
+	switch (light->getType()->id) {
+	case LightType::DirectionalId:
 		directionalLights.remove(light);
 		break;
-	case Light::Point:
+	case LightType::PointId:
 		pointLights.remove(light);
 		break;
-	case Light::Spot:
+	case LightType::SpotId:
 		spotLights.remove(light);
 		break;
 	}

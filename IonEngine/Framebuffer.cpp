@@ -80,7 +80,10 @@ void Framebuffer::createAttachment(int index) {
 	if (attachment.texture == nullptr) {
 		attachment.texture = new Texture(name + "/" + glAttachmentString(attachment.slot));
 	}
-	attachment.texture->createEmpty(width, height, attachment.format, glGetDefaultInternalFormat(attachment.format), samples, true, false); // TODO implement a way to manually specify internal format
+	if (attachment.internalFormat == 0) {
+		attachment.internalFormat = glGetDefaultInternalFormat(attachment.format);
+	}
+	attachment.texture->createEmpty(width, height, attachment.format, attachment.internalFormat, samples, true, false);
 	attachment.texture->uploadToGL();
 	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment.slot, (samples == 0) ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE, attachment.texture->getTextureID(), 0);
 }

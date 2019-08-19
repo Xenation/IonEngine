@@ -94,28 +94,28 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 }
 
 void ShadowAtlas::registerShadowCaster(ShadowCaster* caster) {
-	switch (caster->light->getType()) {
-	case Light::Directional:
+	switch (caster->light->getType()->id) {
+	case LightType::DirectionalId:
 		directionalCasters.add(caster);
 		break;
-	case Light::Point:
+	case LightType::PointId:
 		// Not supported yet
 		break;
-	case Light::Spot:
+	case LightType::SpotId:
 		spotCasters.add(caster);
 		break;
 	}
 }
 
 void ShadowAtlas::unregisterShadowCaster(ShadowCaster* caster) {
-	switch (caster->light->getType()) {
-	case Light::Directional:
+	switch (caster->light->getType()->id) {
+	case LightType::DirectionalId:
 		directionalCasters.remove(caster);
 		break;
-	case Light::Point:
+	case LightType::PointId:
 		// Not supported yet
 		break;
-	case Light::Spot:
+	case LightType::SpotId:
 		spotCasters.remove(caster);
 		break;
 	}

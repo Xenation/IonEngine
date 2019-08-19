@@ -31,6 +31,7 @@ Pipeline::Pipeline(int width, int height, LightManager* lightManager)
 	resizeFrameBuffer(width, height);
 
 	shadowAtlas = new ShadowAtlas();
+	renderPasses.add(new RenderPassLightAssign(this));
 	renderPasses.add(new RenderPassShadows(this, renderers));
 	renderPasses.add(new RenderPassOpaque("opaque", this, width, height, samples));
 	renderPasses.add(new RenderPassTransparent("transparent", this));

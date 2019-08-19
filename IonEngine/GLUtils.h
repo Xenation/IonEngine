@@ -229,6 +229,21 @@ namespace IonEngine {
 		}
 	}
 
+	inline unsigned int glGetStorageBlockAlignment(unsigned int currentOffset) {
+		static unsigned int storageBlockAlignment = 0;
+		if (storageBlockAlignment == 0) {
+			int align;
+			glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &align);
+			storageBlockAlignment = (unsigned int) align;
+		}
+		unsigned int disalign = currentOffset % storageBlockAlignment;
+		if (disalign != 0) {
+			return currentOffset + (storageBlockAlignment - disalign);
+		} else {
+			return currentOffset;
+		}
+	}
+
 	inline unsigned int glFormatBitSize(GLenum format) {
 		switch (format) {
 			// 128
