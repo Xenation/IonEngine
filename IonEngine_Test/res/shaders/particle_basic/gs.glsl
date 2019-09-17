@@ -3,19 +3,19 @@
 layout (points) in;
 layout (triangle_strip, max_vertices = 4) out;
 
-layout (std140, binding = 1) uniform Camera {
+layout (std140, binding = 1) uniform GlobalsVars {
+	float time;
+	vec4 mainDirLightColor;
+	vec4 mainDirLightDirection;
+};
+
+layout (std140, binding = 2) uniform Camera {
 	mat4x4 projectionMatrix;
 	mat4x4 viewMatrix;
 	float zNear;
 	float zFar;
 	ivec2 resolution;
 	uint sampleCount;
-};
-
-layout (std140, binding = 2) uniform GlobalsVars {
-	float time;
-	vec4 mainDirLightColor;
-	vec4 mainDirLightDirection;
 };
 
 layout (std140, binding = 10) uniform Material {

@@ -50,6 +50,7 @@ namespace IonEngine {
 		unsigned int ltwMatrixLocation;
 		unsigned int lightTypeLocation;
 		unsigned int lightIdLocation;
+		unsigned int fillLocation;
 		ShaderStorageBuffer* clustersBuffer;
 
 		void renderLightMeshes();

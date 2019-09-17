@@ -267,7 +267,7 @@ UniformLayout* UniformBuffer::findLayout(GLuint binding) {
 
 void UniformBuffer::updateLayout(unsigned int index) { // TODO make a version of this function to update a single member of a layout
 	if (!loadedToGL) {
-		Debug::logError("UniformBuffer", "Trying to update a layout not yet uploaded!");
+		Debug::logError("UniformBuffer", "Trying to update a layout from a buffer not yet uploaded!");
 		return;
 	}
 	unsigned int offset = layouts[index].offset;
@@ -279,7 +279,7 @@ void UniformBuffer::updateLayout(unsigned int index) { // TODO make a version of
 
 void UniformBuffer::bindLayout(unsigned int index) {
 	if (!loadedToGL) {
-		Debug::logError("UniformBuffer", "Trying to bind a layout not yet uploaded!");
+		Debug::logError("UniformBuffer", "Trying to bind a layout from a buffer not yet uploaded!");
 		return;
 	}
 	glBindBufferRange(GL_UNIFORM_BUFFER, layouts[index].binding, ubo, layouts[index].offset, layouts[index].size);

@@ -82,6 +82,7 @@ void RenderPassLightAssign::onShadersInitialized() {
 	ltwMatrixLocation = lightAssignSpecShader->getUniformLocation("modelMatrix");
 	lightTypeLocation = lightAssignSpecShader->getUniformLocation("lightType");
 	lightIdLocation = lightAssignSpecShader->getUniformLocation("lightId");
+	fillLocation = lightAssignSpecShader->getUniformLocation("fill");
 
 	LightType::Point->cullingMesh->uploadToGL();
 	LightType::Spot->cullingMesh->uploadToGL();
@@ -97,11 +98,16 @@ void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>
 	lightAssignBuffer->bind();
 	glClear(GL_COLOR_BUFFER_BIT);
 	glCullFace(GL_BACK);
+	lightAssignSpecShader->use();
+	lightAssignMaterial->use();
+	lightAssignSpecShader->loadBool(fillLocation, false);
 	renderLightMeshes();
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	glCullFace(GL_FRONT);
+	lightAssignSpecShader->loadBool(fillLocation, true);
 	renderLightMeshes();
+	lightAssignSpecShader->unuse();
 	glActiveTexture(GL_TEXTURE4);
 	lightAssignBuffer->getTexture(0)->bind();
 	lightAssignBuffer->unbind();
@@ -116,8 +122,6 @@ void RenderPassLightAssign::renderLightMeshes() {
 	SimpleSet<Light*>& pointLights = pipeline->lightManager->getPointLights();
 	SimpleSet<Light*>& spotLights = pipeline->lightManager->getSpotLights();
 
-	lightAssignSpecShader->use();
-	lightAssignMaterial->use();
 	lightAssignSpecShader->loadUInt(lightTypeLocation, 0);
 	for (unsigned int i = 0; i < pointLights.count; i++) {
 		lightAssignSpecShader->loadUInt(lightIdLocation, i);
@@ -132,7 +136,6 @@ void RenderPassLightAssign::renderLightMeshes() {
 		lightAssignSpecShader->loadMatrix4x4f(ltwMatrixLocation, Matrix4x4f::transformation(spotLights[i]->getPosition(), Vec3f(endRadius, endRadius, spotLights[i]->range), Rotor3f(Vec3f::forward, spotLights[i]->getDirection())));
 		spotLights[i]->getType()->cullingMesh->render();
 	}
-	lightAssignSpecShader->unuse();
 
 }
 

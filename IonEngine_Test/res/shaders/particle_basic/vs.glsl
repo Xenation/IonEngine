@@ -5,7 +5,7 @@ layout (location = 0) in vec3 particlePos;
 layout (location = 1) in vec3 particleVel;
 layout (location = 2) in vec2 particleParams;
 
-layout (std140, binding = 1) uniform Camera {
+layout (std140, binding = 2) uniform Camera {
 	mat4x4 projectionMatrix;
 	mat4x4 viewMatrix;
 	float zNear;

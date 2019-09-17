@@ -31,7 +31,7 @@ Matrix4x4f ShadowCaster::updateWorldToLightMatrix(Camera* camera) {
 	switch (light->getType()->id) {
 	case LightType::DirectionalId:
 		viewMatrix = light->transform->getLocalToWorldMatrix();
-		viewMatrix.translation() = camera->transform->getPosition() - light->getDirection() * 50.0f;
+		viewMatrix.translation() = - light->getDirection() * 50.0f; // TODO reimplement camera offset while avoiding flicker
 		viewMatrix = viewMatrix.inverseAffine();
 		projectionMatrix = Matrix4x4f::orthogonalProjection(50.0f, -50.0f, 50.0f, -50.0f, 0.01f, 100.0f);
 		break;

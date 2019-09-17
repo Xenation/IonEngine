@@ -1,12 +1,12 @@
 #version 430
 
-layout (std140, binding = 2) uniform GlobalsVars {
+layout (std140, binding = 1) uniform GlobalsVars {
 	float time;
 	vec4 mainDirLightColor;
 	vec4 mainDirLightDirection;
 };
 
-layout (std140, binding = 1) uniform Camera {
+layout (std140, binding = 2) uniform Camera {
 	mat4x4 projectionMatrix;
 	mat4x4 viewMatrix;
 	float zNear;
@@ -82,7 +82,7 @@ float sampleShadowAtlas(vec4 viewport, vec2 pos) {
 	return texture(shadowAtlas, atlasPos).r;
 }
 
-const float shadowBias = 0.0005;
+const float shadowBias = 0.001;
 float computeShadow(uint atlasIndex, vec4 worldPos) {
 	vec2 texelSize = 1.0 / textureSize(shadowAtlas, 0);
 
@@ -180,25 +180,6 @@ void main() {
 		vec4 viewPos = viewPosFromDepth(uv, depth, invProjMatrix);
 		uint clusterListIndex = readCluster(uvec3(tileCoords(uv), depthSlice(viewPos.z)));
 
-		//fragColor = vec4(texture(clusterDebug, uv).g / 64, 0, 0, 1);
-		//return;
-
-		//uvec3 clusterCoords = uvec3(tileCoords(uv), depthSlice(viewPos.z));
-		//uint clusterIndex = clusterCoords.z * 1024 + clusterCoords.y * 32 + clusterCoords.x;
-		//fragColor = vec4(float(clusterIndex) / 32, 0, 0, 1);
-		//fragColor = vec4(gl_FragCoord.xy / resolution, 0, 1);
-		//fragColor = vec4(vec2(tileCoords(uv)) / 32, float(depthSlice(viewPos.z)) / 64, 1);
-		//fragColor = vec4(0, 0, float(depthSlice(viewPos.z)) / 64, 1);
-		//return;
-
-//		if (clusterListIndex != 0) {
-//			fragColor = vec4(1, 0, 0, 1);
-//			return;
-//		} else {
-//			fragColor = vec4(0, 0, 1, 1);
-//			return;
-//		}
-
 		if (albedo.w < 0.5) {
 			fColor += albedo.rgb;
 			continue;
@@ -233,38 +214,8 @@ void main() {
 			clusterListIndex = indexList[clusterListIndex - 1] & 0x000fffff;
 		}
 
-//		fragColor = vec4(float(counted) / 32, 0, 0, 1);
+//		fragColor = vec4(float(counted) / 16, 0, 0, 1);
 //		return;
-
-//		for (uint i = 0; i < pointCount; i++) {
-//			vec3 lightDir = pointParams[i].xyz - worldPos.xyz;
-//			float distSqr = dot(lightDir, lightDir);
-//			float rangeSqr = pointParams[i].w * pointParams[i].w;
-//			if (distSqr > rangeSqr) continue;
-//			vec4 lightColor = vec4(0, 0, 0, 1 - clamp(distSqr / rangeSqr, 0, 1));
-//			lightDir /= sqrt(distSqr);
-//			lightColor = pointColors[i] * lightColor.a;
-//			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a;
-//		}
-
-//		for (uint i = 0; i < spotCount; i++) {
-//			vec3 lightDir = spotPos[i].xyz - worldPos.xyz;
-//			float distSqr = dot(lightDir, lightDir);
-//			float rangeSqr = spotPos[i].w * spotPos[i].w;
-//			if (distSqr > rangeSqr) continue;
-//			lightDir /= sqrt(distSqr);
-//			vec3 spotDir = decodeNormal(spotParams[i].xy);
-//			float atten = clamp(remap(acos(dot(spotDir, -lightDir)), spotParams[i].w * 0.5, spotParams[i].z * 0.5, 0, 1), 0, 1);
-//			if (atten < 0) continue;
-//			vec4 lightColor = vec4(0, 0, 0, (1 - clamp(distSqr / rangeSqr, 0, 1)) * atten);
-//			lightColor = spotColors[i] * lightColor.a;
-//			if (shadowAtlasIndices[i].z >= 0) {
-//				shadowMult = computeShadow(shadowAtlasIndices[i].z, worldPos);
-//			} else {
-//				shadowMult = 1.0;
-//			}
-//			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a * shadowMult;
-//		}
 
 		fColor += sColor;
 	}

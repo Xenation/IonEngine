@@ -1,12 +1,12 @@
 #version 430
 
-layout (std140, binding = 2) uniform GlobalsVars {
+layout (std140, binding = 1) uniform GlobalsVars {
 	float time;
 	vec4 mainDirLightColor;
 	vec4 mainDirLightDirection;
 };
 
-layout (std140, binding = 1) uniform Camera {
+layout (std140, binding = 2) uniform Camera {
 	mat4x4 projectionMatrix;
 	mat4x4 viewMatrix;
 	float zNear;
@@ -28,6 +28,7 @@ layout (std140, binding = 10) uniform Material {
 
 uniform uint lightType;
 uniform uint lightId;
+uniform bool fill;
 
 flat in uvec2 triMinMaxSlices;
 
@@ -52,7 +53,7 @@ uint addLightIndex(uint lightType, uint lightId, uint prevIndex) {
 	}
 
 	// Build the node
-	uint indexValue = (lightType << 30) | (lightId << 20) | 0;
+	uint indexValue = ((lightType << 30) & 0xc0000000) | ((lightId << 20) & 0x3ff00000) | 0;
 	indexList[listIndex] = indexValue;
 
 	return listIndex;
@@ -86,7 +87,6 @@ bool clusterHasLight(uvec3 clusterPos, uint lightType, uint lightId) {
 	// Find the cluster
 	uint clusterIndex = clusterPos.z * 1152 + clusterPos.y * 48 + clusterPos.x;
 	uint currentNodeIndex = clusters[clusterIndex];
-	uint lastNode = 0;
 
 	// Search the cluster list
 	while (currentNodeIndex != 0) {
@@ -101,18 +101,17 @@ bool clusterHasLight(uvec3 clusterPos, uint lightType, uint lightId) {
 	return false;
 }
 
-bool findNearClusterWithLight(uvec3 startClusterPos, uint lightType, uint lightId, inout uint nearClusterSlice) {
+int findNearClusterWithLight(uvec3 startClusterPos, uint lightType, uint lightId) {
 
 	// Loop through the clusters further than the current one
 	for (int slice = int(startClusterPos.z) - 1; slice >= 0; slice--) {
 		// Check if the light is already added to the cluster
 		if (clusterHasLight(uvec3(startClusterPos.xy, uint(slice)), lightType, lightId)) {
-			nearClusterSlice = uint(slice);
-			return true;
+			return slice;
 		}
 	}
 
-	return false;
+	return -1;
 }
 
 void writeClusters(uvec2 tile, uint minSlice, uint maxSlice) {
@@ -122,9 +121,16 @@ void writeClusters(uvec2 tile, uint minSlice, uint maxSlice) {
 }
 
 void main() {
-	uint nearClusterSlice = 0;
-	findNearClusterWithLight(uvec3(uvec2(gl_FragCoord.xy), triMinMaxSlices.x), lightType, lightId, nearClusterSlice);
-	writeClusters(uvec2(gl_FragCoord.xy), nearClusterSlice, triMinMaxSlices.y);
+	uint minSlice = triMinMaxSlices.x;
+	if (fill) {
+		uint nearClusterSlice = findNearClusterWithLight(uvec3(uvec2(gl_FragCoord.xy), triMinMaxSlices.x), lightType, lightId);;
+		if (nearClusterSlice != -1) {
+			minSlice = nearClusterSlice;
+		} else {
+			minSlice = 0;
+		}
+	}
+	writeClusters(uvec2(gl_FragCoord.xy), minSlice, triMinMaxSlices.y);
 
 	frag = vec4(triMinMaxSlices.x, triMinMaxSlices.y, 0, 0);
 }

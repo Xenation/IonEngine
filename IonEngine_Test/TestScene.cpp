@@ -36,6 +36,12 @@ void TestScene::load() {
 	camera->addComponent<NoclipController>()->lookSensivity = 0.5f;
 	camera->transform->setPosition({5, 5, -5});
 	camera->transform->setRotation(Rotor3f::euler({ M_PI_4, -M_PI_4, 0 }));
+	//Light* cameraLight = new Light(camera, LightType::Spot);
+	////cameraLight->setCastShadow(true);
+	//cameraLight->range = 50.0f;
+	//cameraLight->angle = quarter_pi;
+	//cameraLight->innerAngle = quarter_pi * 0.5f;
+	//camera->addComponent(cameraLight);
 
 	sun = new Entity("Sun");
 	sun->transform->setPosition({-10, 10, -10});
