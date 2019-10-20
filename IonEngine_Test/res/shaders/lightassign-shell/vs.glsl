@@ -17,7 +17,10 @@ layout (std140, binding = 10) uniform Material {
 
 uniform mat4x4 modelMatrix;
 
+out vec4 viewPos;
+
 
 void main() {
-	gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(vertexPos, 1.0);
+	viewPos = viewMatrix * modelMatrix * vec4(vertexPos, 1.0);
+	gl_Position = projectionMatrix * viewPos;
 }

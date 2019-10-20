@@ -182,6 +182,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AtomicCounterBuffer.cpp" />
     <ClCompile Include="BaseComponentInspector.cpp" />
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="BulletMesh.cpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CompoundCollider.cpp" />
+    <ClCompile Include="ComputeShader.cpp" />
     <ClCompile Include="ConcaveMeshCollider.cpp" />
     <ClCompile Include="ConsoleWindow.cpp" />
     <ClCompile Include="ConvexMeshCollider.cpp" />
@@ -255,6 +257,7 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AtomicCounterBuffer.h" />
     <ClInclude Include="BaseComponentInspector.h" />
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="BulletMesh.h" />
@@ -264,6 +267,7 @@
     <ClInclude Include="Component.h" />
     <ClInclude Include="ComponentInspector.h" />
     <ClInclude Include="CompoundCollider.h" />
+    <ClInclude Include="ComputeShader.h" />
     <ClInclude Include="ConcaveMeshCollider.h" />
     <ClInclude Include="ConsoleWindow.h" />
     <ClInclude Include="ConvexMeshCollider.h" />

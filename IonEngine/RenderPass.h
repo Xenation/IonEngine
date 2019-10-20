@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "XMath.h"
 #include "XTypes.h"
 #include "HollowSet.h"
 #include "SimpleSet.h"
@@ -15,6 +16,8 @@ namespace IonEngine {
 	class ShadowCaster;
 	class Camera;
 	class ShaderStorageBuffer;
+	class AtomicCounterBuffer;
+	class Light;
 
 	class RenderPass {
 	public:
@@ -44,16 +47,22 @@ namespace IonEngine {
 		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
 
 	private:
-		Framebuffer* lightAssignBuffer;
-		SpecializedShaderProgram* lightAssignSpecShader;
-		Material* lightAssignMaterial;
-		unsigned int ltwMatrixLocation;
-		unsigned int lightTypeLocation;
-		unsigned int lightIdLocation;
-		unsigned int fillLocation;
+		Framebuffer* shellPassFramebuffer;
+		Framebuffer* fillPassFramebuffer;
+		SpecializedShaderProgram* shellPassSpecShader;
+		Material* shellPassMaterial;
+		unsigned int shellLTWMatrixLocation;
+		unsigned int shellUseMinLocation;
+		SpecializedShaderProgram* fillPassSpecShader;
+		Material* fillPassMaterial;
+		unsigned int fillLightTypeLocation;
+		unsigned int fillLightIdLocation;
+
 		ShaderStorageBuffer* clustersBuffer;
+		AtomicCounterBuffer* atomicIndexBuffer;
 
 		void renderLightMeshes();
+		void renderLightMesh(Light* light, unsigned int id, Math::Matrix4x4f ltw);
 	};
 
 	class RenderPassShadows : public RenderPass {

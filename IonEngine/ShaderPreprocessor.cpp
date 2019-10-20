@@ -63,6 +63,14 @@ ShaderPreprocessor::~ShaderPreprocessor() {
 
 
 bool ShaderPreprocessor::read() {
+	// COMPUTE SHADER
+	fsys::path pathCS = shaderDirectoryPath / fsys::path("cs.glsl");
+	if (fsys::exists(pathCS)) {
+		isCompute = true;
+		cs = createShaderFileInfo(pathCS, GL_COMPUTE_SHADER, readRawSource(pathCS));
+		return true;
+	}
+
 	// When using raw source create VS and FS only
 	if (useRaw) {
 		vs = createShaderFileInfo(fsys::path(), GL_VERTEX_SHADER, rawVS);
@@ -121,6 +129,15 @@ bool ShaderPreprocessor::read() {
 }
 
 bool ShaderPreprocessor::generate() {
+	if (isCompute) {
+		if (cs != nullptr) {
+			generateSpecializedSources(cs, csSources);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	if (vs != nullptr) {
 		generateSpecializedSources(vs, vsSources);
 	} else {
@@ -325,105 +342,6 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 		shaderFile->info.shaderFields[i] = fields[i];
 	}
 
-	//// Detect fields
-	//// Counting pass
-	//uint fieldCount = 0;
-	//std::string currentString = shaderFile->rawSource;
-
-	//std::regex inLineRegex(REGEX_GLSL_FIELD_IN_LINE);
-	//std::regex inRegex(REGEX_GLSL_FIELD_IN);
-	//std::smatch inLineMatch;
-	//while (std::regex_search(currentString, inLineMatch, inLineRegex)) {
-	//	std::smatch inMatch;
-	//	std::string inLine = inLineMatch.str();
-	//	while (std::regex_search(inLine, inMatch, inRegex)) {
-	//		fieldCount++;
-	//		inLine = inMatch.suffix();
-	//	}
-	//	currentString = inLineMatch.suffix();
-	//}
-	//std::regex inLayoutRegex(REGEX_GLSL_FIELD_IN_LAYOUT);
-	//std::smatch inLayoutMatch;
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, inLayoutMatch, inLayoutRegex)) {
-	//	currentString = inLayoutMatch.suffix();
-	//	fieldCount++;
-	//}
-	//std::regex outRegex(REGEX_GLSL_FIELD_OUT);
-	//std::smatch outMatch;
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, outMatch, outRegex)) {
-	//	fieldCount++;
-	//	currentString = outMatch.suffix();
-	//}
-	//std::regex uniformRegex(REGEX_GLSL_FIELD_UNIFORM);
-	//std::smatch uniformMatch;
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, uniformMatch, uniformRegex)) {
-	//	fieldCount++;
-	//	currentString = uniformMatch.suffix();
-	//}
-	//std::regex uniformLayoutRegex(REGEX_GLSL_FIELD_UNIFORM_BUFFER_LAYOUT);
-	//std::smatch uniformLayoutMatch;
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, uniformLayoutMatch, uniformLayoutRegex)) {
-	//	fieldCount++;
-	//	currentString = uniformLayoutMatch.suffix();
-	//}
-	//shaderFile->info.shaderFieldCount = fieldCount;
-	//shaderFile->info.shaderFields = new ShaderFieldInfo*[fieldCount];
-
-	//// Storing pass
-	//uint fieldIndex = 0;
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, inLineMatch, inLineRegex)) {
-	//	std::smatch inMatch;
-	//	std::string inLine = inLineMatch.str();
-	//	while (std::regex_search(inLine, inMatch, inRegex)) {
-	//		shaderFile->info.shaderFields[fieldIndex++] = new ShaderNativeTypeFieldInfo(ShaderFieldType::In, inMatch[2], glslTypeFromString(inMatch[1]));
-	//		inLine = inMatch.suffix();
-	//	}
-	//	currentString = inLineMatch.suffix();
-	//}
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, inLayoutMatch, inLayoutRegex)) {
-	//	shaderFile->info.shaderFields[fieldIndex++] = new ShaderInLayoutFieldInfo(ShaderFieldType::InLayout, inLayoutMatch[3], glslTypeFromString(inLayoutMatch[2]), std::stoi(inLayoutMatch[1]));
-	//	currentString = inLayoutMatch.suffix();
-	//}
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, outMatch, outRegex)) {
-	//	shaderFile->info.shaderFields[fieldIndex++] = new ShaderNativeTypeFieldInfo(ShaderFieldType::Out, outMatch[2], glslTypeFromString(outMatch[1]));
-	//	currentString = outMatch.suffix();
-	//}
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, uniformMatch, uniformRegex)) {
-	//	shaderFile->info.shaderFields[fieldIndex++] = new ShaderNativeTypeFieldInfo(ShaderFieldType::Uniform, uniformMatch[2], glslTypeFromString(uniformMatch[1]));
-	//	currentString = uniformMatch.suffix();
-	//}
-	//currentString = shaderFile->rawSource;
-	//while (std::regex_search(currentString, uniformLayoutMatch, uniformLayoutRegex)) {
-	//	std::regex nativeTypeRegex(REGEX_GLSL_FIELD_NATIVE_TYPE);
-	//	std::string contents = uniformLayoutMatch[4];
-	//	ShaderUniformBufferLayoutFieldInfo* uniformLayoutInfo = new ShaderUniformBufferLayoutFieldInfo(ShaderFieldType::UniformLayout, uniformLayoutMatch[3], glslUniformLayoutTypeFromString(uniformLayoutMatch[1]), std::stoi(uniformLayoutMatch[2]));
-	//	// Counting pass
-	//	std::smatch uniformLayoutMemberMatch;
-	//	std::string currentContents = contents;
-	//	while (std::regex_search(currentContents, uniformLayoutMemberMatch, nativeTypeRegex)) {
-	//		uniformLayoutInfo->subFieldCount++;
-	//		currentContents = uniformLayoutMemberMatch.suffix();
-	//	}
-	//	uniformLayoutInfo->subFields = new ShaderFieldInfo*[uniformLayoutInfo->subFieldCount];
-	//	// Storing pass
-	//	uint subFieldIndex = 0;
-	//	currentContents = contents;
-	//	while (std::regex_search(currentContents, uniformLayoutMemberMatch, nativeTypeRegex)) {
-	//		uniformLayoutInfo->subFields[subFieldIndex++] = new ShaderNativeTypeFieldInfo(ShaderFieldType::NativeType, uniformLayoutMemberMatch[2], glslTypeFromString(uniformLayoutMemberMatch[1]));
-	//		currentContents = uniformLayoutMemberMatch.suffix();
-	//	}
-	//	shaderFile->info.shaderFields[fieldIndex++] = uniformLayoutInfo;
-	//	currentString = uniformLayoutMatch.suffix();
-	//}
-
 }
 
 void ShaderPreprocessor::findRegexMatches(std::string& str, std::regex& reg, SimpleList<std::smatch>& matches) {
@@ -521,7 +439,7 @@ void ShaderPreprocessor::mergeMetaInfo() {
 }
 
 void ShaderPreprocessor::generateSpecializedSources(ShaderFile* shaderFile, SpecializedShaderSource*& specializedSources) {
-	if (programInfo->passCount == 0) { // No passes, generate a single specialized source
+	if (isCompute || programInfo->passCount == 0) { // No passes, generate a single specialized source
 		specializedSources = new SpecializedShaderSource[1];
 		specializedSources[0].version = new char[shaderFile->version.size() + 1];
 		specializedSources[0].version[shaderFile->version.size()] = '\0';

@@ -160,11 +160,21 @@ void TestScene::load() {
 	dynLightEntity->transform->setPosition({6, 10, 0});
 	dynLightEntity->transform->setRotation(Rotor3f::euler(half_pi, 0, 0));
 	Light* pointLight = new Light(dynLightEntity, LightType::Spot);
-	pointLight->range = 10.0f;
+	pointLight->range = 20.0f;
 	pointLight->angle = quarter_pi;
 	pointLight->innerAngle = quarter_pi * 0.5f;
 	//pointLight->setCastShadow(true);
 	dynLightEntity->addComponent(pointLight);
+
+	Entity* dynLightEntity2 = new Entity("Light2");
+	dynLightEntity2->transform->setPosition({-10, 10, 0});
+	dynLightEntity2->transform->setRotation(Rotor3f::euler(half_pi, 0, 0));
+	Light* dynLight2 = new Light(dynLightEntity2, LightType::Spot);
+	dynLight2->range = 20.0f;
+	dynLight2->angle = quarter_pi;
+	dynLight2->innerAngle = quarter_pi * 0.5f;
+	dynLightEntity2->addComponent(dynLight2);
+	
 
 
 	refCube = new Entity("RefCube");

@@ -16,11 +16,11 @@ layout (std140, binding = 2) uniform Camera {
 };
 
 layout (std430, binding = 4) buffer LightClusters {
-	uint listIndex;
 	uint clusters[48*24*64]; //Total:73728, [32b]:offset
 	uint indexList[48*24*64*2]; //Total:147456, [2b]:type, [10b]:lightId, [20b]:nextPtr + 1 (0 is for end)
 };
-layout (binding = 4) uniform atomic_uint currentListIndex;
+
+layout (binding = 0) uniform atomic_uint currentListIndex;
 
 layout (std140, binding = 10) uniform Material {
 	float placeholder;
@@ -28,11 +28,12 @@ layout (std140, binding = 10) uniform Material {
 
 uniform uint lightType;
 uniform uint lightId;
-uniform bool fill;
 
-flat in uvec2 triMinMaxSlices;
+layout (binding = 0) uniform sampler2D minMaxTex;
 
-out vec4 frag;
+in vec2 uv;
+
+out float frag;
 
 
 uint depthSlice(float viewDepth) {
@@ -43,31 +44,14 @@ uvec2 tileCoords(vec2 fCoords) {
 	return uvec2(fCoords.x * 48, fCoords.y * 24);
 }
 
-uint addLightIndex(uint lightType, uint lightId, uint prevIndex) {
-	// The atomic counter to safely "allocate" a new node
-	uint listIndex = atomicCounterIncrement(currentListIndex);
-	
-	// Assign the new node's index to the next of the previous node (if there is a previous)
-	if (prevIndex != 0) {
-		indexList[prevIndex - 1] |= 0x000fffff & (listIndex + 1);
-	}
-
-	// Build the node
-	uint indexValue = ((lightType << 30) & 0xc0000000) | ((lightId << 20) & 0x3ff00000) | 0;
-	indexList[listIndex] = indexValue;
-
-	return listIndex;
-}
-
 void addLightToCluster(uvec3 clusterCoords, uint lightType, uint lightId) {
 	// Find the cluster
 	uint clusterIndex = clusterCoords.z * 1152 + clusterCoords.y * 48 + clusterCoords.x;
-	uint currentNodeIndex = clusters[clusterIndex];
-	uint lastNode = 0;
+	uint clusterPointer = clusters[clusterIndex];
+	uint currentNodeIndex = clusterPointer;
 
-	// Find the end of the cluster's list
+	// Search through the list to avoid adding twice the same light
 	while (currentNodeIndex != 0) {
-		lastNode = currentNodeIndex;
 		uint existingLightType = (indexList[currentNodeIndex - 1] >> 30) & 0x00000003;
 		uint existingLightId = (indexList[currentNodeIndex - 1] >> 20) & 0x000003ff;
 		if (existingLightType == lightType && existingLightId == lightId) { // Avoid adding twice the same light
@@ -75,12 +59,11 @@ void addLightToCluster(uvec3 clusterCoords, uint lightType, uint lightId) {
 		}
 		currentNodeIndex = indexList[currentNodeIndex - 1] & 0x000fffff;
 	}
-	
-	// Add the light to the list
-	uint addedNodeIndex = addLightIndex(lightType, lightId, lastNode);
-	if (lastNode == 0) { // If there was no list, make the cluster point towards the created node
-		clusters[clusterIndex] = addedNodeIndex + 1;
-	}
+
+	// Allocate a new node
+	uint indexValue = ((lightType << 30) & 0xc0000000) | ((lightId << 20) & 0x3ff00000) | clusters[clusterIndex] & 0x000fffff;
+	clusters[clusterIndex] = atomicCounterIncrement(currentListIndex);
+	indexList[clusters[clusterIndex]] = indexValue;
 }
 
 bool clusterHasLight(uvec3 clusterPos, uint lightType, uint lightId) {
@@ -101,19 +84,6 @@ bool clusterHasLight(uvec3 clusterPos, uint lightType, uint lightId) {
 	return false;
 }
 
-int findNearClusterWithLight(uvec3 startClusterPos, uint lightType, uint lightId) {
-
-	// Loop through the clusters further than the current one
-	for (int slice = int(startClusterPos.z) - 1; slice >= 0; slice--) {
-		// Check if the light is already added to the cluster
-		if (clusterHasLight(uvec3(startClusterPos.xy, uint(slice)), lightType, lightId)) {
-			return slice;
-		}
-	}
-
-	return -1;
-}
-
 void writeClusters(uvec2 tile, uint minSlice, uint maxSlice) {
 	for (uint z = minSlice; z <= maxSlice; z++) {
 		addLightToCluster(uvec3(tile, z), lightType, lightId);
@@ -121,16 +91,12 @@ void writeClusters(uvec2 tile, uint minSlice, uint maxSlice) {
 }
 
 void main() {
-	uint minSlice = triMinMaxSlices.x;
-	if (fill) {
-		uint nearClusterSlice = findNearClusterWithLight(uvec3(uvec2(gl_FragCoord.xy), triMinMaxSlices.x), lightType, lightId);;
-		if (nearClusterSlice != -1) {
-			minSlice = nearClusterSlice;
-		} else {
-			minSlice = 0;
-		}
-	}
-	writeClusters(uvec2(gl_FragCoord.xy), minSlice, triMinMaxSlices.y);
+	vec2 minMax = texture2D(minMaxTex, uv).xy;
 
-	frag = vec4(triMinMaxSlices.x, triMinMaxSlices.y, 0, 0);
+	if (minMax.x >= 0.0 && minMax.y >= 0.0) {
+		writeClusters(uvec2(gl_FragCoord.xy), uint(minMax.x), uint(minMax.y));
+		frag = 1.0;
+	} else {
+		frag = -1.0;
+	}
 }

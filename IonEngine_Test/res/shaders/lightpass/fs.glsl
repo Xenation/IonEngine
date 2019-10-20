@@ -38,7 +38,6 @@ layout (std140, binding = 10) uniform Material {
 };
 
 layout (std430, binding = 4) buffer LightClusters {
-	uint listIndex;
 	uint clusters[48*24*64]; //Total:73728, [32b]:offset
 	uint indexList[48*24*64*2]; //Total:147456, [2b]:type, [10b]:lightId, [20b]:nextPtr + 1 (0 is for end)
 };
@@ -199,25 +198,25 @@ void main() {
 			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a * shadowMult;
 		}
 
-//		uint counted = 0;
+		uint counted = 0;
 		while (clusterListIndex != 0) {
-//			counted++;
+			counted++;
 			uint lightType = (indexList[clusterListIndex - 1] >> 30) & 0x00000003;
 			uint lightId = (indexList[clusterListIndex - 1] >> 20) & 0x000003ff;
 
-			if (lightType == 0) {
+			if (lightType == 1) {
 				sColor += shadePointLight(worldPos, normal, albedo, lightId);
-			} else if (lightType == 1) {
+			} else if (lightType == 2) {
 				sColor += shadeSpotLight(worldPos, normal, albedo, lightId);
 			}
 
 			clusterListIndex = indexList[clusterListIndex - 1] & 0x000fffff;
 		}
 
-//		fragColor = vec4(float(counted) / 16, 0, 0, 1);
-//		return;
+		//fragColor = vec4(float(counted) / 2, max(float(counted) - 2, 0), 0, 1);
+		//return;
 
-		fColor += sColor;
+		fColor += sColor + vec3(float(counted) / 2, max(float(counted) - 2, 0), 0);
 	}
 	fColor /= sampleCount;
 

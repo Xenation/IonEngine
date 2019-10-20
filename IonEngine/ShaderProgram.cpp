@@ -29,6 +29,7 @@ void ShaderProgram::initializeAll(Pipeline* pipeline) {
 	}
 	for (fs::directory_entry entry : fs::directory_iterator(SHADER_DIRECTORY)) { // Counting pass
 		if (!entry.is_directory()) continue;
+		if (fs::exists(entry / fs::path("cs.glsl"))) continue; // Skip compute shaders
 		shaderCount++;
 	}
 	Debug::log("ShaderInit", "Found " + std::to_string(shaderCount) + " potential shaders:");
@@ -36,6 +37,7 @@ void ShaderProgram::initializeAll(Pipeline* pipeline) {
 	uint index = 0;
 	for (fs::directory_entry entry : fs::directory_iterator(SHADER_DIRECTORY)) {
 		if (!entry.is_directory()) continue;
+		if (fs::exists(entry / fs::path("cs.glsl"))) continue; // Skip compute shaders
 		shaders[index] = new ShaderProgram(entry.path().filename().string());
 		Debug::log("ShaderInit", "    " + shaders[index]->name);
 		index++;

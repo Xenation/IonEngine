@@ -300,6 +300,12 @@
     <ClCompile Include="ShaderStorageBuffer.cpp">
       <Filter>Source Files\Engine\Render</Filter>
     </ClCompile>
+    <ClCompile Include="AtomicCounterBuffer.cpp">
+      <Filter>Source Files\Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputeShader.cpp">
+      <Filter>Source Files\Engine\Render\Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -544,6 +550,12 @@
     </ClInclude>
     <ClInclude Include="ShaderStorageBuffer.h">
       <Filter>Header Files\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="AtomicCounterBuffer.h">
+      <Filter>Header Files\Engine\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeShader.h">
+      <Filter>Header Files\Engine\Render\Shader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

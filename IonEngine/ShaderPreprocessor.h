@@ -33,6 +33,7 @@ namespace IonEngine {
 		SpecializedShaderSource* tesSources = nullptr;
 		SpecializedShaderSource* gsSources = nullptr;
 		SpecializedShaderSource* fsSources = nullptr;
+		SpecializedShaderSource* csSources = nullptr; // Only a single source possible
 
 		ShaderPreprocessor(std::filesystem::path shaderDir);
 		ShaderPreprocessor(std::string rawVS, std::string rawFS);
@@ -57,10 +58,12 @@ namespace IonEngine {
 		ShaderFile* tes = nullptr;
 		ShaderFile* gs = nullptr;
 		ShaderFile* fs = nullptr;
+		ShaderFile* cs = nullptr;
 		// Used when reading a shader from raw source
 		bool useRaw = false;
 		std::string rawVS;
 		std::string rawFS;
+		bool isCompute = false;
 
 		std::string readRawSource(std::filesystem::path filePath);
 		ShaderFile* createShaderFileInfo(std::filesystem::path filePath, GLenum type, std::string rawSource);

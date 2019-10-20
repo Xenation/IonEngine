@@ -301,9 +301,12 @@ exit 0
   <ItemGroup>
     <None Include="res\shaders\depth\fs.glsl" />
     <None Include="res\shaders\depth\vs.glsl" />
-    <None Include="res\shaders\lightassign\fs.glsl" />
-    <None Include="res\shaders\lightassign\gs.glsl" />
-    <None Include="res\shaders\lightassign\vs.glsl" />
+    <None Include="res\shaders\lightassign-fill\fs.glsl" />
+    <None Include="res\shaders\lightassign-fill\vs.glsl" />
+    <None Include="res\shaders\lightassign-shell\fs.glsl" />
+    <None Include="res\shaders\lightassign-shell\gs.glsl" />
+    <None Include="res\shaders\lightassign-shell\vs.glsl" />
+    <None Include="res\shaders\lightassign\cs.glsl" />
     <None Include="res\shaders\lightpass\fs.glsl" />
     <None Include="res\shaders\lightpass\vs.glsl" />
     <None Include="res\shaders\test\fs.glsl">
