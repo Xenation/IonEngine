@@ -18,6 +18,7 @@
 #include "AtomicCounterBuffer.h"
 #include "Texture.h"
 #include "Time.h" //
+#include "ComputeShader.h"
 using namespace IonEngine;
 
 
@@ -65,11 +66,23 @@ RenderPassLightAssign::RenderPassLightAssign(Pipeline* pipeline) : RenderPass("l
 	fillPassFramebuffer = new Framebuffer("LightAssign-FillPass", 48, 24);
 	fillPassFramebuffer->createAttachments(1, new Framebuffer::Attachment[1]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RED, GL_R16F)});
 
-	clustersBuffer = new ShaderStorageBuffer("LightClusters", 73728 * 4 + 147456 * 4);
+	clustersBuffer = new ShaderStorageBuffer("LightClusters");
 	clustersBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(4, 0, 73728 * 4 + 147456 * 4)});
 	clustersBuffer->uploadToGL();
 	clustersBuffer->bindStorageBlock(0);
 	clustersBuffer->clearData();
+
+	pointLightsBuffer = new ShaderStorageBuffer("PointLights");
+	pointLightsBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(5, 0, 32 * 32)});
+	pointLightsBuffer->uploadToGL();
+	pointLightsBuffer->bindStorageBlock(0);
+	pointLightsBuffer->clearData();
+
+	spotLightsBuffer = new ShaderStorageBuffer("SpotLights");
+	spotLightsBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(6, 0, 32 * 48)});
+	spotLightsBuffer->uploadToGL();
+	spotLightsBuffer->bindStorageBlock(0);
+	spotLightsBuffer->clearData();
 
 	atomicIndexBuffer = new AtomicCounterBuffer("LightIndex", 0, 4);
 	atomicIndexBuffer->uploadToGL();
@@ -100,12 +113,36 @@ void RenderPassLightAssign::onShadersInitialized() {
 	fillLightTypeLocation = fillPassSpecShader->getUniformLocation("lightType");
 	fillLightIdLocation = fillPassSpecShader->getUniformLocation("lightId");
 
+	assignShader = new ComputeShader("lightassign");
+	assignShader->load();
+
 
 	LightType::Point->cullingMesh->uploadToGL();
 	LightType::Spot->cullingMesh->uploadToGL();
 }
 
 void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+	// Fill light buffers
+	SimpleSet<Light*>& pointLights = pipeline->lightManager->getPointLights();
+	ShaderStorageBlock& pointLightsBlock = pointLightsBuffer->getStorageBlock(0);
+	((unsigned int*) pointLightsBlock.buffer)[0] = pointLights.count;
+	for (int i = 0; i < pointLights.count; i++) {
+		((Vec4f*) (pointLightsBlock.buffer + 4))[i * 2] = Vec4f(pointLights[i]->getPosition(), pointLights[i]->range);
+		((Vec4f*) (pointLightsBlock.buffer + 4))[i * 2 + 1] = pointLights[i]->color.vec;
+	}
+	pointLightsBuffer->updateStorageBlock(0);
+
+	SimpleSet<Light*>& spotLights = pipeline->lightManager->getSpotLights();
+	ShaderStorageBlock& spotLightsBlock = spotLightsBuffer->getStorageBlock(0);
+	((unsigned int*) spotLightsBlock.buffer)[0] = spotLights.count;
+	for (int i = 0; i < spotLights.count; i++) {
+		((Vec4f*) (spotLightsBlock.buffer + 4))[i * 3] = Vec4f(spotLights[i]->getPosition(), spotLights[i]->range);
+		((Vec4f*) (spotLightsBlock.buffer + 4))[i * 3 + 1] = spotLights[i]->color.vec;
+		Vec2f dir = encodeNormal(spotLights[i]->getDirection());
+		((Vec4f*) (spotLightsBlock.buffer + 4))[i * 3 + 2] = Vec4f(dir.x, dir.y, spotLights[i]->innerAngle, spotLights[i]->angle);
+	}
+	spotLightsBuffer->updateStorageBlock(0);
+
 	glEnable(GL_CONSERVATIVE_RASTERIZATION_NV);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
@@ -114,7 +151,12 @@ void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>
 	clustersBuffer->bindStorageBlock(0);
 	atomicIndexBuffer->clear();
 	atomicIndexBuffer->bind();
-	renderLightMeshes();
+	//renderLightMeshes();
+
+	assignShader->use();
+	glDispatchCompute(48, 24, 64);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	assignShader->unuse();
 
 	//shellPassFramebuffer->bind();
 	//glClear(GL_COLOR_BUFFER_BIT);

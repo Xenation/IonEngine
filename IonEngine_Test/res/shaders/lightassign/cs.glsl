@@ -27,7 +27,7 @@ struct PointLight {
 
 layout (std430, binding = 5) readonly restrict buffer PointLights {
 	uint pointLightCount;
-	PointLight pointLights[32];
+	PointLight pointLights[];
 };
 
 struct SpotLight {
@@ -38,7 +38,7 @@ struct SpotLight {
 
 layout (std430, binding = 6) readonly restrict buffer SpotLights {
 	uint spotLightCount;
-	SpotLight spotLights[32];
+	SpotLight spotLights[];
 };
 
 layout (binding = 0) uniform atomic_uint currentListIndex;
@@ -98,20 +98,48 @@ bool clusterHasLight(uvec3 clusterPos, uint lightType, uint lightId) {
 	return false;
 }
 
+vec4 projectionToView(mat4x4 invProjection, vec4 p) {
+	p = invProjection * p;
+	return p / p.w;
+}
+
 void main() {
+	mat4x4 inverseProjection = inverse(projectionMatrix); // HEAVY
 	
 	uvec3 clusterPos = gl_WorkGroupID;
 
+	// Compute corners in projection space
 	vec2 sliceMinMax = vec2(sliceNearZ(clusterPos.z), sliceNearZ(clusterPos.z + 1));
-	vec3 corners[8] = {
-		vec3(0, 0, sliceMinMax.x),
-		vec3(0, 0, sliceMinMax.x),
-		vec3(0, 0, sliceMinMax.x),
-		vec3(0, 0, sliceMinMax.x),
-		vec3(0, 0, sliceMinMax.y),
-		vec3(0, 0, sliceMinMax.y),
-		vec3(0, 0, sliceMinMax.y),
-		vec3(0, 0, sliceMinMax.y)
+	vec2 sliceMinMaxProjection = sliceMinMax * projectionMatrix[2][2] + projectionMatrix[3][2];
+	vec2 tileMinMaxX = vec2(clusterPos.x / 48.0f, (clusterPos.x + 1) / 48.0f);
+	vec2 tileMinMaxY = vec2(clusterPos.y / 24.0f, (clusterPos.y + 1) / 24.0f);
+	vec4 corners[8] = {
+		vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.x, sliceMinMax.x),
+		vec4(tileMinMaxX.x, tileMinMaxY.y, sliceMinMaxProjection.x, sliceMinMax.x),
+		vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.x, sliceMinMax.x),
+		vec4(tileMinMaxX.y, tileMinMaxY.x, sliceMinMaxProjection.x, sliceMinMax.x),
+		vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.y, sliceMinMax.y),
+		vec4(tileMinMaxX.x, tileMinMaxY.y, sliceMinMaxProjection.y, sliceMinMax.y),
+		vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.y, sliceMinMax.y),
+		vec4(tileMinMaxX.y, tileMinMaxY.x, sliceMinMaxProjection.y, sliceMinMax.y)
 	};
+
+	// Transform corners to view space
+	for (int i = 0; i < 8; i++) {
+		corners[i] = projectionToView(inverseProjection, corners[i]);
+	}
+
+	// Test PointLights
+	for (int li = 0; li < pointLightCount; li++) {
+		float sqrRange = pointLights[li].positionRange.w * pointLights[li].positionRange.w;
+		for (int ci = 0; ci < 8; ci++) {
+			vec3 toLight = (viewMatrix * vec4(pointLights[li].positionRange.xyz, 1)).xyz - corners[ci].xyz;
+			float sqrDistance = dot(toLight, toLight);
+			if (sqrDistance < sqrRange) {
+				addLightToCluster(clusterPos, 1, li);
+				break;
+			}
+		}
+	}
 
 }

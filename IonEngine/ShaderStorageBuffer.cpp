@@ -2,11 +2,12 @@
 
 #include <gl3w.h>
 #include "GLUtils.h"
+#include "Debug.h"
 using namespace IonEngine;
 
 
 
-ShaderStorageBuffer::ShaderStorageBuffer(std::string name, unsigned int size) : name(name), bufferSize(size) {
+ShaderStorageBuffer::ShaderStorageBuffer(std::string name) : name(name) {
 
 }
 
@@ -35,7 +36,10 @@ void ShaderStorageBuffer::setBlocks(unsigned int blockCount, ShaderStorageBlock*
 		nBuffer = buffer;
 	}
 
-	// TODO copy data from old buffer
+	for (unsigned int i = 0; i < blockCount; i++) {
+		blocks[i].buffer = nBuffer + blocks[i].offset;
+		// TODO copy data from old buffer
+	}
 
 	if (this->blocks != nullptr) {
 		delete this->blocks;
@@ -54,6 +58,16 @@ void ShaderStorageBuffer::setBlocks(unsigned int blockCount, ShaderStorageBlock*
 
 ShaderStorageBlock& ShaderStorageBuffer::getStorageBlock(unsigned int index) {
 	return blocks[index];
+}
+
+void ShaderStorageBuffer::updateStorageBlock(unsigned int index) {
+	if (!loadedToGL) {
+		Debug::logError("SSBO", "Tried updating a block from a buffer not yet uploaded!");
+		return;
+	}
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+	glBufferSubData(GL_SHADER_STORAGE_BUFFER, blocks[index].offset, blocks[index].size, blocks[index].buffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 void ShaderStorageBuffer::bindStorageBlock(unsigned int index) {

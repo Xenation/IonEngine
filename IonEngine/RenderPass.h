@@ -18,6 +18,7 @@ namespace IonEngine {
 	class ShaderStorageBuffer;
 	class AtomicCounterBuffer;
 	class Light;
+	class ComputeShader;
 
 	class RenderPass {
 	public:
@@ -57,8 +58,11 @@ namespace IonEngine {
 		Material* fillPassMaterial;
 		unsigned int fillLightTypeLocation;
 		unsigned int fillLightIdLocation;
+		ComputeShader* assignShader;
 
 		ShaderStorageBuffer* clustersBuffer;
+		ShaderStorageBuffer* pointLightsBuffer;
+		ShaderStorageBuffer* spotLightsBuffer;
 		AtomicCounterBuffer* atomicIndexBuffer;
 
 		void renderLightMeshes();

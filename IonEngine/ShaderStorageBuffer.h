@@ -18,7 +18,7 @@ namespace IonEngine {
 	public:
 		const std::string name;
 
-		ShaderStorageBuffer(std::string name, unsigned int size);
+		ShaderStorageBuffer(std::string name);
 		~ShaderStorageBuffer();
 
 		void setBlocks(unsigned int blockCount, ShaderStorageBlock* blocks);
@@ -26,8 +26,6 @@ namespace IonEngine {
 		void updateStorageBlock(unsigned int index);
 		void bindStorageBlock(unsigned int index);
 		void clearData();
-		void allocateLocal();
-		void deleteLocal();
 		void uploadToGL();
 		void deleteFromGL();
 
