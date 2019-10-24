@@ -1,5 +1,7 @@
 #version 430
 
+#define PI 3.14159265359
+
 layout (std140, binding = 1) uniform GlobalsVars {
 	float time;
 	vec4 mainDirLightColor;
@@ -16,8 +18,9 @@ layout (std140, binding = 2) uniform Camera {
 };
 
 layout (std430, binding = 4) buffer LightClusters {
-	uint clusters[48*24*64]; //Total:73728, [32b]:offset
-	uint indexList[48*24*64*2]; //Total:147456, [2b]:type, [10b]:lightId, [20b]:nextPtr + 1 (0 is for end)
+	//uint clusters[48*24*64]; //Total:73728, [32b]:offset
+	//uint indexList[48*24*64*2]; //Total:147456, [2b]:type, [10b]:lightId, [20b]:nextPtr + 1 (0 is for end)
+	uint clusters[48*24*64*16]; //Total:1179648, [4b]:type, [28b]:lightId (first uint for a cluster is the light count for the cluster)
 };
 
 struct PointLight {
@@ -59,43 +62,22 @@ uvec2 tileCoords(vec2 fCoords) {
 }
 
 void addLightToCluster(uvec3 clusterCoords, uint lightType, uint lightId) {
-	// Find the cluster
-	uint clusterIndex = clusterCoords.z * 1152 + clusterCoords.y * 48 + clusterCoords.x;
-	uint clusterPointer = clusters[clusterIndex];
-	uint currentNodeIndex = clusterPointer;
-
-	// Search through the list to avoid adding twice the same light
-	while (currentNodeIndex != 0) {
-		uint existingLightType = (indexList[currentNodeIndex - 1] >> 30) & 0x00000003;
-		uint existingLightId = (indexList[currentNodeIndex - 1] >> 20) & 0x000003ff;
-		if (existingLightType == lightType && existingLightId == lightId) { // Avoid adding twice the same light
-			return;
-		}
-		currentNodeIndex = indexList[currentNodeIndex - 1] & 0x000fffff;
-	}
-
-	// Allocate a new node
-	uint indexValue = ((lightType << 30) & 0xc0000000) | ((lightId << 20) & 0x3ff00000) | clusters[clusterIndex] & 0x000fffff;
-	clusters[clusterIndex] = atomicCounterIncrement(currentListIndex);
-	indexList[clusters[clusterIndex]] = indexValue;
+	uint clusterIndex = (clusterCoords.z * 1152 + clusterCoords.y * 48 + clusterCoords.x) * 16;
+	
+	uint indexValue = ((lightType << 28) & 0xf0000000) | lightId & 0x0fffffff;
+	uint count = clusters[clusterIndex];
+	if (count >= 15) return; // Ignore light when list is full
+	clusters[clusterIndex + count + 1] = indexValue;
+	clusters[clusterIndex] = count + 1;
 }
 
-bool clusterHasLight(uvec3 clusterPos, uint lightType, uint lightId) {
-	// Find the cluster
-	uint clusterIndex = clusterPos.z * 1152 + clusterPos.y * 48 + clusterPos.x;
-	uint currentNodeIndex = clusters[clusterIndex];
-
-	// Search the cluster list
-	while (currentNodeIndex != 0) {
-		uint existingLightType = (indexList[currentNodeIndex - 1] >> 30) & 0x00000003;
-		uint existingLightId = (indexList[currentNodeIndex - 1] >> 20) & 0x000003ff;
-		if (existingLightType == lightType && existingLightId == lightId) { // Same light
-			return true;
-		}
-		currentNodeIndex = indexList[currentNodeIndex - 1] & 0x000fffff;
+vec3 decodeNormal(vec2 v) {
+	vec3 n = vec3(v.x, v.y, sqrt(1 - v.x * v.x - v.y * v.y));
+	uint negFlag = floatBitsToUint(n.x) & 0x00000001;
+	if (negFlag == 0) {
+		n.z = -n.z;
 	}
-
-	return false;
+	return n;
 }
 
 vec4 projectionToView(mat4x4 invProjection, vec4 p) {
@@ -110,18 +92,18 @@ void main() {
 
 	// Compute corners in projection space
 	vec2 sliceMinMax = vec2(sliceNearZ(clusterPos.z), sliceNearZ(clusterPos.z + 1));
-	vec2 sliceMinMaxProjection = sliceMinMax * projectionMatrix[2][2] + projectionMatrix[3][2];
-	vec2 tileMinMaxX = vec2(clusterPos.x / 48.0f, (clusterPos.x + 1) / 48.0f);
-	vec2 tileMinMaxY = vec2(clusterPos.y / 24.0f, (clusterPos.y + 1) / 24.0f);
+	vec2 sliceMinMaxProjection = (sliceMinMax * projectionMatrix[2][2] + projectionMatrix[3][2]) / sliceMinMax;
+	vec2 tileMinMaxX = vec2((clusterPos.x / 48.0f - 0.5f) * 2, ((clusterPos.x + 1) / 48.0f - 0.5f) * 2);
+	vec2 tileMinMaxY = vec2((clusterPos.y / 24.0f - 0.5f) * 2, ((clusterPos.y + 1) / 24.0f - 0.5f) * 2);
 	vec4 corners[8] = {
-		vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.x, sliceMinMax.x),
-		vec4(tileMinMaxX.x, tileMinMaxY.y, sliceMinMaxProjection.x, sliceMinMax.x),
-		vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.x, sliceMinMax.x),
-		vec4(tileMinMaxX.y, tileMinMaxY.x, sliceMinMaxProjection.x, sliceMinMax.x),
-		vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.y, sliceMinMax.y),
-		vec4(tileMinMaxX.x, tileMinMaxY.y, sliceMinMaxProjection.y, sliceMinMax.y),
-		vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.y, sliceMinMax.y),
-		vec4(tileMinMaxX.y, tileMinMaxY.x, sliceMinMaxProjection.y, sliceMinMax.y)
+		vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.x, 1),
+		vec4(tileMinMaxX.x, tileMinMaxY.y, sliceMinMaxProjection.x, 1),
+		vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.x, 1),
+		vec4(tileMinMaxX.y, tileMinMaxY.x, sliceMinMaxProjection.x, 1),
+		vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.y, 1),
+		vec4(tileMinMaxX.x, tileMinMaxY.y, sliceMinMaxProjection.y, 1),
+		vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.y, 1),
+		vec4(tileMinMaxX.y, tileMinMaxY.x, sliceMinMaxProjection.y, 1)
 	};
 
 	// Transform corners to view space
@@ -137,6 +119,26 @@ void main() {
 			float sqrDistance = dot(toLight, toLight);
 			if (sqrDistance < sqrRange) {
 				addLightToCluster(clusterPos, 1, li);
+				break;
+			}
+		}
+	}
+
+	// Test SpotLights
+	for (int li = 0; li < spotLightCount; li++) {
+		float sqrRange = spotLights[li].positionRange.w * spotLights[li].positionRange.w;
+		for (int ci = 0; ci < 8; ci++) {
+			vec3 toLight = (viewMatrix * vec4(spotLights[li].positionRange.xyz, 1)).xyz - corners[ci].xyz;
+			float sqrDistance = dot(toLight, toLight);
+			if (sqrDistance > sqrRange) {
+				continue;
+			}
+			vec4 spotDir = vec4(decodeNormal(spotLights[li].dirAngle.xy), 0);
+			spotDir = viewMatrix * spotDir;
+			toLight = -normalize(toLight);
+			float angle = acos(dot(spotDir.xyz, toLight));
+			if (angle < spotLights[li].dirAngle.w * 0.5f) {
+				addLightToCluster(clusterPos, 2, li);
 				break;
 			}
 		}

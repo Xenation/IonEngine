@@ -67,19 +67,19 @@ RenderPassLightAssign::RenderPassLightAssign(Pipeline* pipeline) : RenderPass("l
 	fillPassFramebuffer->createAttachments(1, new Framebuffer::Attachment[1]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RED, GL_R16F)});
 
 	clustersBuffer = new ShaderStorageBuffer("LightClusters");
-	clustersBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(4, 0, 73728 * 4 + 147456 * 4)});
+	clustersBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(4, 0, 48*24*64*16*4)});
 	clustersBuffer->uploadToGL();
 	clustersBuffer->bindStorageBlock(0);
 	clustersBuffer->clearData();
 
 	pointLightsBuffer = new ShaderStorageBuffer("PointLights");
-	pointLightsBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(5, 0, 32 * 32)});
+	pointLightsBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(5, 0, 16 + 32 * 32)});
 	pointLightsBuffer->uploadToGL();
 	pointLightsBuffer->bindStorageBlock(0);
 	pointLightsBuffer->clearData();
 
 	spotLightsBuffer = new ShaderStorageBuffer("SpotLights");
-	spotLightsBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(6, 0, 32 * 48)});
+	spotLightsBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(6, 0, 16 + 32 * 48)});
 	spotLightsBuffer->uploadToGL();
 	spotLightsBuffer->bindStorageBlock(0);
 	spotLightsBuffer->clearData();
@@ -127,8 +127,8 @@ void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>
 	ShaderStorageBlock& pointLightsBlock = pointLightsBuffer->getStorageBlock(0);
 	((unsigned int*) pointLightsBlock.buffer)[0] = pointLights.count;
 	for (int i = 0; i < pointLights.count; i++) {
-		((Vec4f*) (pointLightsBlock.buffer + 4))[i * 2] = Vec4f(pointLights[i]->getPosition(), pointLights[i]->range);
-		((Vec4f*) (pointLightsBlock.buffer + 4))[i * 2 + 1] = pointLights[i]->color.vec;
+		((Vec4f*) (pointLightsBlock.buffer + 16))[i * 2] = Vec4f(pointLights[i]->getPosition(), pointLights[i]->range);
+		((Vec4f*) (pointLightsBlock.buffer + 16))[i * 2 + 1] = pointLights[i]->color.vec;
 	}
 	pointLightsBuffer->updateStorageBlock(0);
 
@@ -136,10 +136,10 @@ void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>
 	ShaderStorageBlock& spotLightsBlock = spotLightsBuffer->getStorageBlock(0);
 	((unsigned int*) spotLightsBlock.buffer)[0] = spotLights.count;
 	for (int i = 0; i < spotLights.count; i++) {
-		((Vec4f*) (spotLightsBlock.buffer + 4))[i * 3] = Vec4f(spotLights[i]->getPosition(), spotLights[i]->range);
-		((Vec4f*) (spotLightsBlock.buffer + 4))[i * 3 + 1] = spotLights[i]->color.vec;
+		((Vec4f*) (spotLightsBlock.buffer + 16))[i * 3] = Vec4f(spotLights[i]->getPosition(), spotLights[i]->range);
+		((Vec4f*) (spotLightsBlock.buffer + 16))[i * 3 + 1] = spotLights[i]->color.vec;
 		Vec2f dir = encodeNormal(spotLights[i]->getDirection());
-		((Vec4f*) (spotLightsBlock.buffer + 4))[i * 3 + 2] = Vec4f(dir.x, dir.y, spotLights[i]->innerAngle, spotLights[i]->angle);
+		((Vec4f*) (spotLightsBlock.buffer + 16))[i * 3 + 2] = Vec4f(dir.x, dir.y, spotLights[i]->innerAngle, spotLights[i]->angle);
 	}
 	spotLightsBuffer->updateStorageBlock(0);
 

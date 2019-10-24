@@ -38,8 +38,7 @@ layout (std140, binding = 10) uniform Material {
 };
 
 layout (std430, binding = 4) buffer LightClusters {
-	uint clusters[48*24*64]; //Total:73728, [32b]:offset
-	uint indexList[48*24*64*2]; //Total:147456, [2b]:type, [10b]:lightId, [20b]:nextPtr + 1 (0 is for end)
+	uint clusters[48*24*64*16]; //Total:1179648, [4b]:type, [28b]:lightId (first uint for a cluster is the light count for the cluster)
 };
 
 in vec2 uv;
@@ -123,9 +122,8 @@ uvec2 tileCoords(vec2 fCoords) {
 	return uvec2(fCoords.x * 48, fCoords.y * 24);
 }
 
-uint readCluster(uvec3 clusterCoords) {
-	uint clusterIndex = clusterCoords.z * 1152 + clusterCoords.y * 48 + clusterCoords.x;
-	return clusters[clusterIndex];
+uint getClusterIndex(uvec3 clusterCoords) {
+	return (clusterCoords.z * 1152 + clusterCoords.y * 48 + clusterCoords.x) * 16;
 }
 
 vec3 shadePointLight(vec4 worldPos, vec3 normal, vec4 albedo, uint pointLightId) {
@@ -177,7 +175,7 @@ void main() {
 		vec4 worldPos = worldPosFromDepth(uv, depth, invViewMatrix, invProjMatrix);
 
 		vec4 viewPos = viewPosFromDepth(uv, depth, invProjMatrix);
-		uint clusterListIndex = readCluster(uvec3(tileCoords(uv), depthSlice(viewPos.z)));
+		uint clusterIndex = getClusterIndex(uvec3(tileCoords(uv), depthSlice(viewPos.z)));
 
 		if (albedo.w < 0.5) {
 			fColor += albedo.rgb;
@@ -199,18 +197,18 @@ void main() {
 		}
 
 		uint counted = 0;
-		while (clusterListIndex != 0) {
+		uint clusterLightCount = clusters[clusterIndex];
+		for (uint i = clusterIndex + 1; i < clusterIndex + clusterLightCount + 1; i++) {
 			counted++;
-			uint lightType = (indexList[clusterListIndex - 1] >> 30) & 0x00000003;
-			uint lightId = (indexList[clusterListIndex - 1] >> 20) & 0x000003ff;
+			
+			uint lightType = (clusters[i] >> 28) & 0x0000000f;
+			uint lightId = clusters[i] & 0x0fffffff;
 
 			if (lightType == 1) {
 				sColor += shadePointLight(worldPos, normal, albedo, lightId);
 			} else if (lightType == 2) {
 				sColor += shadeSpotLight(worldPos, normal, albedo, lightId);
 			}
-
-			clusterListIndex = indexList[clusterListIndex - 1] & 0x000fffff;
 		}
 
 		//fragColor = vec4(float(counted) / 2, max(float(counted) - 2, 0), 0, 1);
