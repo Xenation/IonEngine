@@ -85,6 +85,14 @@ vec4 projectionToView(mat4x4 invProjection, vec4 p) {
 	return p / p.w;
 }
 
+vec4 createPlane(vec4 b, vec4 c) {
+	return vec4(normalize(cross(c.xyz, b.xyz)), 1.0);
+}
+
+float signedDistanceFromPlane(vec4 p, vec4 plane) {
+	return dot(plane.xyz, p.xyz);
+}
+
 void main() {
 	mat4x4 inverseProjection = inverse(projectionMatrix); // HEAVY
 	
@@ -111,8 +119,16 @@ void main() {
 		corners[i] = projectionToView(inverseProjection, corners[i]);
 	}
 
+	vec4 planes[4] = {
+		createPlane(corners[1], corners[0]), // Left
+		createPlane(corners[3], corners[2]), // Right
+		createPlane(corners[2], corners[1]), // Top
+		createPlane(corners[0], corners[3]) // Bottom
+	};
+
 	// Test PointLights
 	for (int li = 0; li < pointLightCount; li++) {
+		float range = pointLights[li].positionRange.w;
 		float sqrRange = pointLights[li].positionRange.w * pointLights[li].positionRange.w;
 		for (int ci = 0; ci < 8; ci++) {
 			vec3 toLight = (viewMatrix * vec4(pointLights[li].positionRange.xyz, 1)).xyz - corners[ci].xyz;
@@ -122,6 +138,11 @@ void main() {
 				break;
 			}
 		}
+//		vec4 viewCenter = viewMatrix * vec4(pointLights[li].positionRange.xyz, 1.0);
+//		if (viewCenter.z + range > sliceMinMax.x && viewCenter.z - range <= sliceMinMax.y && signedDistanceFromPlane(viewCenter, planes[0]) < range && signedDistanceFromPlane(viewCenter, planes[1]) < range && signedDistanceFromPlane(viewCenter, planes[2]) < range && signedDistanceFromPlane(viewCenter, planes[3]) < range) {
+//			addLightToCluster(clusterPos, 1, li);
+//			break;
+//		}
 	}
 
 	// Test SpotLights
