@@ -8,7 +8,9 @@ layout (std140, binding = 1) uniform GlobalsVars {
 
 layout (std140, binding = 2) uniform Camera {
 	mat4x4 projectionMatrix;
+	mat4x4 invProjectionMatrix;
 	mat4x4 viewMatrix;
+	mat4x4 invViewMatrix;
 	float zNear;
 	float zFar;
 	ivec2 resolution;

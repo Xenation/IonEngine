@@ -1,6 +1,7 @@
 #version 430
 
 #define PI 3.14159265359
+#define HALF_PI 1.570796326795
 
 layout (std140, binding = 1) uniform GlobalsVars {
 	float time;
@@ -10,7 +11,9 @@ layout (std140, binding = 1) uniform GlobalsVars {
 
 layout (std140, binding = 2) uniform Camera {
 	mat4x4 projectionMatrix;
+	mat4x4 invProjectionMatrix;
 	mat4x4 viewMatrix;
+	mat4x4 invViewMatrix;
 	float zNear;
 	float zFar;
 	ivec2 resolution;
@@ -80,88 +83,59 @@ vec3 decodeNormal(vec2 v) {
 	return n;
 }
 
-vec4 projectionToView(mat4x4 invProjection, vec4 p) {
-	p = invProjection * p;
+vec4 projectionToView(vec4 p) {
+	p = invProjectionMatrix * p;
 	return p / p.w;
-}
-
-vec4 createPlane(vec4 b, vec4 c) {
-	return vec4(normalize(cross(c.xyz, b.xyz)), 1.0);
 }
 
 float signedDistanceFromPlane(vec4 p, vec4 plane) {
 	return dot(plane.xyz, p.xyz);
 }
 
+bool intersectFroxelSphere(vec2 minMaxZ, vec2 nearMin, vec2 nearMax, vec4 center, float radius) {
+	float sqrRadius = radius * radius;
+
+	if (center.z + radius < minMaxZ.x || center.z - radius > minMaxZ.y) return false;
+	vec4 projectedCenter = center;
+	projectedCenter.z = clamp(projectedCenter.z, minMaxZ.x, minMaxZ.y);
+	float sliceScale = projectedCenter.z / minMaxZ.x;
+	vec2 slicedMin = nearMin * sliceScale;
+	vec2 slicedMax = nearMax * sliceScale;
+	projectedCenter.xy = clamp(projectedCenter.xy, slicedMin, slicedMax);
+
+	vec3 projToCenter = center.xyz - projectedCenter.xyz;
+	return dot(projToCenter, projToCenter) < sqrRadius;
+}
+
 void main() {
-	mat4x4 inverseProjection = inverse(projectionMatrix); // HEAVY
-	
 	uvec3 clusterPos = gl_WorkGroupID;
 
-	// Compute corners in projection space
+	// Compute froxel dimensions
 	vec2 sliceMinMax = vec2(sliceNearZ(clusterPos.z), sliceNearZ(clusterPos.z + 1));
 	vec2 sliceMinMaxProjection = (sliceMinMax * projectionMatrix[2][2] + projectionMatrix[3][2]) / sliceMinMax;
 	vec2 tileMinMaxX = vec2((clusterPos.x / 48.0f - 0.5f) * 2, ((clusterPos.x + 1) / 48.0f - 0.5f) * 2);
 	vec2 tileMinMaxY = vec2((clusterPos.y / 24.0f - 0.5f) * 2, ((clusterPos.y + 1) / 24.0f - 0.5f) * 2);
-	vec4 corners[8] = {
-		vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.x, 1),
-		vec4(tileMinMaxX.x, tileMinMaxY.y, sliceMinMaxProjection.x, 1),
-		vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.x, 1),
-		vec4(tileMinMaxX.y, tileMinMaxY.x, sliceMinMaxProjection.x, 1),
-		vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.y, 1),
-		vec4(tileMinMaxX.x, tileMinMaxY.y, sliceMinMaxProjection.y, 1),
-		vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.y, 1),
-		vec4(tileMinMaxX.y, tileMinMaxY.x, sliceMinMaxProjection.y, 1)
-	};
 
-	// Transform corners to view space
-	for (int i = 0; i < 8; i++) {
-		corners[i] = projectionToView(inverseProjection, corners[i]);
-	}
-
-	vec4 planes[4] = {
-		createPlane(corners[1], corners[0]), // Left
-		createPlane(corners[3], corners[2]), // Right
-		createPlane(corners[2], corners[1]), // Top
-		createPlane(corners[0], corners[3]) // Bottom
-	};
+	// Compute froxel near plane rectangle
+	vec2 nearMin = projectionToView(vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.x, 1)).xy;
+	vec2 nearMax = projectionToView(vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.x, 1)).xy;
 
 	// Test PointLights
 	for (int li = 0; li < pointLightCount; li++) {
 		float range = pointLights[li].positionRange.w;
-		float sqrRange = pointLights[li].positionRange.w * pointLights[li].positionRange.w;
-		for (int ci = 0; ci < 8; ci++) {
-			vec3 toLight = (viewMatrix * vec4(pointLights[li].positionRange.xyz, 1)).xyz - corners[ci].xyz;
-			float sqrDistance = dot(toLight, toLight);
-			if (sqrDistance < sqrRange) {
-				addLightToCluster(clusterPos, 1, li);
-				break;
-			}
+		vec4 center = viewMatrix * vec4(pointLights[li].positionRange.xyz, 1.0);
+		if (intersectFroxelSphere(sliceMinMax, nearMin, nearMax, center, range)) {
+			addLightToCluster(clusterPos, 1, li);
 		}
-//		vec4 viewCenter = viewMatrix * vec4(pointLights[li].positionRange.xyz, 1.0);
-//		if (viewCenter.z + range > sliceMinMax.x && viewCenter.z - range <= sliceMinMax.y && signedDistanceFromPlane(viewCenter, planes[0]) < range && signedDistanceFromPlane(viewCenter, planes[1]) < range && signedDistanceFromPlane(viewCenter, planes[2]) < range && signedDistanceFromPlane(viewCenter, planes[3]) < range) {
-//			addLightToCluster(clusterPos, 1, li);
-//			break;
-//		}
 	}
 
 	// Test SpotLights
 	for (int li = 0; li < spotLightCount; li++) {
-		float sqrRange = spotLights[li].positionRange.w * spotLights[li].positionRange.w;
-		for (int ci = 0; ci < 8; ci++) {
-			vec3 toLight = (viewMatrix * vec4(spotLights[li].positionRange.xyz, 1)).xyz - corners[ci].xyz;
-			float sqrDistance = dot(toLight, toLight);
-			if (sqrDistance > sqrRange) {
-				continue;
-			}
-			vec4 spotDir = vec4(decodeNormal(spotLights[li].dirAngle.xy), 0);
-			spotDir = viewMatrix * spotDir;
-			toLight = -normalize(toLight);
-			float angle = acos(dot(spotDir.xyz, toLight));
-			if (angle < spotLights[li].dirAngle.w * 0.5f) {
-				addLightToCluster(clusterPos, 2, li);
-				break;
-			}
+		float range = spotLights[li].positionRange.w;
+		float angle = spotLights[li].dirAngle.w;
+		vec4 center = viewMatrix * vec4(spotLights[li].positionRange.xyz, 1.0);
+		if (/*angle > PI && */intersectFroxelSphere(sliceMinMax, nearMin, nearMax, center, range)) { // TODO have a tighter sphere when possible (angles lower than PI)
+			addLightToCluster(clusterPos, 2, li);
 		}
 	}
 

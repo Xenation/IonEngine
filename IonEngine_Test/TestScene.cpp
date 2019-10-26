@@ -159,7 +159,7 @@ void TestScene::load() {
 	Entity* dynLightEntity = new Entity("Light");
 	dynLightEntity->transform->setPosition({6, 10, 0});
 	dynLightEntity->transform->setRotation(Rotor3f::euler(half_pi, 0, 0));
-	Light* pointLight = new Light(dynLightEntity, LightType::Spot);
+	Light* pointLight = new Light(dynLightEntity, LightType::Point);
 	pointLight->range = 20.0f;
 	pointLight->angle = quarter_pi;
 	pointLight->innerAngle = quarter_pi * 0.5f;
