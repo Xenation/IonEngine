@@ -92,16 +92,15 @@ float signedDistanceFromPlane(vec4 p, vec4 plane) {
 	return dot(plane.xyz, p.xyz);
 }
 
-bool intersectFroxelSphere(vec2 minMaxZ, vec2 nearMin, vec2 nearMax, vec4 center, float radius) {
+bool intersectFroxelSphere(vec4 nearMinMax, vec4 center, vec2 minMaxZ, float radius) {
 	float sqrRadius = radius * radius;
 
 	if (center.z + radius < minMaxZ.x || center.z - radius > minMaxZ.y) return false;
 	vec4 projectedCenter = center;
 	projectedCenter.z = clamp(projectedCenter.z, minMaxZ.x, minMaxZ.y);
 	float sliceScale = projectedCenter.z / minMaxZ.x;
-	vec2 slicedMin = nearMin * sliceScale;
-	vec2 slicedMax = nearMax * sliceScale;
-	projectedCenter.xy = clamp(projectedCenter.xy, slicedMin, slicedMax);
+	vec4 slicedMinMax = nearMinMax * sliceScale;
+	projectedCenter.xy = clamp(projectedCenter.xy, slicedMinMax.xy, slicedMinMax.zw);
 
 	vec3 projToCenter = center.xyz - projectedCenter.xyz;
 	return dot(projToCenter, projToCenter) < sqrRadius;
@@ -117,14 +116,13 @@ void main() {
 	vec2 tileMinMaxY = vec2((clusterPos.y / 24.0f - 0.5f) * 2, ((clusterPos.y + 1) / 24.0f - 0.5f) * 2);
 
 	// Compute froxel near plane rectangle
-	vec2 nearMin = projectionToView(vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.x, 1)).xy;
-	vec2 nearMax = projectionToView(vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.x, 1)).xy;
+	vec4 nearMinMax = vec4(projectionToView(vec4(tileMinMaxX.x, tileMinMaxY.x, sliceMinMaxProjection.x, 1)).xy, projectionToView(vec4(tileMinMaxX.y, tileMinMaxY.y, sliceMinMaxProjection.x, 1)).xy);
 
 	// Test PointLights
 	for (int li = 0; li < pointLightCount; li++) {
 		float range = pointLights[li].positionRange.w;
 		vec4 center = viewMatrix * vec4(pointLights[li].positionRange.xyz, 1.0);
-		if (intersectFroxelSphere(sliceMinMax, nearMin, nearMax, center, range)) {
+		if (intersectFroxelSphere(nearMinMax, center, sliceMinMax, range)) {
 			addLightToCluster(clusterPos, 1, li);
 		}
 	}
@@ -134,7 +132,7 @@ void main() {
 		float range = spotLights[li].positionRange.w;
 		float angle = spotLights[li].dirAngle.w;
 		vec4 center = viewMatrix * vec4(spotLights[li].positionRange.xyz, 1.0);
-		if (/*angle > PI && */intersectFroxelSphere(sliceMinMax, nearMin, nearMax, center, range)) { // TODO have a tighter sphere when possible (angles lower than PI)
+		if (/*angle > PI && */intersectFroxelSphere(nearMinMax, center, sliceMinMax, range)) { // TODO have a tighter sphere when possible (angles lower than PI)
 			addLightToCluster(clusterPos, 2, li);
 		}
 	}
