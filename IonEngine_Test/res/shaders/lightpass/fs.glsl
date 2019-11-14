@@ -1,5 +1,7 @@
 #version 430
 
+#define PI 3.14159265359
+
 layout (std140, binding = 1) uniform GlobalsVars {
 	float time;
 	vec4 mainDirLightColor;
@@ -128,35 +130,95 @@ uint getClusterIndex(uvec3 clusterCoords) {
 	return (clusterCoords.z * 1152 + clusterCoords.y * 48 + clusterCoords.x) * 16;
 }
 
+float distanceAttenuation(float dist, float lightRange) {
+	// BASIC LINEAR
+	return 1 - clamp(dist / lightRange, 0, 1);
+}
+
+float D_GGX(float NoH, float a) {
+	float a2 = a * a;
+	float f = (NoH * a2 - NoH) * NoH + 1.0;
+	return a2 / (PI * f * f);
+}
+
+vec3 F_Schlick(float VoH, vec3 f0) {
+	return f0 + (vec3(1.0) - f0) * pow(1.0 - VoH, 5.0);
+}
+
+float V_SmithGGXCorrelatedFast(float NoV, float NoL, float roughness) {
+	float GGXV = NoL * (NoV * (1.0 - roughness) + roughness);
+	float GGXL = NoV * (NoL * (1.0 - roughness) + roughness);
+	return 0.5 / (GGXV + GGXL);
+}
+
+float Fd_Lambert() {
+	return 1.0 / PI;
+}
+
+vec3 BRDF(vec3 diffuse, vec3 specular, float roughness, vec3 normal, vec3 lightDir, vec3 viewDir) {
+	vec3 halfDir = normalize(viewDir + lightDir);
+
+	float NoV = abs(dot(normal, viewDir)) + 1e-5;
+	float NoL = clamp(dot(normal, lightDir), 0.0, 1.0);
+	float NoH = clamp(dot(normal, halfDir), 0.0, 1.0);
+	float LoH = clamp(dot(lightDir, halfDir), 0.0, 1.0);
+
+	float realRoughness = roughness * roughness;
+	float a = NoH * realRoughness;
+
+	vec3 f0 = vec3(0.5); // TODO tweakable reflectance
+	float D = D_GGX(NoH, a);
+	vec3 F = F_Schlick(LoH, f0);
+	float V = V_SmithGGXCorrelatedFast(NoV, NoL, realRoughness);
+
+	vec3 Fr = (D * V) * F;
+
+	vec3 Fd = diffuse;// * Fd_Lambert(); // Removed Lambert to avoid huge diffuse loss
+
+	return Fr + Fd;
+}
+
+vec3 shadeDirectionalLight(vec4 worldPos, vec3 normal, vec4 albedo, uint dirLightIndex) {
+	vec3 lightDir = -directionalParams[dirLightIndex].xyz;
+	vec4 lightColor = directionalColors[dirLightIndex];
+
+	float shadowAtten = 1.0;
+	if (shadowAtlasIndices[dirLightIndex].x >= 0) {
+		shadowAtten = computeShadow(shadowAtlasIndices[dirLightIndex].x, worldPos);
+	}
+
+	float lightAtten = shadowAtten * lightColor.a;
+	float NoL = clamp(dot(normal, lightDir), 0.0, 1.0);
+	vec3 radiance = lightColor.rgb * (lightAtten * NoL);
+	return BRDF(albedo.rgb, vec3(1.0f), 0.1, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
+}
+
 vec3 shadePointLight(vec4 worldPos, vec3 normal, vec4 albedo, uint pointLightId) {
 	vec3 lightDir = pointParams[pointLightId].xyz - worldPos.xyz;
-	float distSqr = dot(lightDir, lightDir);
-	float rangeSqr = pointParams[pointLightId].w * pointParams[pointLightId].w;
-	if (distSqr > rangeSqr) return vec3(0);
-	vec4 lightColor = vec4(0, 0, 0, 1 - clamp(distSqr / rangeSqr, 0, 1));
-	lightDir /= sqrt(distSqr);
-	lightColor = pointColors[pointLightId] * lightColor.a;
-	return max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a;
+	float dist = sqrt(dot(lightDir, lightDir));
+	lightDir /= dist;
+
+	float lightAtten = distanceAttenuation(dist, pointParams[pointLightId].w) * pointColors[pointLightId].a;
+	float NoL = clamp(dot(normal, lightDir), 0.0, 1.0);
+	vec3 radiance = pointColors[pointLightId].rgb * (lightAtten * NoL);
+	return BRDF(albedo.rgb, vec3(1.0f), 0.3f, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
 }
 
 vec3 shadeSpotLight(vec4 worldPos, vec3 normal, vec4 albedo, uint spotLightId) {
-	vec3 lightDir = spotPos[spotLightId].xyz - worldPos.xyz;
-	float distSqr = dot(lightDir, lightDir);
-	float rangeSqr = spotPos[spotLightId].w * spotPos[spotLightId].w;
-	if (distSqr > rangeSqr) return vec3(0);
-	lightDir /= sqrt(distSqr);
 	vec3 spotDir = decodeNormal(spotParams[spotLightId].xy);
-	float atten = clamp(remap(acos(dot(spotDir, -lightDir)), spotParams[spotLightId].w * 0.5, spotParams[spotLightId].z * 0.5, 0, 1), 0, 1);
-	if (atten < 0) return vec3(0);
-	vec4 lightColor = vec4(0, 0, 0, (1 - clamp(distSqr / rangeSqr, 0, 1)) * atten);
-	lightColor = spotColors[spotLightId] * lightColor.a;
-	float shadowMult;
+	vec3 lightDir = spotPos[spotLightId].xyz - worldPos.xyz;
+	float dist = sqrt(dot(lightDir, lightDir));
+	lightDir /= dist;
+
+	float shadowAtten = 1.0;
 	if (shadowAtlasIndices[spotLightId].z >= 0) {
-		shadowMult = computeShadow(shadowAtlasIndices[spotLightId].z, worldPos);
-	} else {
-		shadowMult = 1.0;
+		shadowAtten = computeShadow(shadowAtlasIndices[spotLightId].z, worldPos);
 	}
-	return max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a * shadowMult;
+
+	float lightAtten = distanceAttenuation(dist, spotPos[spotLightId].w) * clamp(remap(acos(dot(spotDir, -lightDir)), spotParams[spotLightId].w * 0.5, spotParams[spotLightId].z * 0.5, 0, 1), 0, 1) * spotColors[spotLightId].a * shadowAtten;
+	float NoL = clamp(dot(normal, lightDir), 0, 1);
+	vec3 radiance = spotColors[spotLightId].rgb * (lightAtten * NoL);
+	return BRDF(albedo.rgb, vec3(1.0f), 0.3f, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
 }
 
 void main() {
@@ -188,20 +250,13 @@ void main() {
 
 		float shadowMult;
 		for (uint i = 0; i < directionalCount; i++) {
-			if (shadowAtlasIndices[i].x >= 0) {
-				shadowMult = computeShadow(shadowAtlasIndices[i].x, worldPos);
-			} else {
-				shadowMult = 1.0;
-			}
-			vec3 lightDir = -directionalParams[i].xyz;
-			vec4 lightColor = directionalColors[i];
-			sColor += max(dot(normal, lightDir), 0.0) * albedo.rgb * lightColor.rgb * lightColor.a * shadowMult;
+			sColor += shadeDirectionalLight(worldPos, normal, albedo, i);
 		}
 
-		uint counted = 0;
+		//uint counted = 0;
 		uint clusterLightCount = clusters[clusterIndex];
 		for (uint i = clusterIndex + 1; i < clusterIndex + clusterLightCount + 1; i++) {
-			counted++;
+			//counted++;
 			
 			uint lightType = (clusters[i] >> 28) & 0x0000000f;
 			uint lightId = clusters[i] & 0x0fffffff;
@@ -216,7 +271,7 @@ void main() {
 		//fragColor = vec4(float(counted) / 2, max(float(counted) - 2, 0), 0, 1);
 		//return;
 
-		fColor += sColor + vec3(float(counted) / 2, max(float(counted) - 2, 0), 0);
+		fColor += sColor;// + vec3(float(counted) / 2, max(float(counted) - 2, 0), 0);
 	}
 	fColor /= sampleCount;
 
