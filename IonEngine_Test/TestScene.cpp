@@ -142,7 +142,7 @@ void TestScene::load() {
 	sphere->transform->setWorldScale({1, 1, 1});
 	MeshRenderer* sphereRenderer = sphere->addComponent<MeshRenderer>();
 	sphereRenderer->setMaterial(wallMaterial);
-	sphereMesh = MeshImporter::Import("cone.obj");
+	sphereMesh = MeshImporter::Import("icosphere.obj");
 	sphereMesh->uploadToGL();
 	sphereRenderer->setMesh(sphereMesh);
 

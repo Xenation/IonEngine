@@ -37,12 +37,6 @@
     <Filter Include="Resource Files\shaders\depth">
       <UniqueIdentifier>{e94bc9aa-44df-4d4f-852e-159c6ec61c86}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\shaders\lightassign-shell">
-      <UniqueIdentifier>{e302a1a5-a0ad-4cb1-a3b9-be5107448d81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files\shaders\lightassign-fill">
-      <UniqueIdentifier>{3af02ec4-3cb9-4311-a329-a6e8c5911a90}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\shaders\lightassign">
       <UniqueIdentifier>{09c1f5b6-4936-4e70-b0c8-1578a2ee82ee}</UniqueIdentifier>
     </Filter>
@@ -108,21 +102,6 @@
     </None>
     <None Include="res\shaders\depth\vs.glsl">
       <Filter>Resource Files\shaders\depth</Filter>
-    </None>
-    <None Include="res\shaders\lightassign-shell\fs.glsl">
-      <Filter>Resource Files\shaders\lightassign-shell</Filter>
-    </None>
-    <None Include="res\shaders\lightassign-shell\gs.glsl">
-      <Filter>Resource Files\shaders\lightassign-shell</Filter>
-    </None>
-    <None Include="res\shaders\lightassign-shell\vs.glsl">
-      <Filter>Resource Files\shaders\lightassign-shell</Filter>
-    </None>
-    <None Include="res\shaders\lightassign-fill\fs.glsl">
-      <Filter>Resource Files\shaders\lightassign-fill</Filter>
-    </None>
-    <None Include="res\shaders\lightassign-fill\vs.glsl">
-      <Filter>Resource Files\shaders\lightassign-fill</Filter>
     </None>
     <None Include="res\shaders\lightassign\cs.glsl">
       <Filter>Resource Files\shaders\lightassign</Filter>

@@ -59,13 +59,6 @@ void RenderPass::render(Camera* camera, const SimpleSet<unsigned int>& visibleRe
 
 /* ==== LIGHT ASSIGN ==== */
 RenderPassLightAssign::RenderPassLightAssign(Pipeline* pipeline) : RenderPass("light-assign", pipeline) {
-	shellPassFramebuffer = new Framebuffer("LightAssign-ShellPass", 48, 24);
-	shellPassFramebuffer->createAttachments(1, new Framebuffer::Attachment[1]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RG, GL_RG16F)});
-	shellPassFramebuffer->clearColor = Color(-1.0f, -1.0f, -1.0f);
-
-	fillPassFramebuffer = new Framebuffer("LightAssign-FillPass", 48, 24);
-	fillPassFramebuffer->createAttachments(1, new Framebuffer::Attachment[1]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RED, GL_R16F)});
-
 	clustersBuffer = new ShaderStorageBuffer("LightClusters");
 	clustersBuffer->setBlocks(1, new ShaderStorageBlock[1]{ShaderStorageBlock(4, 0, 48*24*64*16*4)});
 	clustersBuffer->uploadToGL();
@@ -90,29 +83,12 @@ RenderPassLightAssign::RenderPassLightAssign(Pipeline* pipeline) : RenderPass("l
 }
 
 RenderPassLightAssign::~RenderPassLightAssign() {
-	delete shellPassFramebuffer;
-	delete fillPassFramebuffer;
 	delete clustersBuffer;
 	delete atomicIndexBuffer;
 }
 
 
 void RenderPassLightAssign::onShadersInitialized() {
-	ShaderProgram* shellPassShader = ShaderProgram::find("lightassign-shell");
-	shellPassShader->load();
-	unsigned int count;
-	shellPassSpecShader = shellPassShader->getAllSpecializedPrograms(count)[0];
-	shellPassMaterial = new Material("LightAssign-Shell", shellPassSpecShader);
-	shellLTWMatrixLocation = shellPassSpecShader->getUniformLocation("modelMatrix");
-	shellUseMinLocation = shellPassSpecShader->getUniformLocation("useMin");
-
-	ShaderProgram* fillPassShader = ShaderProgram::find("lightassign-fill");
-	fillPassShader->load();
-	fillPassSpecShader = fillPassShader->getAllSpecializedPrograms(count)[0];
-	fillPassMaterial = new Material("LightAssign-Fill", fillPassSpecShader);
-	fillLightTypeLocation = fillPassSpecShader->getUniformLocation("lightType");
-	fillLightIdLocation = fillPassSpecShader->getUniformLocation("lightId");
-
 	assignShader = new ComputeShader("lightassign");
 	assignShader->load();
 
@@ -151,85 +127,15 @@ void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>
 	clustersBuffer->bindStorageBlock(0);
 	atomicIndexBuffer->clear();
 	atomicIndexBuffer->bind();
-	//renderLightMeshes();
 
 	assignShader->use();
 	glDispatchCompute(48, 24, 64);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	assignShader->unuse();
 
-	//shellPassFramebuffer->bind();
-	//glClear(GL_COLOR_BUFFER_BIT);
-	//glCullFace(GL_BACK);
-	//shellPassSpecShader->use();
-	//shellPassMaterial->use();
-	//shellPassSpecShader->loadBool(fillLocation, false);
-	//renderLightMeshes();
-
-	//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	//glCullFace(GL_FRONT);
-	//lightAssignSpecShader->loadBool(fillLocation, true);
-	//renderLightMeshes();
-	//lightAssignSpecShader->unuse();
-	//glActiveTexture(GL_TEXTURE4);
-	//shellPassFramebuffer->getTexture(0)->bind();
-	//shellPassFramebuffer->unbind();
-
 	glCullFace(GL_BACK);
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_CONSERVATIVE_RASTERIZATION_NV);
-}
-
-void RenderPassLightAssign::renderLightMeshes() {
-	SimpleSet<Light*>& pointLights = pipeline->lightManager->getPointLights();
-	SimpleSet<Light*>& spotLights = pipeline->lightManager->getSpotLights();
-
-	for (unsigned int i = 0; i < pointLights.count; i++) {
-		renderLightMesh(pointLights[i], i, Matrix4x4f::transformation(pointLights[i]->getPosition(), Vec3f::one * pointLights[i]->range * 2.0f, Rotor3f::identity));
-	}
-
-	for (unsigned int i = 0; i < spotLights.count; i++) {
-		float endRadius = tanf(spotLights[i]->angle * 0.5) * spotLights[i]->range;
-		renderLightMesh(spotLights[i], i, Matrix4x4f::transformation(spotLights[i]->getPosition(), Vec3f(endRadius, endRadius, spotLights[i]->range), Rotor3f(Vec3f::forward, spotLights[i]->getDirection())));
-	}
-
-}
-
-void RenderPassLightAssign::renderLightMesh(Light* light, unsigned int id, Matrix4x4f ltw) {
-	// SHELL PASS
-	glEnable(GL_CONSERVATIVE_RASTERIZATION_NV);
-	shellPassFramebuffer->bind();
-	glClear(GL_COLOR_BUFFER_BIT);
-	shellPassSpecShader->use();
-	shellPassMaterial->use();
-	
-
-	glCullFace(GL_FRONT);
-	glColorMask(GL_TRUE, GL_TRUE, GL_FALSE, GL_FALSE);
-	shellPassSpecShader->loadBool(shellUseMinLocation, false);
-	shellPassSpecShader->loadMatrix4x4f(shellLTWMatrixLocation, ltw);
-	light->getType()->cullingMesh->render();
-	// TODO use a single draw call: have glCullFace to NONE and determine whether to assign the min or max value using the face normal.
-	glCullFace(GL_BACK);
-	glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_FALSE);
-	shellPassSpecShader->loadBool(shellUseMinLocation, true);
-	light->getType()->cullingMesh->render();
-
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	shellPassSpecShader->unuse();
-	glActiveTexture(GL_TEXTURE4);
-	shellPassFramebuffer->getTexture(0)->bind();
-	shellPassFramebuffer->unbind();
-	glDisable(GL_CONSERVATIVE_RASTERIZATION_NV);
-	
-
-	// FILL PASS
-	fillPassSpecShader->use();
-	fillPassMaterial->use();
-	fillPassSpecShader->loadUInt(fillLightTypeLocation, light->getType()->id);
-	fillPassSpecShader->loadUInt(fillLightIdLocation, id);
-	shellPassFramebuffer->blitTo(fillPassFramebuffer, fillPassMaterial);
-	fillPassSpecShader->unuse();
 }
 
 
@@ -257,7 +163,7 @@ void RenderPassShadows::render(Camera* camera, const SimpleSet<unsigned int>& vi
 /* ==== OPAQUE ==== */
 RenderPassOpaque::RenderPassOpaque(const char* name, Pipeline* pipeline, unsigned int width, unsigned int height, unsigned int samples) : RenderPass(name, pipeline), deferredMaterial(deferredMaterial) {
 	renderBuffer = new Framebuffer("RenderBuffer", width, height, samples);
-	renderBuffer->createAttachments(3, new Framebuffer::Attachment[3]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT1, GL_RGBA), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
+	renderBuffer->createAttachments(4, new Framebuffer::Attachment[4]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT1, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT2, GL_RGBA), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
 	renderBuffer->clearColor = Color(0.52f, 0.80f, 0.97f, 0.0); //135-206-250
 }
 
@@ -297,7 +203,7 @@ void RenderPassOpaque::onResize(unsigned int width, unsigned int height) {
 void RenderPassOpaque::updateLightsData() {
 	if (pipeline->shadowAtlas != nullptr) {
 		ShadowAtlas* shadowAtlas = pipeline->shadowAtlas;
-		deferredMaterial->setTextureByUnit(3, shadowAtlas->getTexture());
+		deferredMaterial->setTextureByUnit(4, shadowAtlas->getTexture());
 	}
 
 	SimpleSet<Light*>& directionals = pipeline->lightManager->getDirectionalLights();

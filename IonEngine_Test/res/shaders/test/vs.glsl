@@ -19,6 +19,9 @@ uniform mat4x4 modelMatrix;
 layout (std140, binding = 10) uniform Material {
 	vec4 color;
 	float ambient;
+	float metallic;
+	float roughness;
+	float reflectance;
 };
 
 out vec4 worldPos;

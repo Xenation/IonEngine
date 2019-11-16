@@ -20,17 +20,22 @@ layout (std140, binding = 2) uniform Camera {
 layout (std140, binding = 10) uniform Material {
 	vec4 color;
 	float ambient;
+	float metallic;
+	float roughness;
+	float reflectance;
 };
 
 in vec3 normal;
 
 layout (location = 0) out vec4 gDiffuse;
 layout (location = 1) out vec4 gNormal;
+layout (location = 2) out vec4 gMetallic;
 
 void main() {
 	vec4 diffuse = color;
-	//float dirLight = max(ambient, clamp(dot(normal, -mainDirLightDirection.xyz), 0, 1));
-	//diffuse.rgb *= mainDirLightColor.rgb * mainDirLightColor.a * dirLight;
 	gDiffuse = diffuse;
+	gMetallic.r = metallic;
+	gMetallic.g = roughness;
+	gMetallic.b = reflectance;
 	gNormal.rgb = normal * 0.5 + 0.5;
 }

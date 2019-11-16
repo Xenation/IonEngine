@@ -28,6 +28,9 @@ void TestGame::initialize() {
 	testMaterial = new Material("Test", testShader, "opaque");
 	testMaterial->setField(0, Color(1.0f, 0.5f, 0.0f));
 	testMaterial->setField(1, 0.1f);
+	testMaterial->setField(2, 0.0f);
+	testMaterial->setField(3, 0.3f);
+	testMaterial->setField(4, 0.0f);
 
 	particleShader = ShaderProgram::find("particle_basic");
 	if (particleShader != nullptr) {
@@ -39,10 +42,16 @@ void TestGame::initialize() {
 	groundMaterial = new Material("Ground", testShader, "opaque");
 	groundMaterial->setField(0, Color(0.5f, 0.5f, 0.0f));
 	groundMaterial->setField(1, 0.1f);
+	groundMaterial->setField(2, 0.0f);
+	groundMaterial->setField(3, 0.3f);
+	groundMaterial->setField(4, 0.0f);
 
 	wallMaterial = new Material("Wall", testShader, "opaque");
 	wallMaterial->setField(0, Color(0.6f, 0.6f, 0.6f));
 	wallMaterial->setField(1, 0.1f);
+	wallMaterial->setField(2, 0.0f);
+	wallMaterial->setField(3, 0.3f);
+	wallMaterial->setField(4, 0.0f);
 }
 
 void TestGame::preUpdate() {

@@ -21,9 +21,9 @@ layout (std140, binding = 2) uniform Camera {
 
 layout (binding = 0) uniform sampler2DMS gAlbedo;
 layout (binding = 1) uniform sampler2DMS gNormal;
-layout (binding = 2) uniform sampler2DMS gDepth;
-layout (binding = 3) uniform sampler2D shadowAtlas;
-layout (binding = 4) uniform sampler2D clusterDebug;
+layout (binding = 2) uniform sampler2DMS gMetallic;
+layout (binding = 3) uniform sampler2DMS gDepth;
+layout (binding = 4) uniform sampler2D shadowAtlas;
 
 layout (std140, binding = 10) uniform Material {
 	uint directionalCount;
@@ -141,6 +141,12 @@ float D_GGX(float NoH, float a) {
 	return a2 / (PI * f * f);
 }
 
+float D_GGX_ALT(float NoH, float roughness) {
+	float a = NoH * roughness;
+	float k = roughness / (1.0 - NoH * NoH + a * a);
+	return k * k * (1.0 / PI);
+}
+
 vec3 F_Schlick(float VoH, vec3 f0) {
 	return f0 + (vec3(1.0) - f0) * pow(1.0 - VoH, 5.0);
 }
@@ -155,7 +161,20 @@ float Fd_Lambert() {
 	return 1.0 / PI;
 }
 
-vec3 BRDF(vec3 diffuse, vec3 specular, float roughness, vec3 normal, vec3 lightDir, vec3 viewDir) {
+struct SurfaceData {
+	vec3 diffuse;
+	float roughness;
+	vec3 f0;
+};
+
+void InitializeSurfaceData(vec3 albedo, float metallic, float perceptualRoughness, float reflectance, out SurfaceData surfData) {
+	surfData.f0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + albedo * metallic;
+	//surfData.diffuse = albedo * (vec3(1.0) - specular);
+	surfData.diffuse = (1.0 - metallic) * albedo;
+	surfData.roughness = perceptualRoughness * perceptualRoughness;
+}
+
+vec3 BRDF(SurfaceData surfData, vec3 normal, vec3 lightDir, vec3 viewDir) {
 	vec3 halfDir = normalize(viewDir + lightDir);
 
 	float NoV = abs(dot(normal, viewDir)) + 1e-5;
@@ -163,22 +182,20 @@ vec3 BRDF(vec3 diffuse, vec3 specular, float roughness, vec3 normal, vec3 lightD
 	float NoH = clamp(dot(normal, halfDir), 0.0, 1.0);
 	float LoH = clamp(dot(lightDir, halfDir), 0.0, 1.0);
 
-	float realRoughness = roughness * roughness;
-	float a = NoH * realRoughness;
+	float a = NoH * surfData.roughness;
 
-	vec3 f0 = vec3(0.5); // TODO tweakable reflectance
 	float D = D_GGX(NoH, a);
-	vec3 F = F_Schlick(LoH, f0);
-	float V = V_SmithGGXCorrelatedFast(NoV, NoL, realRoughness);
+	vec3 F = F_Schlick(LoH, surfData.f0);
+	float V = V_SmithGGXCorrelatedFast(NoV, NoL, surfData.roughness);
 
 	vec3 Fr = (D * V) * F;
 
-	vec3 Fd = diffuse;// * Fd_Lambert(); // Removed Lambert to avoid huge diffuse loss
+	vec3 Fd = surfData.diffuse;// * Fd_Lambert(); // Removed Lambert to avoid huge diffuse loss
 
 	return Fr + Fd;
 }
 
-vec3 shadeDirectionalLight(vec4 worldPos, vec3 normal, vec4 albedo, uint dirLightIndex) {
+vec3 shadeDirectionalLight(SurfaceData surfData, vec4 worldPos, vec3 normal, uint dirLightIndex) {
 	vec3 lightDir = -directionalParams[dirLightIndex].xyz;
 	vec4 lightColor = directionalColors[dirLightIndex];
 
@@ -190,10 +207,10 @@ vec3 shadeDirectionalLight(vec4 worldPos, vec3 normal, vec4 albedo, uint dirLigh
 	float lightAtten = shadowAtten * lightColor.a;
 	float NoL = clamp(dot(normal, lightDir), 0.0, 1.0);
 	vec3 radiance = lightColor.rgb * (lightAtten * NoL);
-	return BRDF(albedo.rgb, vec3(1.0f), 0.1, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
+	return BRDF(surfData, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
 }
 
-vec3 shadePointLight(vec4 worldPos, vec3 normal, vec4 albedo, uint pointLightId) {
+vec3 shadePointLight(SurfaceData surfData, vec4 worldPos, vec3 normal, uint pointLightId) {
 	vec3 lightDir = pointParams[pointLightId].xyz - worldPos.xyz;
 	float dist = sqrt(dot(lightDir, lightDir));
 	lightDir /= dist;
@@ -201,10 +218,10 @@ vec3 shadePointLight(vec4 worldPos, vec3 normal, vec4 albedo, uint pointLightId)
 	float lightAtten = distanceAttenuation(dist, pointParams[pointLightId].w) * pointColors[pointLightId].a;
 	float NoL = clamp(dot(normal, lightDir), 0.0, 1.0);
 	vec3 radiance = pointColors[pointLightId].rgb * (lightAtten * NoL);
-	return BRDF(albedo.rgb, vec3(1.0f), 0.3f, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
+	return BRDF(surfData, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
 }
 
-vec3 shadeSpotLight(vec4 worldPos, vec3 normal, vec4 albedo, uint spotLightId) {
+vec3 shadeSpotLight(SurfaceData surfData, vec4 worldPos, vec3 normal, uint spotLightId) {
 	vec3 spotDir = decodeNormal(spotParams[spotLightId].xy);
 	vec3 lightDir = spotPos[spotLightId].xyz - worldPos.xyz;
 	float dist = sqrt(dot(lightDir, lightDir));
@@ -218,7 +235,7 @@ vec3 shadeSpotLight(vec4 worldPos, vec3 normal, vec4 albedo, uint spotLightId) {
 	float lightAtten = distanceAttenuation(dist, spotPos[spotLightId].w) * clamp(remap(acos(dot(spotDir, -lightDir)), spotParams[spotLightId].w * 0.5, spotParams[spotLightId].z * 0.5, 0, 1), 0, 1) * spotColors[spotLightId].a * shadowAtten;
 	float NoL = clamp(dot(normal, lightDir), 0, 1);
 	vec3 radiance = spotColors[spotLightId].rgb * (lightAtten * NoL);
-	return BRDF(albedo.rgb, vec3(1.0f), 0.3f, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
+	return BRDF(surfData, normal, lightDir, normalize(invViewMatrix[3].xyz - worldPos.xyz)) * radiance;
 }
 
 void main() {
@@ -234,23 +251,31 @@ void main() {
 	for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 		vec4 albedo = texelFetch(gAlbedo, pixel, sampleIndex);
 		vec3 normal = texelFetch(gNormal, pixel, sampleIndex).rgb * 2.0 - 1.0;
+		vec4 gMetRoughRefl = texelFetch(gMetallic, pixel, sampleIndex);
 		float depth = texelFetch(gDepth, pixel, sampleIndex).x * 2.0 - 1.0;
+
+		float metallic = gMetRoughRefl.r;
+		float perceptualRoughness = gMetRoughRefl.g;
+		float reflectance = gMetRoughRefl.b;
+
+		if (albedo.a < 0.5) {
+			fColor += albedo.rgb;
+			continue;
+		}
 
 		vec4 worldPos = worldPosFromDepth(uv, depth, invViewMatrix, invProjMatrix);
 
 		vec4 viewPos = viewPosFromDepth(uv, depth, invProjMatrix);
 		uint clusterIndex = getClusterIndex(uvec3(tileCoords(uv), depthSlice(viewPos.z)));
 
-		if (albedo.w < 0.5) {
-			fColor += albedo.rgb;
-			continue;
-		}
+		vec3 sColor = albedo.rgb * 0.1; // TODO remove hard ambient
 
-		vec3 sColor = albedo.rgb * 0.1;
+		SurfaceData surfData;
+		InitializeSurfaceData(albedo.rgb, metallic, perceptualRoughness, reflectance, surfData);
 
 		float shadowMult;
 		for (uint i = 0; i < directionalCount; i++) {
-			sColor += shadeDirectionalLight(worldPos, normal, albedo, i);
+			sColor += shadeDirectionalLight(surfData, worldPos, normal, i);
 		}
 
 		//uint counted = 0;
@@ -262,9 +287,9 @@ void main() {
 			uint lightId = clusters[i] & 0x0fffffff;
 
 			if (lightType == 1) {
-				sColor += shadePointLight(worldPos, normal, albedo, lightId);
+				sColor += shadePointLight(surfData, worldPos, normal, lightId);
 			} else if (lightType == 2) {
-				sColor += shadeSpotLight(worldPos, normal, albedo, lightId);
+				sColor += shadeSpotLight(surfData, worldPos, normal, lightId);
 			}
 		}
 

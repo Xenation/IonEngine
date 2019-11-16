@@ -48,25 +48,12 @@ namespace IonEngine {
 		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
 
 	private:
-		Framebuffer* shellPassFramebuffer;
-		Framebuffer* fillPassFramebuffer;
-		SpecializedShaderProgram* shellPassSpecShader;
-		Material* shellPassMaterial;
-		unsigned int shellLTWMatrixLocation;
-		unsigned int shellUseMinLocation;
-		SpecializedShaderProgram* fillPassSpecShader;
-		Material* fillPassMaterial;
-		unsigned int fillLightTypeLocation;
-		unsigned int fillLightIdLocation;
 		ComputeShader* assignShader;
 
 		ShaderStorageBuffer* clustersBuffer;
 		ShaderStorageBuffer* pointLightsBuffer;
 		ShaderStorageBuffer* spotLightsBuffer;
 		AtomicCounterBuffer* atomicIndexBuffer;
-
-		void renderLightMeshes();
-		void renderLightMesh(Light* light, unsigned int id, Math::Matrix4x4f ltw);
 	};
 
 	class RenderPassShadows : public RenderPass {
