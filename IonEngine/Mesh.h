@@ -50,7 +50,7 @@ namespace IonEngine {
 		void setTopology(GLenum topology);
 		void setUsageHint(GLenum usage);
 		void setName(std::string n);
-		void resize(int vCount, int iCount, bool copy = true, ResizeMode mode = ResizeMode::Force);
+		void resize(unsigned int vCount, unsigned int iCount, bool copy = true, ResizeMode mode = ResizeMode::Force);
 		void recalculateBounds();
 		void recalculateBoundsFromIndices();
 
@@ -60,8 +60,8 @@ namespace IonEngine {
 		void deleteFromGL();
 		void render() const;
 
-		inline int getVertexCount() const { return vertexCount; }
-		inline int getIndexCount() const { return indexCount; }
+		inline unsigned int getVertexCount() const { return vertexCount; }
+		inline unsigned int getIndexCount() const { return indexCount; }
 		inline void setDrawnIndexCount(int drawnCount) { drawnIndexCount = drawnCount; }
 		inline int getDrawnIndexCount() const { return drawnIndexCount; }
 		inline bool isLoadedToGL() const { return loadedToGL; }
@@ -85,9 +85,9 @@ namespace IonEngine {
 		GLenum* attributeTypes = nullptr;
 		unsigned int* attributeByteOffsets = nullptr;
 		int vertexByteSize;
-		int vertexCount;
+		unsigned int vertexCount;
 		void* vertices = nullptr;
-		int indexCount;
+		unsigned int indexCount;
 		unsigned int* indices = nullptr;
 		int drawnIndexCount = -1; // -1 means draw all
 		GLenum topology = GL_TRIANGLES;

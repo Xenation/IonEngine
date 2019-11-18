@@ -28,6 +28,9 @@ namespace IonEngine {
 				return LightType::Point;
 			case LightType::SpotId:
 				return LightType::Spot;
+
+			default:
+				return LightType::Directional;
 			}
 		}
 	};

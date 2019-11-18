@@ -289,7 +289,7 @@ void UniformBuffer::uploadToGL() {
 	if (ubo == 0) {
 		glGenBuffers(1, &ubo);
 		std::string fullName = "UBO " + name;
-		glObjectLabel(GL_BUFFER, ubo, fullName.size(), fullName.c_str());
+		glObjectLabel(GL_BUFFER, ubo, (GLsizei) fullName.size(), fullName.c_str());
 	}
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	glBufferData(GL_UNIFORM_BUFFER, bufferSize, buffer, GL_DYNAMIC_DRAW);

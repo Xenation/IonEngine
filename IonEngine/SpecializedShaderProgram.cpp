@@ -164,7 +164,7 @@ void SpecializedShaderProgram::load(GLuint vs, GLuint tcs, GLuint tes, GLuint gs
 	} else {
 		label = std::string("Program " + parentShader->name + "/_");
 	}
-	glObjectLabel(GL_PROGRAM, program, label.size(), label.c_str());
+	glObjectLabel(GL_PROGRAM, program, (GLsizei) label.size(), label.c_str());
 	if (vs > 0) {
 		glAttachShader(program, vs);
 	}
@@ -274,7 +274,7 @@ GLuint SpecializedShaderProgram::loadShaderFromSourceArray(GLenum type, const ch
 	} else {
 		label = std::string("Shader " + parentShader->name + "/_/" + shortTypeStr);
 	}
-	glObjectLabel(GL_SHADER, shader, label.size(), label.c_str());
+	glObjectLabel(GL_SHADER, shader, (GLsizei) label.size(), label.c_str());
 
 	glShaderSource(shader, srcPiecesCount, (const GLchar**) src, NULL);
 	glCompileShader(shader);

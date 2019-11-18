@@ -35,7 +35,7 @@ void TestScene::load() {
 	camera->addComponent<Camera>();
 	camera->addComponent<NoclipController>()->lookSensivity = 0.5f;
 	camera->transform->setPosition({5, 5, -5});
-	camera->transform->setRotation(Rotor3f::euler({ M_PI_4, -M_PI_4, 0 }));
+	camera->transform->setRotation(Rotor3f::euler({Math::quarter_pi, -Math::quarter_pi, 0}));
 	//Light* cameraLight = new Light(camera, LightType::Spot);
 	////cameraLight->setCastShadow(true);
 	//cameraLight->range = 50.0f;
@@ -48,7 +48,7 @@ void TestScene::load() {
 	Light* sunLight = new Light(sun, LightType::Directional);
 	sunLight->setCastShadow(true);
 	sun->addComponent(sunLight);
-	sun->transform->setRotation(Rotor3f::euler({M_PI_4, M_PI_4 * 0.5f, 0}));
+	sun->transform->setRotation(Rotor3f::euler({Math::quarter_pi, Math::quarter_pi * 0.5f, 0}));
 
 	cubeMesh = new Mesh("Cube", 8, 36);
 	cubeMesh->setAttributesDefinition(1, new int[1]{3});

@@ -186,7 +186,7 @@ void Texture::uploadToGL() {
 
 	if (!name.empty()) {
 		std::string fullName = "Texture " + name;
-		glObjectLabel(GL_TEXTURE, textureID, fullName.size(), fullName.c_str());
+		glObjectLabel(GL_TEXTURE, textureID, (GLsizei) fullName.size(), fullName.c_str());
 	}
 }
 
@@ -202,7 +202,7 @@ void Texture::setName(std::string n) {
 	name = n;
 	if (loadedToGL && !name.empty()) {
 		std::string fullName = "Texture " + name;
-		glObjectLabel(GL_TEXTURE, textureID, fullName.size(), fullName.c_str());
+		glObjectLabel(GL_TEXTURE, textureID, (GLsizei) fullName.size(), fullName.c_str());
 	}
 }
 

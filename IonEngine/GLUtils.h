@@ -335,6 +335,9 @@ namespace IonEngine {
 			// 1
 		case GL_STENCIL_INDEX1:
 			return 1;
+
+		default: // UNKNOWN
+			return 00;
 		}
 	}
 
@@ -349,6 +352,7 @@ namespace IonEngine {
 
 	inline GLenum glGetDefaultInternalFormat(GLenum format) { // TODO add more
 		switch (format) {
+		default:
 		case GL_RGBA:
 			return GL_RGBA8;
 		case GL_DEPTH_COMPONENT:
@@ -375,6 +379,7 @@ namespace IonEngine {
 
 	inline std::string glFramebufferStatusString(GLenum status) {
 		switch (status) {
+		default:
 		case GL_FRAMEBUFFER_UNDEFINED:
 			return "Undefined";
 		case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
@@ -517,6 +522,8 @@ namespace IonEngine {
 			}
 			return typeAlign;
 		}
+
+		return GLSL_UNKNOWN;
 	}
 
 	inline unsigned int glslTypeBaseAlignment(GLSLType type) {
@@ -595,6 +602,8 @@ namespace IonEngine {
 				return glslTypeBaseAlignment(GLSL_VEC4, 4);
 			}
 		}
+
+		return GLSL_UNKNOWN;
 	}
 
 	inline GLSLType glslTypeFromString(std::string typeStr) {
@@ -813,6 +822,8 @@ namespace IonEngine {
 			}
 			break;
 		}
+
+		return UniformLayoutType::STD140;
 	}
 
 	inline unsigned int glslTypeSize(GLSLType type) {

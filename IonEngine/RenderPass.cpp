@@ -102,7 +102,7 @@ void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>
 	SimpleSet<Light*>& pointLights = pipeline->lightManager->getPointLights();
 	ShaderStorageBlock& pointLightsBlock = pointLightsBuffer->getStorageBlock(0);
 	((unsigned int*) pointLightsBlock.buffer)[0] = pointLights.count;
-	for (int i = 0; i < pointLights.count; i++) {
+	for (unsigned int i = 0; i < pointLights.count; i++) {
 		((Vec4f*) (pointLightsBlock.buffer + 16))[i * 2] = Vec4f(pointLights[i]->getPosition(), pointLights[i]->range);
 		((Vec4f*) (pointLightsBlock.buffer + 16))[i * 2 + 1] = pointLights[i]->color.vec;
 	}
@@ -111,7 +111,7 @@ void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>
 	SimpleSet<Light*>& spotLights = pipeline->lightManager->getSpotLights();
 	ShaderStorageBlock& spotLightsBlock = spotLightsBuffer->getStorageBlock(0);
 	((unsigned int*) spotLightsBlock.buffer)[0] = spotLights.count;
-	for (int i = 0; i < spotLights.count; i++) {
+	for (unsigned int i = 0; i < spotLights.count; i++) {
 		((Vec4f*) (spotLightsBlock.buffer + 16))[i * 3] = Vec4f(spotLights[i]->getPosition(), spotLights[i]->range);
 		((Vec4f*) (spotLightsBlock.buffer + 16))[i * 3 + 1] = spotLights[i]->color.vec;
 		Vec2f dir = encodeNormal(spotLights[i]->getDirection());

@@ -12,7 +12,7 @@ using namespace IonEngine;
 #define SHADER_CODE_DEBUG_FS "#version 420 core\nin vec4 c;\nout vec4 fc;\nvoid main() { fc = c; }\n\0"
 #define SHADER_CODE_DEBUG_MESH_VS "#version 420 core\n#pragma pass opaque\nlayout (location = 0) in vec3 vp;\nlayout (std140, binding = 2) uniform CameraMatrices {\nmat4x4 projectionMatrix;\nmat4x4 invProjectionMatrix;\nmat4x4 viewMatrix;\nmat4x4 invViewMatrix;\n};\nuniform mat4x4 ltwMatrix;\nvoid main() { gl_Position = projectionMatrix * viewMatrix * ltwMatrix * vec4(vp, 1.0); }\n\0"
 #define SHADER_CODE_DEBUG_MESH_FS "#version 420 core\nlayout (std140, binding = 10) uniform Material {\nvec4 color;\n};\nout vec4 fc;\nvoid main() { fc = color; }\n\0"
-constexpr Vec3f icoSphereVertices[42] = {Vec3f(0.000000, -0.500000, 0.000000), Vec3f(0.361804, -0.223610, 0.262863), Vec3f(-0.138194, -0.223610, 0.425325), Vec3f(-0.447213, -0.223608, 0.000000), Vec3f(-0.138194, -0.223610, -0.425325), Vec3f(0.361804, -0.223610, -0.262863), Vec3f(0.138194, 0.223610, 0.425325), Vec3f(-0.361804, 0.223610, 0.262863), Vec3f(-0.361804, 0.223610, -0.262863), Vec3f(0.138194, 0.223610, -0.425325), Vec3f(0.447213, 0.223608, 0.000000), Vec3f(0.000000, 0.500000, 0.000000), Vec3f(-0.081228, -0.425327, 0.249998), Vec3f(0.212661, -0.425327, 0.154506), Vec3f(0.131434, -0.262869, 0.404506), Vec3f(0.425324, -0.262868, 0.000000), Vec3f(0.212661, -0.425327, -0.154506), Vec3f(-0.262865, -0.425326, 0.000000), Vec3f(-0.344095, -0.262868, 0.249998), Vec3f(-0.081228, -0.425327, -0.249998), Vec3f(-0.344095, -0.262868, -0.249998), Vec3f(0.131434, -0.262869, -0.404506), Vec3f(0.475529, 0.000000, 0.154506), Vec3f(0.475529, 0.000000, -0.154506), Vec3f(0.000000, 0.000000, 0.500000), Vec3f(0.293893, 0.000000, 0.404508), Vec3f(-0.475529, 0.000000, 0.154506), Vec3f(-0.293893, 0.000000, 0.404508), Vec3f(-0.293893, 0.000000, -0.404508), Vec3f(-0.475529, 0.000000, -0.154506), Vec3f(0.293893, 0.000000, -0.404508), Vec3f(0.000000, 0.000000, -0.500000), Vec3f(0.344095, 0.262868, 0.249998), Vec3f(-0.131434, 0.262869, 0.404506), Vec3f(-0.425324, 0.262868, 0.000000), Vec3f(-0.131434, 0.262869, -0.404506), Vec3f(0.344095, 0.262868, -0.249998), Vec3f(0.081228, 0.425327, 0.249998), Vec3f(0.262865, 0.425326, 0.000000), Vec3f(-0.212661, 0.425327, 0.154506), Vec3f(-0.212661, 0.425327, -0.154506), Vec3f(0.081228, 0.425327, -0.249998)};
+constexpr Vec3f icoSphereVertices[42] = {Vec3f(0.000000f, -0.500000f, 0.000000f), Vec3f(0.361804f, -0.223610f, 0.262863f), Vec3f(-0.138194f, -0.223610f, 0.425325f), Vec3f(-0.447213f, -0.223608f, 0.000000f), Vec3f(-0.138194f, -0.223610f, -0.425325f), Vec3f(0.361804f, -0.223610f, -0.262863f), Vec3f(0.138194f, 0.223610f, 0.425325f), Vec3f(-0.361804f, 0.223610f, 0.262863f), Vec3f(-0.361804f, 0.223610f, -0.262863f), Vec3f(0.138194f, 0.223610f, -0.425325f), Vec3f(0.447213f, 0.223608f, 0.000000f), Vec3f(0.000000f, 0.500000f, 0.000000f), Vec3f(-0.081228f, -0.425327f, 0.249998f), Vec3f(0.212661f, -0.425327f, 0.154506f), Vec3f(0.131434f, -0.262869f, 0.404506f), Vec3f(0.425324f, -0.262868f, 0.000000f), Vec3f(0.212661f, -0.425327f, -0.154506f), Vec3f(-0.262865f, -0.425326f, 0.000000f), Vec3f(-0.344095f, -0.262868f, 0.249998f), Vec3f(-0.081228f, -0.425327f, -0.249998f), Vec3f(-0.344095f, -0.262868f, -0.249998f), Vec3f(0.131434f, -0.262869f, -0.404506f), Vec3f(0.475529f, 0.000000f, 0.154506f), Vec3f(0.475529f, 0.000000f, -0.154506f), Vec3f(0.000000f, 0.000000f, 0.500000f), Vec3f(0.293893f, 0.000000f, 0.404508f), Vec3f(-0.475529f, 0.000000f, 0.154506f), Vec3f(-0.293893f, 0.000000f, 0.404508f), Vec3f(-0.293893f, 0.000000f, -0.404508f), Vec3f(-0.475529f, 0.000000f, -0.154506f), Vec3f(0.293893f, 0.000000f, -0.404508f), Vec3f(0.000000f, 0.000000f, -0.500000f), Vec3f(0.344095f, 0.262868f, 0.249998f), Vec3f(-0.131434f, 0.262869f, 0.404506f), Vec3f(-0.425324f, 0.262868f, 0.000000f), Vec3f(-0.131434f, 0.262869f, -0.404506f), Vec3f(0.344095f, 0.262868f, -0.249998f), Vec3f(0.081228f, 0.425327f, 0.249998f), Vec3f(0.262865f, 0.425326f, 0.000000f), Vec3f(-0.212661f, 0.425327f, 0.154506f), Vec3f(-0.212661f, 0.425327f, -0.154506f), Vec3f(0.081228f, 0.425327f, -0.249998f)};
 constexpr unsigned int icoSphereIndices[240] = {0, 12, 13, 1, 15, 13, 0, 17, 12, 0, 19, 17, 0, 16, 19, 1, 22, 15, 2, 24, 14, 3, 26, 18, 4, 28, 20, 5, 30, 21, 1, 25, 22, 2, 27, 24, 3, 29, 26, 4, 31, 28, 5, 23, 30, 6, 37, 32, 7, 39, 33, 8, 40, 34, 9, 41, 35, 10, 38, 36, 38, 11, 41, 38, 41, 36, 36, 41, 9, 41, 11, 40, 41, 40, 35, 35, 40, 8, 40, 11, 39, 40, 39, 34, 34, 39, 7, 39, 11, 37, 39, 37, 33, 33, 37, 6, 37, 11, 38, 37, 38, 32, 32, 38, 10, 23, 10, 36, 23, 36, 30, 30, 36, 9, 31, 9, 35, 31, 35, 28, 28, 35, 8, 29, 8, 34, 29, 34, 26, 26, 34, 7, 27, 7, 33, 27, 33, 24, 24, 33, 6, 25, 6, 32, 25, 32, 22, 22, 32, 10, 30, 9, 31, 30, 31, 21, 21, 31, 4, 28, 8, 29, 28, 29, 20, 20, 29, 3, 26, 7, 27, 26, 27, 18, 18, 27, 2, 24, 6, 25, 24, 25, 14, 14, 25, 1, 22, 10, 23, 22, 23, 15, 15, 23, 5, 16, 5, 21, 16, 21, 19, 19, 21, 4, 19, 4, 20, 19, 20, 17, 17, 20, 3, 17, 3, 18, 17, 18, 12, 12, 18, 2, 15, 5, 16, 15, 16, 13, 13, 16, 0, 12, 2, 14, 12, 14, 13, 13, 14, 1};
 constexpr unsigned int wireMeshVertexIncrease = 128;
 constexpr unsigned int wireMeshIndexIncrease = 128;
@@ -375,7 +375,7 @@ void VisualDebug::initializeMeshes() {
 }
 
 void VisualDebug::addWireVertex(Vec3f pos, Color col) {
-	int vertexCapacity = wireMesh->getVertexCount();
+	unsigned int vertexCapacity = wireMesh->getVertexCount();
 	if (wireVerticesIndex >= vertexCapacity) {
 		vertexCapacity += wireMeshVertexIncrease;
 		wireMesh->resize(vertexCapacity, wireMesh->getIndexCount(), true, Mesh::ResizeMode::GrowOrShrinkQuarter);
@@ -385,7 +385,7 @@ void VisualDebug::addWireVertex(Vec3f pos, Color col) {
 }
 
 void VisualDebug::addWireIndex(int index) {
-	int indexCapacity = wireMesh->getIndexCount();
+	unsigned int indexCapacity = wireMesh->getIndexCount();
 	if (wireIndicesIndex >= indexCapacity) {
 		indexCapacity += wireMeshIndexIncrease;
 		wireMesh->resize(wireMesh->getVertexCount(), indexCapacity, true, Mesh::ResizeMode::GrowOrShrinkQuarter);
@@ -395,7 +395,7 @@ void VisualDebug::addWireIndex(int index) {
 }
 
 void VisualDebug::addSolidVertex(const Vec3f& pos, const Color& col) {
-	int vertexCapacity = solidMesh->getVertexCount();
+	unsigned int vertexCapacity = solidMesh->getVertexCount();
 	if (solidVerticesIndex >= vertexCapacity) {
 		vertexCapacity += solidMeshVertexIncrease;
 		solidMesh->resize(vertexCapacity, solidMesh->getIndexCount(), true, Mesh::ResizeMode::GrowOrShrinkQuarter);
@@ -405,7 +405,7 @@ void VisualDebug::addSolidVertex(const Vec3f& pos, const Color& col) {
 }
 
 void VisualDebug::addSolidIndex(int index) {
-	int indexCapacity = solidMesh->getIndexCount();
+	unsigned int indexCapacity = solidMesh->getIndexCount();
 	if (solidIndicesIndex >= indexCapacity) {
 		indexCapacity += solidMeshIndexIncrease;
 		solidMesh->resize(solidMesh->getVertexCount(), indexCapacity, true, Mesh::ResizeMode::GrowOrShrinkQuarter);

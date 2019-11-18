@@ -84,7 +84,7 @@ void ShaderStorageBuffer::uploadToGL() {
 	if (ssbo == 0) {
 		glGenBuffers(1, &ssbo);
 		std::string fullName = "SSBO " + name;
-		glObjectLabel(GL_BUFFER, ssbo, fullName.size(), fullName.c_str());
+		glObjectLabel(GL_BUFFER, ssbo, (GLsizei) fullName.size(), fullName.c_str());
 	}
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, nullptr, GL_DYNAMIC_DRAW);

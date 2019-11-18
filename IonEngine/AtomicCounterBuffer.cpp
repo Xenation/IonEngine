@@ -32,7 +32,7 @@ void AtomicCounterBuffer::uploadToGL() {
 	if (acbo == 0) {
 		glGenBuffers(1, &acbo);
 		std::string fullName = "ACBO " + name;
-		glObjectLabel(GL_BUFFER, acbo, fullName.size(), fullName.c_str());
+		glObjectLabel(GL_BUFFER, acbo, (GLsizei) fullName.size(), fullName.c_str());
 	}
 	glBindBuffer(GL_ATOMIC_COUNTER_BUFFER, acbo);
 	glBufferData(GL_ATOMIC_COUNTER_BUFFER, bufferSize, buffer, GL_DYNAMIC_DRAW);

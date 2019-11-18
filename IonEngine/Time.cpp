@@ -43,5 +43,5 @@ float Time::endTimeMesure() {
 }
 
 int Time::getInstantFPS() {
-	return 1.0f / deltaTime;
+	return (int) (1.0f / deltaTime);
 }

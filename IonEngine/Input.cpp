@@ -80,6 +80,7 @@ bool Input::getMouseUp(int btnCode) {
 
 const char* Input::getKeyCodeString(KeyCode keyCode) {
 	switch (keyCode) {
+	default:
 	case UNKNOWN: return "UNKNOWN";
 	case SPACE: return "SPACE";
 	case APOSTROPHE: return "APOSTROPHE";

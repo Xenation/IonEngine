@@ -347,15 +347,15 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 void ShaderPreprocessor::findRegexMatches(std::string& str, std::regex& reg, SimpleList<std::smatch>& matches) {
 	std::smatch match;
 
-	uint positionOffset = 0;
+	unsigned int positionOffset = 0;
 
 	std::string::const_iterator start = str.cbegin();
 	std::string::const_iterator end = str.cend();
 
 	while (std::regex_search(start, end, match, reg)) {
 		matches.add(match);
-		uint position = match.position(0);
-		uint length = match.length(0);
+		unsigned int position = (unsigned int) match.position(0);
+		unsigned int length = (unsigned int) match.length(0);
 		start += position + length;
 	}
 }

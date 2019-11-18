@@ -43,7 +43,7 @@ void LightInspector::drawGui(Component* component) {
 		if (ImGui::DragFloat("InnerAngle", &degInnerAngle, 0.1f)) {
 			light->innerAngle = degInnerAngle * deg2rad;
 		}
-		float endRadius = tanf(light->angle * 0.5) * light->range;
+		float endRadius = tanf(light->angle * 0.5f) * light->range;
 		VisualDebug::drawWireCone(light->getPosition(), light->getPosition() + light->getDirection() * light->range, endRadius, light->color);
 		break;
 	}

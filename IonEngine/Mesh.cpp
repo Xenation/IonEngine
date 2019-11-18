@@ -119,7 +119,7 @@ void Mesh::setAttributeData(int index, char* bytes) {
 	int attrByteOffset = attributeByteOffsets[index];
 	int attrSize = attributeSizes[index];
 	int typeSize = glTypeSize(attributeTypes[index]);
-	for (int vi = 0; vi < vertexCount; vi++) {
+	for (unsigned int vi = 0; vi < vertexCount; vi++) {
 		for (int i = 0; i < attrSize; i++) {
 			for (int bi = 0; bi < typeSize; bi++) {
 				((char*) vertices)[vi * vertexByteSize + attrByteOffset + i * typeSize + bi] = bytes[vi * attrSize * typeSize + i * typeSize + bi];
@@ -224,7 +224,7 @@ void Mesh::setName(std::string n) {
 	}
 }
 
-void Mesh::resize(int vCount, int iCount, bool copy, ResizeMode mode) {
+void Mesh::resize(unsigned int vCount, unsigned int iCount, bool copy, ResizeMode mode) {
 	void* nVertices = nullptr;
 	unsigned int* nIndices = nullptr;
 	switch (mode) {
@@ -264,7 +264,7 @@ void Mesh::resize(int vCount, int iCount, bool copy, ResizeMode mode) {
 
 	if (nVertices != nullptr) {
 		if (copy) {
-			for (int i = 0; i < vCount && i < vertexCount; i++) {
+			for (unsigned int i = 0; i < vCount && i < vertexCount; i++) {
 				((char*) nVertices)[i] = ((char*) vertices)[i];
 			}
 		}
@@ -274,7 +274,7 @@ void Mesh::resize(int vCount, int iCount, bool copy, ResizeMode mode) {
 	}
 	if (nIndices != nullptr) {
 		if (copy) {
-			for (int i = 0; i < iCount && i < indexCount; i++) {
+			for (unsigned int i = 0; i < iCount && i < indexCount; i++) {
 				nIndices[i] = indices[i];
 			}
 		}
@@ -288,7 +288,7 @@ void Mesh::recalculateBounds() {
 	bounds = Boxf(Vec3f::positiveInfinity, Vec3f::negativeInfinity);
 	int stride;
 	unsigned char* posAttr = (unsigned char*) getAttributePointer(0, stride);
-	for (int vi = 0; vi < vertexCount * stride; vi += stride) {
+	for (unsigned int vi = 0; vi < vertexCount * stride; vi += stride) {
 		Vec3f pos = *((Vec3f*) (posAttr + vi));
 		if (pos.x < bounds.min.x) {
 			bounds.min.x = pos.x;
@@ -385,9 +385,9 @@ void Mesh::uploadToGL() {
 	glBufferData(GL_ARRAY_BUFFER, loadedVertexBufferSize, vertices, usage);
 	for (int i = 0; i < attributeCount; i++) {
 		if (glTypeIsInteger(attributeTypes[i])) {
-			glVertexAttribIPointer(i, attributeSizes[i], attributeTypes[i], vertexByteSize, (void*) attributeByteOffsets[i]);
+			glVertexAttribIPointer(i, attributeSizes[i], attributeTypes[i], (GLsizei) vertexByteSize, (void*) attributeByteOffsets[i]);
 		} else {
-			glVertexAttribPointer(i, attributeSizes[i], attributeTypes[i], GL_FALSE, vertexByteSize, (void*) attributeByteOffsets[i]);
+			glVertexAttribPointer(i, attributeSizes[i], attributeTypes[i], GL_FALSE, (GLsizei) vertexByteSize, (void*) attributeByteOffsets[i]);
 		}
 	}
 

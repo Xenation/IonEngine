@@ -107,7 +107,7 @@ void Pipeline::render(Camera* camera) {
 	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		RenderPass* renderPass = renderPasses[passIndex];
 		#ifdef _DEBUG // May be overkill
-		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, renderPass->name.length(), renderPass->name.c_str());
+		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei) renderPass->name.length(), renderPass->name.c_str());
 		#endif
 		renderPass->render(camera, visibleRenderers);
 		#ifdef _DEBUG
@@ -151,7 +151,7 @@ void Pipeline::unregisterCamera(unsigned int id) {
 }
 
 RenderPass* Pipeline::getRenderPass(std::string name) {
-	for (int i = 0; i < renderPasses.count; i++) {
+	for (unsigned int i = 0; i < renderPasses.count; i++) {
 		if (renderPasses[i]->name == name) {
 			return renderPasses[i];
 		}
