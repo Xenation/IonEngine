@@ -24,8 +24,8 @@ EntityEditor::~EntityEditor() {
 
 void EntityEditor::drawGui() {
 	HollowSet<Component*>& components = entity->getRawComponentsSet();
-	int counted = 0;
-	for (int i = 0; i < components.capacity && counted < components.capacity; i++) {
+	unsigned int counted = 0;
+	for (unsigned int i = 0; i < components.capacity && counted < components.capacity; i++) {
 		if (components[i] == nullptr) continue;
 		bool enabled = components[i]->isEnabled();
 		if (ImGui::Checkbox(std::string("##" + std::to_string(i)).c_str(), &enabled)) {
@@ -46,8 +46,8 @@ void EntityEditor::drawGui() {
 }
 
 EntityEditor* EntityEditor::getActiveEditor(Entity* entity) {
-	int counted = 0;
-	for (int i = 0; i < activeEditors.capacity && counted < activeEditors.count; i++) {
+	unsigned int counted = 0;
+	for (unsigned int i = 0; i < activeEditors.capacity && counted < activeEditors.count; i++) {
 		if (activeEditors[i] == nullptr) continue;
 		if (activeEditors[i]->entity == entity) {
 			return activeEditors[i];

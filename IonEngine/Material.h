@@ -9,7 +9,7 @@ namespace IonEngine {
 	class ShaderProgram;
 	class SpecializedShaderProgram;
 	class UniformBuffer;
-	class UniformLayout;
+	struct UniformLayout;
 	class Renderer;
 	class RenderPass;
 	class Texture;

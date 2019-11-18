@@ -78,7 +78,7 @@ void ComputeShader::loadProgram(bool silent) {
 
 	program = glCreateProgram();
 	std::string label = std::string("ComputeProgram " + name);
-	glObjectLabel(GL_PROGRAM, program, label.size(), label.c_str());
+	glObjectLabel(GL_PROGRAM, program, (GLsizei) label.size(), label.c_str());
 	if (compute > 0) {
 		glAttachShader(program, compute);
 	}
@@ -128,7 +128,7 @@ void ComputeShader::loadComputeShaderFromSourceArray(const char** src, unsigned 
 		return;
 	}
 	std::string label = std::string("ComputeShader " + name + "/cs");
-	glObjectLabel(GL_SHADER, shader, label.size(), label.c_str());
+	glObjectLabel(GL_SHADER, shader, (GLsizei) label.size(), label.c_str());
 
 	glShaderSource(shader, srcPiecesCount, (const GLchar**)src, NULL);
 	glCompileShader(shader);
@@ -138,12 +138,12 @@ void ComputeShader::loadComputeShaderFromSourceArray(const char** src, unsigned 
 
 	std::string logStr;
 	if (!silent) {
-		log = new char[logSize + 1];
+		log = new char[((size_t) logSize) + 1];
 		if (log == nullptr) {
 			Debug::logError("ComputeLoad", "Program " + name + " could not allocate memory for Compute Shader compilation log!");
 			return;
 		}
-		memset(log, '\0', logSize + 1);
+		memset(log, '\0', ((size_t) logSize) + 1);
 
 		glGetShaderInfoLog(shader, logSize, &logSize, log);
 

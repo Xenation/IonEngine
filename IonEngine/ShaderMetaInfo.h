@@ -22,7 +22,7 @@ namespace IonEngine {
 		std::string name;
 
 	public:
-		ShaderFieldInfo() {}
+		ShaderFieldInfo() : fieldType(ShaderFieldType::In) {}
 		ShaderFieldInfo(ShaderFieldType fieldType, std::string name) : fieldType(fieldType), name(name) {}
 
 		inline virtual ShaderFieldInfo* copy() {

@@ -702,7 +702,7 @@ namespace IonEngine {
 		}
 
 		if (type & GLSL_IS_VEC) {
-			switch (typeStr[shapeStart + 3]) {
+			switch (typeStr[((unsigned long long) shapeStart) + 3]) {
 			case '2':
 				type |= GLSL_COMP1_SIZE2;
 				break;
@@ -716,7 +716,7 @@ namespace IonEngine {
 				return GLSL_UNKNOWN;
 			}
 		} else if (type & GLSL_IS_MAT) {
-			switch (typeStr[shapeStart + 3]) {
+			switch (typeStr[((unsigned long long) shapeStart) + 3]) {
 			case '2':
 				type |= GLSL_COMP1_SIZE2;
 				break;
@@ -729,7 +729,7 @@ namespace IonEngine {
 			default:
 				return GLSL_UNKNOWN;
 			}
-			switch (typeStr[shapeStart + 5]) {
+			switch (typeStr[((unsigned long long) shapeStart) + 5]) {
 			case '2':
 				type |= GLSL_COMP2_SIZE2;
 				break;
@@ -779,14 +779,14 @@ namespace IonEngine {
 					type |= GLSL_IS_SHADOW;
 					return (GLSLType) type;
 				case 'R':
-					if (type & GLSL_IS_2D == 0) {
+					if ((type & GLSL_IS_2D) == 0) {
 						return GLSL_UNKNOWN;
 					}
 					nextTypeAttrStart += 4;
 					type |= GLSL_IS_RECT;
 					break;
 				case 'M':
-					if (type & GLSL_IS_2D == 0) {
+					if ((type & GLSL_IS_2D) == 0) {
 						return GLSL_UNKNOWN;
 					}
 					nextTypeAttrStart += 2;

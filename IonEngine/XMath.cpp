@@ -302,13 +302,13 @@ bool Boxi::intersect(const Boxi& o, Boxi& i) const {
 	return i.min.x < i.max.x && i.min.y < i.max.y && i.min.z < i.max.z;
 }
 bool Boxi::intersect(const Boxf& o, Boxf& i) const {
-	i.min.x = maxf(min.x, o.min.x);
-	i.min.y = maxf(min.y, o.min.y);
-	i.min.z = maxf(min.z, o.min.z);
+	i.min.x = maxf((float) min.x, (float) o.min.x);
+	i.min.y = maxf((float) min.y, (float) o.min.y);
+	i.min.z = maxf((float) min.z, (float) o.min.z);
 
-	i.max.x = minf(max.x, o.max.x);
-	i.max.y = minf(max.y, o.max.y);
-	i.max.z = minf(max.z, o.max.z);
+	i.max.x = minf((float) max.x, (float) o.max.x);
+	i.max.y = minf((float) max.y, (float) o.max.y);
+	i.max.z = minf((float) max.z, (float) o.max.z);
 
 	return i.min.x < i.max.x && i.min.y < i.max.y && i.min.z < i.max.z;
 }

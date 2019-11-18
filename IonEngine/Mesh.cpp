@@ -13,7 +13,7 @@ unsigned int Mesh::triangleCount = 0;
 Mesh::Mesh(int vCount, int iCount) : Mesh("", vCount, iCount) {}
 
 Mesh::Mesh(std::string name, int vCount, int iCount)
-	: name(name), vertexCount(vCount), indexCount(iCount) {
+	: name(name), vertexCount(vCount), indexCount(iCount), attributeCount(0), vertexByteSize(0) {
 	indices = nullptr;
 }
 
@@ -76,7 +76,7 @@ void Mesh::setAttribute(int index, short* values) {
 }
 
 void Mesh::setAttribute(int index, unsigned short* values) {
-	if (attributeTypes[index] != GL_UNSIGNED_SHORT || attributeTypes[index] != GL_HALF_FLOAT) {
+	if (attributeTypes[index] != GL_UNSIGNED_SHORT && attributeTypes[index] != GL_HALF_FLOAT) {
 		Debug::log("Mesh", ("Attribute set at index " + std::to_string(index) + ", wrong type: expected GL_UNSIGNED_SHORT or GL_HALF_FLOAT!").c_str());
 		return;
 	}
@@ -264,7 +264,7 @@ void Mesh::resize(int vCount, int iCount, bool copy, ResizeMode mode) {
 
 	if (nVertices != nullptr) {
 		if (copy) {
-			for (unsigned int i = 0; i < vCount && i < vertexCount; i++) {
+			for (int i = 0; i < vCount && i < vertexCount; i++) {
 				((char*) nVertices)[i] = ((char*) vertices)[i];
 			}
 		}
@@ -274,7 +274,7 @@ void Mesh::resize(int vCount, int iCount, bool copy, ResizeMode mode) {
 	}
 	if (nIndices != nullptr) {
 		if (copy) {
-			for (unsigned int i = 0; i < iCount && i < indexCount; i++) {
+			for (int i = 0; i < iCount && i < indexCount; i++) {
 				nIndices[i] = indices[i];
 			}
 		}
@@ -316,7 +316,7 @@ void Mesh::recalculateBoundsFromIndices() { // Slower but prevents using vertice
 	bounds = Boxf(Vec3f::positiveInfinity, Vec3f::negativeInfinity);
 	int stride;
 	unsigned char* posAttr = (unsigned char*) getAttributePointer(0, stride);
-	unsigned int iCount = (drawnIndexCount == -1) ? indexCount : drawnIndexCount;
+	int iCount = (drawnIndexCount == -1) ? indexCount : drawnIndexCount;
 	for (int ii = 0; ii < iCount; ii++) {
 		Vec3f pos = *((Vec3f*) (posAttr + indices[ii] * stride));
 		if (pos.x < bounds.min.x) {
@@ -468,9 +468,9 @@ void Mesh::updateLabel() {
 		std::string fullName = "Mesh_VAO " + name;
 		std::string fullVerticesName = "Mesh_VBO " + name + "/Vertices";
 		std::string fullIndicesName = "Mesh_VBO " + name + "/Indices";
-		glObjectLabel(GL_VERTEX_ARRAY, vao, fullName.size(), fullName.c_str());
-		glObjectLabel(GL_BUFFER, vboVertices, fullVerticesName.size(), fullVerticesName.c_str());
-		glObjectLabel(GL_BUFFER, vboIndices, fullIndicesName.size(), fullIndicesName.c_str());
+		glObjectLabel(GL_VERTEX_ARRAY, vao, (GLsizei) fullName.size(), fullName.c_str());
+		glObjectLabel(GL_BUFFER, vboVertices, (GLsizei) fullVerticesName.size(), fullVerticesName.c_str());
+		glObjectLabel(GL_BUFFER, vboIndices, (GLsizei) fullIndicesName.size(), fullIndicesName.c_str());
 	}
 }
 

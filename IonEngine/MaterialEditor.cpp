@@ -57,7 +57,7 @@ void MaterialEditor::drawGui() {
 							fieldChange = ImGui::InputScalar(memberName.c_str(), ImGuiDataType_U32, uniformLayout->getUintPtr(memberIndex));
 							break;
 						case GLSL_FLOAT:
-							fieldChange = ImGui::InputFloat(memberName.c_str(), uniformLayout->getFloatPtr(memberIndex), 0.01, 0.1, 3);
+							fieldChange = ImGui::InputFloat(memberName.c_str(), uniformLayout->getFloatPtr(memberIndex), 0.01f, 0.1f, 3);
 							break;
 						case GLSL_DOUBLE:
 							fieldChange = ImGui::InputDouble(memberName.c_str(), uniformLayout->getDoublePtr(memberIndex), 0.01, 0.1);

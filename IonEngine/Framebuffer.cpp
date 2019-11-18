@@ -12,10 +12,10 @@ using namespace IonEngine;
 Mesh* Framebuffer::fullscreenQuadMesh = nullptr;
 
 Framebuffer::Framebuffer(std::string name, uint width, uint height, uint samples)
-	: name(name), width(width), height(height), samples(samples), attachmentCount(attachmentCount) {
+	: name(name), width(width), height(height), samples(samples), attachmentCount(0) {
 	glGenFramebuffers(1, &fbo);
 	std::string fullName = "Framebuffer " + name;
-	glObjectLabel(GL_FRAMEBUFFER, fbo, fullName.size(), fullName.c_str());
+	glObjectLabel(GL_FRAMEBUFFER, fbo, (GLsizei) fullName.size(), fullName.c_str());
 	if (fullscreenQuadMesh == nullptr) {
 		createFullscreenQuadMesh();
 	}

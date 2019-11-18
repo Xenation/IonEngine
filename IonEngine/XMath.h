@@ -168,7 +168,7 @@ namespace IonEngine {
 			return (f < min) ? min : ((f > max) ? max : f);
 		}
 
-		inline int clamp(int i, float min, float max) {
+		inline int clamp(int i, int min, int max) {
 			return (i < min) ? min : ((i > max) ? max : i);
 		}
 
@@ -295,7 +295,7 @@ namespace IonEngine {
 				return x * other.x + y * other.y;
 			}
 			inline float magnitude() const {
-				return sqrtfInline(x * x + y * y);
+				return sqrtfInline((float) (x * x + y * y));
 			}
 			inline Vec2i abs() const {
 				return Vec2i((x < 0) ? -x : x, (y < 0) ? -y : y);
@@ -445,7 +445,7 @@ namespace IonEngine {
 				return x * other.x + y * other.y + z * other.z;
 			}
 			inline float magnitude() const {
-				return sqrtfInline(x * x + y * y + z * z);
+				return sqrtfInline((float) (x * x + y * y + z * z));
 			}
 			inline Vec3i abs() const {
 				return Vec3i((x < 0) ? -x : x, (y < 0) ? -y : y, (z < 0) ? -z : z);
@@ -588,7 +588,7 @@ namespace IonEngine {
 				return x * other.x + y * other.y + z * other.z + w * other.w;
 			}
 			inline float magnitude() const {
-				return sqrtfInline(x * x + y * y + z * z + w * w);
+				return sqrtfInline((float) (x * x + y * y + z * z + w * w));
 			}
 			inline Vec4i abs() const {
 				return Vec4i((x < 0) ? -x : x, (y < 0) ? -y : y, (z < 0) ? -z : z, (w < 0) ? -w : w);
@@ -744,10 +744,10 @@ namespace IonEngine {
 				return sqrtfInline(x * x + y * y);
 			}
 			inline Vec2f abs() const {
-				return Vec2f((x < 0) ? -x : x, (y < 0) ? -y : y);
+				return Vec2f((x < 0.0f) ? -x : x, (y < 0.0f) ? -y : y);
 			}
 			inline Vec2f sign() const {
-				return Vec2f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1);
+				return Vec2f((x < 0.0f) ? -1.0f : 1.0f, (y < 0.0f) ? -1.0f : 1.0f);
 			}
 			inline void inverse() {
 				x = 1.0f / x; y = 1.0f / y;
@@ -765,7 +765,7 @@ namespace IonEngine {
 				return Vec2i(roundToInt(x), roundToInt(y));
 			}
 			inline Vec2f step(const Vec2f& edge) const {
-				return Vec2f((x < edge.x) ? 0 : 1, (y < edge.y) ? 0 : 1);
+				return Vec2f((x < edge.x) ? 0.0f : 1.0f, (y < edge.y) ? 0.0f : 1.0f);
 			}
 			inline Vec2f clamped(float min, float max) const {
 				return Vec2f(clamp(x, min, max), clamp(y, min, max));
@@ -779,7 +779,7 @@ namespace IonEngine {
 				return l.x * r.x + l.y * r.y;
 			}
 			inline Vec2f step(const Vec2f &in, const Vec2f& edge) {
-				return Vec2f((in.x < edge.x) ? 0 : 1, (in.y < edge.y) ? 0 : 1);
+				return Vec2f((in.x < edge.x) ? 0.0f : 1.0f, (in.y < edge.y) ? 0.0f : 1.0f);
 			}
 			inline Vec2f lerp(const Vec2f &a, const Vec2f &b, float t) {
 				return Vec2f(lerpf(a.x, b.x, t), lerpf(a.y, b.y, t));
@@ -932,10 +932,10 @@ namespace IonEngine {
 				return sqrtfInline(x * x + y * y + z * z);
 			}
 			inline Vec3f abs() const {
-				return Vec3f((x < 0) ? -x : x, (y < 0) ? -y : y, (z < 0) ? -z : z);
+				return Vec3f((x < 0.0f) ? -x : x, (y < 0.0f) ? -y : y, (z < 0.0f) ? -z : z);
 			}
 			inline Vec3f sign() const {
-				return Vec3f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1, (z < 0) ? -1 : 1);
+				return Vec3f((x < 0.0f) ? -1.0f : 1.0f, (y < 0.0f) ? -1.0f : 1.0f, (z < 0.0f) ? -1.0f : 1.0f);
 			}
 			inline void inverse() {
 				x = 1.0f / x; y = 1.0f / y; z = 1.0f / z;
@@ -953,7 +953,7 @@ namespace IonEngine {
 				return {roundToInt(x), roundToInt(y), roundToInt(z)};
 			}
 			inline Vec3f step(const Vec3f &edge) const {
-				return Vec3f((x < edge.x) ? 0 : 1, (z < edge.z) ? 0 : 1, (z < edge.z) ? 0 : 1);
+				return Vec3f((x < edge.x) ? 0.0f : 1.0f, (z < edge.z) ? 0.0f : 1.0f, (z < edge.z) ? 0.0f : 1.0f);
 			}
 			inline Vec3f clamped(float min, float max) const {
 				return Vec3f(clamp(x, min, max), clamp(y, min, max), clamp(z, min, max));
@@ -970,7 +970,7 @@ namespace IonEngine {
 				return {r.y * l.z - r.z * l.y, r.z * l.x - r.x * l.z, r.x * l.y - r.y * l.x};
 			}
 			inline static Vec3f step(const Vec3f &in, const Vec3f& edge) {
-				return Vec3f((in.x < edge.x) ? 0 : 1, (in.z < edge.z) ? 0 : 1, (in.z < edge.z) ? 0 : 1);
+				return Vec3f((in.x < edge.x) ? 0.0f : 1.0f, (in.z < edge.z) ? 0.0f : 1.0f, (in.z < edge.z) ? 0.0f : 1.0f);
 			}
 			inline static Vec3f lerp(const Vec3f &a, const Vec3f &b, float t) {
 				return {lerpf(a.x, b.x, t), lerpf(a.y, b.y, t), lerpf(a.z, b.z, t)};
@@ -1012,7 +1012,7 @@ namespace IonEngine {
 			static const Vec4f nan;
 
 			/* ---- CONSTRUCTORS ---- */
-			constexpr Vec4f() : x(0), y(0), z(0), w(0) {}
+			constexpr Vec4f() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
 			constexpr Vec4f(Vec3f xyz, float w) : x(xyz.x), y(xyz.y), z(xyz.z), w(w) {}
 			constexpr Vec4f(float x, float y, float z, float w) : x(x), y(y), z(z), w(w) {}
 			constexpr Vec4f(__m128 xmm) : _xmm(xmm) {}
@@ -1112,10 +1112,10 @@ namespace IonEngine {
 				return sqrtfInline(x * x + y * y + z * z + w * w);
 			}
 			inline Vec4f abs() const {
-				return Vec4f((x < 0) ? -x : x, (y < 0) ? -y : y, (z < 0) ? -z : z, (w < 0) ? -w : w);
+				return Vec4f((x < 0.0f) ? -x : x, (y < 0.0f) ? -y : y, (z < 0.0f) ? -z : z, (w < 0.0f) ? -w : w);
 			}
 			inline Vec4f sign() const {
-				return Vec4f((x < 0) ? -1 : 1, (y < 0) ? -1 : 1, (z < 0) ? -1 : 1, (w < 0) ? -1 : 1);
+				return Vec4f((x < 0.0f) ? -1.0f : 1.0f, (y < 0.0f) ? -1.0f : 1.0f, (z < 0.0f) ? -1.0f : 1.0f, (w < 0.0f) ? -1.0f : 1.0f);
 			}
 			inline void inverse() {
 				_mm_rcp_ps(_xmm);
@@ -1149,7 +1149,7 @@ namespace IonEngine {
 				return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
 			}
 			inline static Vec4f step(const Vec4f& in, const Vec4f& edge) {
-				return Vec4f((in.x < edge.x) ? 0 : 1, (in.y < edge.y) ? 0 : 1, (in.z < edge.z) ? 0 : 1, (in.w < edge.w) ? 0 : 1);
+				return Vec4f((in.x < edge.x) ? 0.0f : 1.0f, (in.y < edge.y) ? 0.0f : 1.0f, (in.z < edge.z) ? 0.0f : 1.0f, (in.w < edge.w) ? 0.0f : 1.0f);
 			}
 			inline static Vec4f lerp(const Vec4f& a, const Vec4f& b, float t) {
 				return Vec4f(lerpf(a.x, b.x, t), lerpf(a.y, b.y, t), lerpf(a.z, b.z, t), lerpf(a.w, b.w, t));
@@ -1161,7 +1161,7 @@ namespace IonEngine {
 			float xy, xz, yz;
 
 		public:
-			inline Bivec3f() : xy(0), xz(0), yz(0) {}
+			inline Bivec3f() : xy(0.0f), xz(0.0f), yz(0.0f) {}
 			inline Bivec3f(float xy, float xz, float yz) : xy(xy), xz(xz), yz(yz) {}
 
 			inline static Bivec3f wedge(const Vec3f& u, const Vec3f& v) {
@@ -1259,12 +1259,12 @@ namespace IonEngine {
 				//rr.a = cos(roll * 0.5f);
 				//rr.xy = -sin(roll * 0.5f);
 
-				float cosYaw = cos(yaw * 0.5f);
-				float sinYaw = sin(yaw * 0.5f);
-				float cosPitch = cos(pitch * 0.5f);
-				float sinPitch = sin(pitch * 0.5f);
-				float cosRoll = cos(roll * 0.5f);
-				float sinRoll = sin(roll * 0.5f);
+				float cosYaw = cosf(yaw * 0.5f);
+				float sinYaw = sinf(yaw * 0.5f);
+				float cosPitch = cosf(pitch * 0.5f);
+				float sinPitch = sinf(pitch * 0.5f);
+				float cosRoll = cosf(roll * 0.5f);
+				float sinRoll = sinf(roll * 0.5f);
 
 				Rotor3f ryp;
 				ryp.a = cosYaw * cosPitch;
@@ -1340,7 +1340,7 @@ namespace IonEngine {
 			static const Quaternion identity;
 
 			/* ---- CONSTRUCTORS ---- */
-			inline Quaternion() : x(0), y(0), z(0), w(1) {}
+			inline Quaternion() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
 			inline Quaternion(const float &x, const float &y, const float &z, const float &w) : x(x), y(y), z(z), w(w) {}
 
 			/* ---- OPERATORS ---- */
@@ -1388,11 +1388,11 @@ namespace IonEngine {
 			}
 			inline static Quaternion axisAngle(Vec3f axis, float angle) {
 				Quaternion quat;
-				float s = sin(angle * 0.5f);
+				float s = sinf(angle * 0.5f);
 				quat.x = axis.x * s;
 				quat.y = axis.y * s;
 				quat.z = axis.z * s;
-				quat.w = cos(angle * 0.5f);
+				quat.w = cosf(angle * 0.5f);
 				return quat;
 			}
 			inline static Quaternion fromToRotation(Vec3f from, Vec3f to) {
@@ -1408,7 +1408,7 @@ namespace IonEngine {
 						axis = Vec3f::up.cross(from);
 					}
 					axis = axis.normalized();
-					quat = Quaternion::axisAngle(axis, M_PI);
+					quat = Quaternion::axisAngle(axis, pi);
 				} else {
 					float invs = invsqrt((1 + d) * 2);
 					float s = 1 / invs;
@@ -1451,10 +1451,10 @@ namespace IonEngine {
 
 			/* ---- CONSTRUCTORS ---- */
 			constexpr Matrix4x4f() :
-				m00(0), m10(0), m20(0), m30(0),
-				m01(0), m11(0), m21(0), m31(0),
-				m02(0), m12(0), m22(0), m32(0),
-				m03(0), m13(0), m23(0), m33(0) {}
+				m00(0.0f), m10(0.0f), m20(0.0f), m30(0.0f),
+				m01(0.0f), m11(0.0f), m21(0.0f), m31(0.0f),
+				m02(0.0f), m12(0.0f), m22(0.0f), m32(0.0f),
+				m03(0.0f), m13(0.0f), m23(0.0f), m33(0.0f) {}
 			constexpr Matrix4x4f(float m00, float m10, float m20, float m30, float m01, float m11, float m21, float m31, float m02, float m12, float m22, float m32, float m03, float m13, float m23, float m33) :
 				m00(m00), m10(m10), m20(m20), m30(m30),
 				m01(m01), m11(m11), m21(m21), m31(m31),
@@ -1526,10 +1526,10 @@ namespace IonEngine {
 			inline Quaternion quaternion() {
 				Vec3f sca = scale();
 				Matrix4x4f rotMat = Matrix4x4f(
-					m00, m10, m20, 0,
-					m01, m11, m21, 0,
-					m02, m12, m22, 0,
-					0, 0, 0, 1
+					m00, m10, m20, 0.0f,
+					m01, m11, m21, 0.0f,
+					m02, m12, m22, 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f
 				);
 				rotMat.columns[0].xyz /= sca.x;
 				rotMat.columns[1].xyz /= sca.y;
@@ -1538,7 +1538,7 @@ namespace IonEngine {
 				Quaternion q;
 				float tr = rotMat.m00 + rotMat.m11 + rotMat.m22;
 				float s;
-				if (tr > 0) {
+				if (tr > 0.0f) {
 					s = sqrtf(tr + 1.0f) * 2.0f;
 					q.w = 0.25f * s;
 					q.x = (rotMat.m21 - rotMat.m12) / s;
@@ -1551,13 +1551,13 @@ namespace IonEngine {
 					q.y = (rotMat.m01 + rotMat.m10) / s;
 					q.z = (rotMat.m02 + rotMat.m20) / s;
 				} else if (rotMat.m11 > rotMat.m22) {
-					s = sqrtf(1.0 + rotMat.m11 - rotMat.m00 - rotMat.m22) * 2.0f;
+					s = sqrtf(1.0f + rotMat.m11 - rotMat.m00 - rotMat.m22) * 2.0f;
 					q.w = (rotMat.m02 - rotMat.m20) / s;
 					q.x = (rotMat.m01 + rotMat.m10) / s;
 					q.y = 0.25f * s;
 					q.z = (rotMat.m12 + rotMat.m21) / s;
 				} else {
-					s = sqrtf(1.0 + rotMat.m22 - rotMat.m00 - rotMat.m11) * 2.0f;
+					s = sqrtf(1.0f + rotMat.m22 - rotMat.m00 - rotMat.m11) * 2.0f;
 					q.w = (rotMat.m10 - rotMat.m01) / s;
 					q.x = (rotMat.m02 + rotMat.m20) / s;
 					q.y = (rotMat.m12 + rotMat.m21) / s;
@@ -1569,10 +1569,10 @@ namespace IonEngine {
 				// Extract pure rotation matrix
 				Vec3f sca = scale();
 				Matrix4x4f rotMat = Matrix4x4f(
-					m00, m10, m20, 0,
-					m01, m11, m21, 0,
-					m02, m12, m22, 0,
-					0, 0, 0, 1
+					m00, m10, m20, 0.0f,
+					m01, m11, m21, 0.0f,
+					m02, m12, m22, 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f
 				);
 				rotMat.columns[0] /= sca.x;
 				rotMat.columns[1] /= sca.y;
@@ -1634,10 +1634,10 @@ namespace IonEngine {
 			}
 			inline Matrix4x4f inversePerspective() const {
 				return Matrix4x4f(
-					1.0f / m00, 0, 0, 0,
-					0, 1.0f / m11, 0, 0,
-					0, 0, 0, 1.0f / m23,
-					0, 0, 1, m22 / -m23
+					1.0f / m00, 0.0f, 0.0f, 0.0f,
+					0.0f, 1.0f / m11, 0.0f, 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f / m23,
+					0.0f, 0.0f, 1.0f, m22 / -m23
 				);
 			}
 			inline Vec3f multPoint(const Vec3f& point) const {
@@ -1660,26 +1660,26 @@ namespace IonEngine {
 			// Transformations
 			static Matrix4x4f translation(const Vec3f& transVec) {
 				return Matrix4x4f(
-					1, 0, 0, 0,
-					0, 1, 0, 0,
-					0, 0, 1, 0,
+					1.0f, 0.0f, 0.0f, 0.0f,
+					0.0f, 1.0f, 0.0f, 0.0f,
+					0.0f, 0.0f, 1.0f, 0.0f,
 					transVec.x, transVec.y, transVec.z, 1
 				);
 			}
 			static Matrix4x4f scale(const Vec3f& scaleVec) {
 				return Matrix4x4f(
-					scaleVec.x, 0, 0, 0,
-					0, scaleVec.y, 0, 0,
-					0, 0, scaleVec.z, 0,
-					0, 0, 0, 1
+					scaleVec.x, 0.0f, 0.0f, 0.0f,
+					0.0f, scaleVec.y, 0.0f, 0.0f,
+					0.0f, 0.0f, scaleVec.z, 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f
 				);
 			}
 			static Matrix4x4f rotation(const Rotor3f& rot) {
 				return Matrix4x4f(
-					rot.a * rot.a - rot.xy * rot.xy - rot.xz * rot.xz + rot.yz * rot.yz, -2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, -2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 0,
-					2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, rot.a * rot.a - rot.xy * rot.xy + rot.xz * rot.xz - rot.yz * rot.yz, -2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, 0,
-					2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, rot.a * rot.a + rot.xy * rot.xy - rot.xz * rot.xz - rot.yz * rot.yz, 0,
-					0, 0, 0, 1
+					rot.a * rot.a - rot.xy * rot.xy - rot.xz * rot.xz + rot.yz * rot.yz, -2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, -2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 0.0f,
+					2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, rot.a * rot.a - rot.xy * rot.xy + rot.xz * rot.xz - rot.yz * rot.yz, -2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, 0.0f,
+					2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, rot.a * rot.a + rot.xy * rot.xy - rot.xz * rot.xz - rot.yz * rot.yz, 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f
 				);
 				// OLD slower code
 				//Vec3f vx = rot.rotate(Vec3f(1, 0, 0));
@@ -1694,10 +1694,10 @@ namespace IonEngine {
 			}
 			static Matrix4x4f rotation(const Quaternion& rot) {
 				return Matrix4x4f(
-					1.0f - 2.0f * rot.y * rot.y - 2.0f * rot.z * rot.z, 2.0f * rot.x * rot.y + 2.0f * rot.z * rot.w, 2.0f * rot.x * rot.z - 2.0f * rot.y * rot.w, 0,
-					2.0f * rot.x * rot.y - 2.0f * rot.z * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.z * rot.z, 2.0f * rot.y * rot.z + 2.0f * rot.x * rot.w, 0,
-					2.0f * rot.x * rot.z + 2.0f * rot.y * rot.w, 2.0f * rot.y * rot.z - 2.0f * rot.x * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.y * rot.y, 0,
-					0, 0, 0, 1
+					1.0f - 2.0f * rot.y * rot.y - 2.0f * rot.z * rot.z, 2.0f * rot.x * rot.y + 2.0f * rot.z * rot.w, 2.0f * rot.x * rot.z - 2.0f * rot.y * rot.w, 0.0f,
+					2.0f * rot.x * rot.y - 2.0f * rot.z * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.z * rot.z, 2.0f * rot.y * rot.z + 2.0f * rot.x * rot.w, 0.0f,
+					2.0f * rot.x * rot.z + 2.0f * rot.y * rot.w, 2.0f * rot.y * rot.z - 2.0f * rot.x * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.y * rot.y, 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f
 				);
 			}
 			static Matrix4x4f rotation(const Vec3f& euler) {
@@ -1708,35 +1708,35 @@ namespace IonEngine {
 				float cz = cosf(euler.z);
 				float sz = sinf(euler.z);
 				return Matrix4x4f(
-					cx * cz - sx * sy * sz, cz * sx + cx * sy * sz, -(cy * sz), 0,
-					-(cy * sx), cx * cy, sy, 0,
-					cx * sz + cz * sx * sy, sx * sz - cx * cz * sy, cy * cz, 0,
-					0, 0, 0, 1
+					cx * cz - sx * sy * sz, cz * sx + cx * sy * sz, -(cy * sz), 0.0f,
+					-(cy * sx), cx * cy, sy, 0.0f,
+					cx * sz + cz * sx * sy, sx * sz - cx * cz * sy, cy * cz, 0.0f,
+					0.0f, 0.0f, 0.0f, 1.0f
 				);
 			}
 			static Matrix4x4f translationScale(const Vec3f& transVec, const Vec3f& scaleVec) {
 				return Matrix4x4f(
-					scaleVec.x, 0, 0, 0,
-					0, scaleVec.y, 0, 0,
-					0, 0, scaleVec.z, 0,
-					transVec.x, transVec.y, transVec.z, 1
+					scaleVec.x, 0.0f, 0.0f, 0.0f,
+					0.0f, scaleVec.y, 0.0f, 0.0f,
+					0.0f, 0.0f, scaleVec.z, 0.0f,
+					transVec.x, transVec.y, transVec.z, 1.0f
 				);
 			}
 			static Matrix4x4f translationRotation(const Vec3f& transVec, const Quaternion& rot) {
 				return Matrix4x4f(
-					1.0f - 2.0f * rot.y * rot.y - 2.0f * rot.z * rot.z, 2.0f * rot.x * rot.y + 2.0f * rot.z * rot.w, 2.0f * rot.x * rot.z - 2.0f * rot.y * rot.w, 0,
-					2.0f * rot.x * rot.y - 2.0f * rot.z * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.z * rot.z, 2.0f * rot.y * rot.z + 2.0f * rot.x * rot.w, 0,
-					2.0f * rot.x * rot.z + 2.0f * rot.y * rot.w, 2.0f * rot.y * rot.z - 2.0f * rot.x * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.y * rot.y, 0,
-					transVec.x, transVec.y, transVec.z, 1
+					1.0f - 2.0f * rot.y * rot.y - 2.0f * rot.z * rot.z, 2.0f * rot.x * rot.y + 2.0f * rot.z * rot.w, 2.0f * rot.x * rot.z - 2.0f * rot.y * rot.w, 0.0f,
+					2.0f * rot.x * rot.y - 2.0f * rot.z * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.z * rot.z, 2.0f * rot.y * rot.z + 2.0f * rot.x * rot.w, 0.0f,
+					2.0f * rot.x * rot.z + 2.0f * rot.y * rot.w, 2.0f * rot.y * rot.z - 2.0f * rot.x * rot.w, 1.0f - 2.0f * rot.x * rot.x - 2.0f * rot.y * rot.y, 0.0f,
+					transVec.x, transVec.y, transVec.z, 1.0f
 				);
 
 			}
 			static Matrix4x4f translationRotation(const Vec3f& transVec, const Rotor3f& rot) {
 				return Matrix4x4f(
-					rot.a * rot.a - rot.xy * rot.xy - rot.xz * rot.xz + rot.yz * rot.yz, -2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, -2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 0,
-					2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, rot.a * rot.a - rot.xy * rot.xy + rot.xz * rot.xz - rot.yz * rot.yz, -2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, 0,
-					2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, rot.a * rot.a + rot.xy * rot.xy - rot.xz * rot.xz - rot.yz * rot.yz, 0,
-					transVec.x, transVec.y, transVec.z, 1
+					rot.a * rot.a - rot.xy * rot.xy - rot.xz * rot.xz + rot.yz * rot.yz, -2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, -2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 0.0f,
+					2.0f * rot.a * rot.xy - 2.0f * rot.yz * rot.xz, rot.a * rot.a - rot.xy * rot.xy + rot.xz * rot.xz - rot.yz * rot.yz, -2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, 0.0f,
+					2.0f * rot.a * rot.xz + 2.0f * rot.yz * rot.xy, 2.0f * rot.a * rot.yz - 2.0f * rot.xz * rot.xy, rot.a * rot.a + rot.xy * rot.xy - rot.xz * rot.xz - rot.yz * rot.yz, 0.0f,
+					transVec.x, transVec.y, transVec.z, 1.0f
 				);
 				// OLD slower code
 				//Vec3f vx = rot.rotate(Vec3f(1, 0, 0));
@@ -1757,10 +1757,10 @@ namespace IonEngine {
 				float cz = cosf(euler.z);
 				float sz = sinf(euler.z);
 				return Matrix4x4f(
-					cx * cz - sx * sy * sz, cz * sx + cx * sy * sz, -(cy * sz), 0,
-					-(cy * sx), cx * cy, sy, 0,
-					cx * sz + cz * sx * sy, sx * sz - cx * cz * sy, cy * cz, 0,
-					transVec.x, transVec.y, transVec.z, 1
+					cx * cz - sx * sy * sz, cz * sx + cx * sy * sz, -(cy * sz), 0.0f,
+					-(cy * sx), cx * cy, sy, 0.0f,
+					cx * sz + cz * sx * sy, sx * sz - cx * cz * sy, cy * cz, 0.0f,
+					transVec.x, transVec.y, transVec.z, 1.0f
 				);
 			}
 			static Matrix4x4f transformation(const Vec3f& translationVec, const Vec3f& scaleVec, const Rotor3f& rotor) {
@@ -1780,10 +1780,10 @@ namespace IonEngine {
 				float yScale = xScale * aspect;
 
 				return Matrix4x4f(
-					xScale, 0, 0, 0,
-					0, yScale, 0, 0,
-					0, 0, (farPlane + nearPlane) / zRange, 1,
-					0, 0, -(2.0f * farPlane * nearPlane) / zRange, 0
+					xScale, 0.0f, 0.0f, 0.0f,
+					0.0f, yScale, 0.0f, 0.0f,
+					0.0f, 0.0f, (farPlane + nearPlane) / zRange, 1.0f,
+					0.0f, 0.0f, -(2.0f * farPlane * nearPlane) / zRange, 0.0f
 				);
 			}
 			static Matrix4x4f orthogonalProjection(float right, float left, float top, float bottom, float near, float far) {
@@ -1791,10 +1791,10 @@ namespace IonEngine {
 				float vertiRange = top - bottom;
 				float depthRange = far - near;
 				return Matrix4x4f(
-					2 / horizRange, 0, 0, 0,
-					0, 2 / vertiRange, 0, 0,
-					0, 0, 2 / depthRange, 0,
-					-(right + left) / horizRange, -(top + bottom) / vertiRange, -(far + near) / depthRange, 1
+					2.0f / horizRange, 0.0f, 0.0f, 0.0f,
+					0.0f, 2.0f / vertiRange, 0.0f, 0.0f,
+					0.0f, 0.0f, 2.0f / depthRange, 0.0f,
+					-(right + left) / horizRange, -(top + bottom) / vertiRange, -(far + near) / depthRange, 1.0f
 				);
 			}
 
@@ -1938,7 +1938,7 @@ namespace IonEngine {
 		private:
 			inline static float hsvIntermediate(float h, float s, float v, float n) {
 				float k = fmodf(n + h / 60.0f, 6.0f);
-				return v - v * s * maxf(minf(k, 4 - k, 1), 0);
+				return v - v * s * maxf(minf(k, 4.0f - k, 1.0f), 0.0f);
 			}
 		};
 
@@ -1990,7 +1990,7 @@ namespace IonEngine {
 			Vec3f min, max;
 
 		public:
-			inline Boxf() : min(Vec3f(0, 0, 0)), max(Vec3f(0, 0, 0)) {}
+			inline Boxf() : min(Vec3f(0.0f, 0.0f, 0.0f)), max(Vec3f(0.0f, 0.0f, 0.0f)) {}
 			inline Boxf(Vec3f min, Vec3f max) : min(min), max(max) {}
 
 			inline static Boxf fromCenterExtents(Vec3f center, Vec3f extents) {
@@ -2065,7 +2065,7 @@ namespace IonEngine {
 			Vec2f min, max;
 
 		public:
-			inline Rectf() : min(Vec2f(0, 0)), max(Vec2f(0, 0)) {}
+			inline Rectf() : min(Vec2f(0.0f, 0.0f)), max(Vec2f(0.0f, 0.0f)) {}
 			inline Rectf(Vec2f min, Vec2f max) : min(min), max(max) {}
 
 			const char* toCString();
@@ -2090,7 +2090,7 @@ namespace IonEngine {
 			Vec2f origin, direction;
 
 		public:
-			inline Ray2f() : origin(Vec2f(0, 0)), direction(Vec2f(0, 1)) {}
+			inline Ray2f() : origin(Vec2f(0.0f, 0.0f)), direction(Vec2f(0.0f, 1.0f)) {}
 			inline Ray2f(Vec2f origin, Vec2f direction) : origin(origin), direction(direction) {}
 
 			const char* toCString();
@@ -2116,7 +2116,7 @@ namespace IonEngine {
 			Vec3f origin, direction;
 
 		public:
-			inline Ray3f() : origin(Vec3f(0, 0, 0)), direction(Vec3f(0, 1, 0)) {}
+			inline Ray3f() : origin(Vec3f(0.0f, 0.0f, 0.0f)), direction(Vec3f(0.0f, 1.0f, 0.0f)) {}
 			inline Ray3f(Vec3f origin, Vec3f direction) : origin(origin), direction(direction) {}
 
 			const char* toCString();
@@ -2140,7 +2140,7 @@ namespace IonEngine {
 			Vec2f p1, p2;
 
 		public:
-			inline Line2f() : p1(Vec2f(0, 0)), p2(Vec2f(1, 1)) {}
+			inline Line2f() : p1(Vec2f(0.0f, 0.0f)), p2(Vec2f(1.0f, 1.0f)) {}
 			inline Line2f(Vec2f p1, Vec2f p2) : p1(p1), p2(p2) {}
 
 			const char* toCString();
@@ -2166,7 +2166,7 @@ namespace IonEngine {
 			Vec3f p1, p2;
 
 		public:
-			inline Line3f() : p1(Vec3f(0, 0, 0)), p2(Vec3f(1, 1, 1)) {}
+			inline Line3f() : p1(Vec3f(0.0f, 0.0f, 0.0f)), p2(Vec3f(1.0f, 1.0f, 1.0f)) {}
 			inline Line3f(Vec3f p1, Vec3f p2) : p1(p1), p2(p2) {}
 
 			const char* toCString();
@@ -2193,7 +2193,7 @@ namespace IonEngine {
 			};
 
 		public:
-			inline Segment2f() : p1(Vec2f(0, 0)), p2(Vec2f(1, 1)) {}
+			inline Segment2f() : p1(Vec2f(0.0f, 0.0f)), p2(Vec2f(1.0f, 1.0f)) {}
 			inline Segment2f(Vec2f p1, Vec2f p2) : p1(p1), p2(p2) {}
 
 			const char* toCString();
@@ -2222,7 +2222,7 @@ namespace IonEngine {
 			};
 
 		public:
-			inline Segment3f() : p1(Vec3f(0, 0, 0)), p2(Vec3f(1, 1, 1)) {}
+			inline Segment3f() : p1(Vec3f(0.0f, 0.0f, 0.0f)), p2(Vec3f(1.0f, 1.0f, 1.0f)) {}
 			inline Segment3f(Vec3f p1, Vec3f p2) : p1(p1), p2(p2) {}
 
 			const char* toCString();
@@ -2311,7 +2311,7 @@ namespace IonEngine {
 			Vec2f axis[2];
 
 		public:
-			inline OBB2D() : center(Vec2f(0, 0)), size(Vec2f(1, 1)), rotation(0.0f) {}
+			inline OBB2D() : center(Vec2f(0.0f, 0.0f)), size(Vec2f(1.0f, 1.0f)), rotation(0.0f) {}
 			inline OBB2D(Vec2f center, Vec2f size, float rotation) : center(center), size(size) {
 				Vec2f x = Vec2f(cosf(rotation), sinf(rotation)) * (size.x * 0.5f);
 				Vec2f y = Vec2f(-sinf(rotation), cosf(rotation)) * (size.y * 0.5f);
@@ -2360,7 +2360,7 @@ namespace IonEngine {
 			Vec3f axis[3];
 
 		public:
-			inline OBB3D() : center(Vec3f(0, 0, 0)), size(Vec3f(1, 1, 1)), rotation(Rotor3f::identity) {}
+			inline OBB3D() : center(Vec3f(0.0f, 0.0f, 0.0f)), size(Vec3f(1.0f, 1.0f, 1.0f)), rotation(Rotor3f::identity) {}
 			// TODO implement
 
 			const char* toCString();
@@ -2395,7 +2395,7 @@ namespace IonEngine {
 
 
 		public:
-			inline Frustum3f() : projectionMatrix(Matrix4x4f::identity), near(0.01f), far(1000), horiFOV(100.0f), aspect(1) { updateProjectionMatrix(); }
+			inline Frustum3f() : projectionMatrix(Matrix4x4f::identity), near(0.01f), far(1000.0f), horiFOV(100.0f), aspect(1.0f) { updateProjectionMatrix(); }
 			inline Frustum3f(float near, float far, float horiFOV, float aspect) : projectionMatrix(Matrix4x4f::identity), near(near), far(far), horiFOV(horiFOV), aspect(aspect) { updateProjectionMatrix(); }
 
 			const char* toCString();
@@ -2490,13 +2490,13 @@ namespace IonEngine {
 
 		// Vec3f
 		inline Vec3f toVec3f(const Vec2f& v) {
-			return Vec3f(v.x, v.y, 0);
+			return Vec3f(v.x, v.y, 0.0f);
 		}
 		inline Vec3f toVec3f(const Vec4f& v) {
 			return Vec3f(v.x, v.y, v.z);
 		}
 		inline Vec3f toVec3f(const Vec2i& v) {
-			return Vec3f((float) v.x, (float) v.y, 0);
+			return Vec3f((float) v.x, (float) v.y, 0.0f);
 		}
 		inline Vec3f toVec3f(const Vec3i& v) {
 			return Vec3f((float) v.x, (float) v.y, (float) v.z);
@@ -2507,16 +2507,16 @@ namespace IonEngine {
 
 		// Vec4f
 		inline Vec4f toVec4f(const Vec2f& v) {
-			return Vec4f(v.x, v.y, 0, 0);
+			return Vec4f(v.x, v.y, 0.0f, 0.0f);
 		}
 		inline Vec4f toVec4f(const Vec3f& v) {
-			return Vec4f(v.x, v.y, v.z, 0);
+			return Vec4f(v.x, v.y, v.z, 0.0f);
 		}
 		inline Vec4f toVec4f(const Vec2i& v) {
-			return Vec4f((float) v.x, (float) v.y, 0, 0);
+			return Vec4f((float) v.x, (float) v.y, 0.0f, 0.0f);
 		}
 		inline Vec4f toVec4f(const Vec3i& v) {
-			return Vec4f((float) v.x, (float) v.y, (float) v.z, 0);
+			return Vec4f((float) v.x, (float) v.y, (float) v.z, 0.0f);
 		}
 		inline Vec4f toVec4f(const Vec4i& v) {
 			return Vec4f((float) v.x, (float) v.y, (float) v.z, (float) v.w);
@@ -2533,7 +2533,7 @@ namespace IonEngine {
 
 			conv.f = v.x;
 			conv.i &= 0xfffffffe;
-			conv.i |= (v.z < 0) ? 0x00000000 : 0x00000001;
+			conv.i |= (v.z < 0.0f) ? 0x00000000 : 0x00000001;
 
 			return Vec2f(conv.f, v.y);
 		}
@@ -2543,9 +2543,9 @@ namespace IonEngine {
 				unsigned int i;
 			} conv;
 
-			Vec3f n = Vec3f(v.x, v.y, sqrt(1 - v.x * v.x - v.y * v.y));
+			Vec3f n = Vec3f(v.x, v.y, sqrtf(1 - v.x * v.x - v.y * v.y));
 			conv.f = v.x;
-			if (conv.i & 0x00000001 == 0) {
+			if ((conv.i & 0x00000001) == 0) {
 				n.z = -n.z;
 			}
 			return n;
@@ -2563,7 +2563,7 @@ namespace IonEngine {
 			bary.x = edge2D(v1, v2, p) / area;
 			bary.y = edge2D(v2, v0, p) / area;
 			bary.z = edge2D(v0, v1, p) / area;
-			return bary.x >= 0 && bary.y >= 0 && bary.z >= 0;
+			return bary.x >= 0.0f && bary.y >= 0.0f && bary.z >= 0.0f;
 		}
 
 		inline bool triangleBarycentric(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, const Vec3f& p, Vec3f& bary) {
@@ -2573,7 +2573,7 @@ namespace IonEngine {
 			float weightV2 = ((v1.z - v0.z) * (p.x - v1.x) + (v0.x - v1.x) * (p.y - v1.z)) / divider;
 			float weightV1 = 1.0f - weightV0 - weightV2;
 			bary = Vec3f(weightV0, weightV1, weightV2);
-			return weightV0 >= 0 && weightV1 >= 0 && weightV2 >= 0;
+			return weightV0 >= 0.0f && weightV1 >= 0.0f && weightV2 >= 0.0f;
 		}
 
 		inline bool intersectTriangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, const Ray3f& ray, Vec3f& intersect, float& t) {
@@ -2594,7 +2594,7 @@ namespace IonEngine {
 			Vec3f v23 = v3 - v2;
 			Vec3f v30 = v0 - v3;
 			Vec3f normal = v01.cross(v2 - v0).normalized();
-			if (normal.dot(ray.direction) < 0) return false;
+			if (normal.dot(ray.direction) < 0.0f) return false;
 			Plane triPlane = Plane(normal, -normal.x * v0.x - normal.y * v0.y - normal.z * v0.z);
 			if (!triPlane.intersectRay(ray, intersect, t)) {
 				return false;
@@ -2607,7 +2607,7 @@ namespace IonEngine {
 			Vec3f c1 = v12.cross(v1i);
 			Vec3f c2 = v23.cross(v2i);
 			Vec3f c3 = v30.cross(v3i);
-			return c0.dot(c1) > 0 && c1.dot(c2) > 0 && c2.dot(c3) > 0;
+			return c0.dot(c1) > 0.0f && c1.dot(c2) > 0.0f && c2.dot(c3) > 0.0f;
 		}
 
 		inline void swapToMinMax(Vec2i& min, Vec2i& max) {

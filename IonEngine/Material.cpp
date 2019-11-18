@@ -279,7 +279,7 @@ void Material::fetchTextureFields(SimpleList<TextureField>& texFields) {
 				uint texUnit;
 				GLint maxTexUnit;
 				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTexUnit);
-				for (texUnit = 0; texUnit < maxTexUnit; texUnit++) {
+				for (texUnit = 0; texUnit < (unsigned int) maxTexUnit; texUnit++) {
 					uint i;
 					for (i = 0; i < texFields.count; i++) {
 						if (texFields[i].textureUnit == texUnit) break;
