@@ -168,10 +168,47 @@ struct SurfaceData {
 };
 
 void InitializeSurfaceData(vec3 albedo, float metallic, float perceptualRoughness, float reflectance, out SurfaceData surfData) {
-	surfData.f0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + albedo * metallic;
-	//surfData.diffuse = albedo * (vec3(1.0) - specular);
+	//surfData.f0 = 0.16 * reflectance * reflectance * (1.0 - metallic) + albedo * metallic;
+	surfData.f0 = albedo * metallic + (reflectance * (1.0 - metallic));
 	surfData.diffuse = (1.0 - metallic) * albedo;
 	surfData.roughness = perceptualRoughness * perceptualRoughness;
+}
+
+vec3 EnvDFGPolynomial(vec3 specularColor, float roughness, float NoV) {
+	float x = 1.0 - roughness;
+	float y = NoV;
+
+	float b1 = -0.1688;
+	float b2 = 1.895;
+	float b3 = 0.9903;
+	float b4 = -4.843;
+	float b5 = 8.404;
+	float b6 = -5.069;
+	float bias = clamp(min(b1 * x + b2 * x * x, b3 + b4 * y + b5 * y * y + b6 * y * y * y), 0.0, 1.0);
+
+	float d0 = 0.6045;
+	float d1 = 1.699;
+	float d2 = -0.5228;
+	float d3 = -3.603;
+	float d4 = 1.404;
+	float d5 = 0.1939;
+	float d6 = 2.661;
+	float delta = clamp(d0 + d1 * x + d2 * y + d3 * x * x + d4 * x * y + d5 * y * y + d6 * x * x * x, 0.0, 1.0);
+	float scale = delta - bias;
+
+	bias *= clamp(50.0 * specularColor.y, 0.0, 1.0);
+	return specularColor * scale + bias;
+}
+
+vec3 EnvironmentColor(vec3 direction) {
+	float DoU = dot(direction, vec3(0.0, 1.0, 0.0));
+	return vec3(0.52, 0.80, 0.97) * clamp(remap(DoU, -0.2, 1.0, 0.0, 4.0), 0.0, 1.0);
+}
+
+vec3 Environment(SurfaceData surfData, vec3 envColor) {
+	envColor *= surfData.f0;
+	envColor /= surfData.roughness + 1.0;
+	return envColor;
 }
 
 vec3 BRDF(SurfaceData surfData, vec3 normal, vec3 lightDir, vec3 viewDir) {
@@ -192,7 +229,7 @@ vec3 BRDF(SurfaceData surfData, vec3 normal, vec3 lightDir, vec3 viewDir) {
 
 	vec3 Fd = surfData.diffuse;// * Fd_Lambert(); // Removed Lambert to avoid huge diffuse loss
 
-	return Fr + Fd;
+	return Fr + Fd + Environment(surfData, EnvironmentColor(reflect(-viewDir, normal)));
 }
 
 vec3 shadeDirectionalLight(SurfaceData surfData, vec4 worldPos, vec3 normal, uint dirLightIndex) {
