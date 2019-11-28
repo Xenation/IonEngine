@@ -88,9 +88,6 @@
     <None Include="res\shaders\test\vs.glsl">
       <Filter>Resource Files\shaders\test</Filter>
     </None>
-    <None Include="res\shaders\test\gs.glsl">
-      <Filter>Resource Files\shaders\test</Filter>
-    </None>
     <None Include="res\shaders\lightpass\fs.glsl">
       <Filter>Resource Files\shaders\lightpass</Filter>
     </None>

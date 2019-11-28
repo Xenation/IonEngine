@@ -250,7 +250,7 @@ void main() {
 	vec3 fColor = vec3(0);
 	for (int sampleIndex = 0; sampleIndex < sampleCount; sampleIndex++) {
 		vec4 albedo = texelFetch(gAlbedo, pixel, sampleIndex);
-		vec3 normal = texelFetch(gNormal, pixel, sampleIndex).rgb * 2.0 - 1.0;
+		vec3 normal = normalize(texelFetch(gNormal, pixel, sampleIndex).rgb * 2.0 - 1.0);
 		vec4 gMetRoughRefl = texelFetch(gMetallic, pixel, sampleIndex);
 		float depth = texelFetch(gDepth, pixel, sampleIndex).x * 2.0 - 1.0;
 

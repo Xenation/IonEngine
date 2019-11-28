@@ -50,31 +50,85 @@ void TestScene::load() {
 	sun->addComponent(sunLight);
 	sun->transform->setRotation(Rotor3f::euler({Math::quarter_pi, Math::quarter_pi * 0.5f, 0}));
 
-	cubeMesh = new Mesh("Cube", 8, 36);
-	cubeMesh->setAttributesDefinition(1, new int[1]{3});
-	cubeMesh->setAttribute(0, new float[24]{
+	cubeMesh = new Mesh("Cube", 24, 36);
+	cubeMesh->setAttributesDefinition(2, new int[2]{3, 3});
+	cubeMesh->setAttribute(0, new float[72]{
+		// Front
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, 0.5f, -0.5f,
+		0.5f, 0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		// Top
 		-0.5f, 0.5f, -0.5f,
 		-0.5f, 0.5f, 0.5f,
 		0.5f, 0.5f, 0.5f,
 		0.5f, 0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
+		// Bottom
 		-0.5f, -0.5f, 0.5f,
-		0.5f, -0.5f, 0.5f,
+		-0.5f, -0.5f, -0.5f,
 		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, 0.5f,
+		// Left
+		-0.5f, -0.5f, 0.5f,
+		-0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		// Right
+		0.5f, -0.5f, -0.5f,
+		0.5f, 0.5f, -0.5f,
+		0.5f, 0.5f, 0.5f,
+		0.5f, -0.5f, 0.5f,
+		// Back
+		0.5f, -0.5f, 0.5f,
+		0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f, 0.5f,
+		-0.5f, -0.5f, 0.5f,
+	});
+	cubeMesh->setAttribute(1, new float[72]{
+		// Front
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		0.0f, 0.0f, -1.0f,
+		// Top
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f,
+		// Bottom
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		// Left
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f,
+		// Right
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		// Back
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, 1.0f,
 	});
 	cubeMesh->setIndices(new unsigned int[36]{
 		0, 2, 1,
 		0, 3, 2,
-		4, 3, 0,
-		4, 7, 3,
-		5, 0, 1,
-		5, 4, 0,
-		6, 1, 2,
-		6, 5, 1,
-		7, 2, 3,
-		7, 6, 2,
-		5, 7, 4,
-		5, 6, 7
+		4, 6, 5,
+		4, 7, 6,
+		8, 10, 9,
+		8, 11, 10,
+		12, 14, 13,
+		12, 15, 14,
+		16, 18, 17,
+		16, 19, 18,
+		20, 22, 21,
+		20, 23, 22
 	});
 	cubeMesh->uploadToGL();
 
@@ -112,9 +166,9 @@ void TestScene::load() {
 	childEntRend->setMaterial(testMaterial);
 	childEntRend->setMesh(cubeMesh);
 
-	Collider* groundCollider = new ConcaveMeshCollider(cubeMesh, {100, 10, 100});
-	Collider* groundWallCollider = new ConvexMeshCollider(cubeMesh, {2, 2, 10});
-	Collider* ballCollider = new ConvexMeshCollider(cubeMesh);
+	Collider* groundCollider = new BoxCollider(Vec3f(50, 5, 50));
+	Collider* groundWallCollider = new BoxCollider(Vec3f(1, 1, 5));
+	Collider* ballCollider = new BoxCollider(Vec3f(0.5f, 0.5f, 0.5f));
 
 	ground = new Entity("Ground");
 	ground->transform->setPosition(Vec3f(0, -10, 0));
@@ -142,7 +196,7 @@ void TestScene::load() {
 	sphere->transform->setWorldScale({1, 1, 1});
 	MeshRenderer* sphereRenderer = sphere->addComponent<MeshRenderer>();
 	sphereRenderer->setMaterial(wallMaterial);
-	sphereMesh = MeshImporter::Import("icosphere.obj");
+	sphereMesh = MeshImporter::Import("icosphere_high.obj");
 	sphereMesh->uploadToGL();
 	sphereRenderer->setMesh(sphereMesh);
 

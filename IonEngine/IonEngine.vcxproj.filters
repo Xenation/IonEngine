@@ -557,5 +557,8 @@
     <ClInclude Include="ComputeShader.h">
       <Filter>Header Files\Engine\Render\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="ext\tiny_obj_loader.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -37,5 +37,5 @@ void main() {
 	gMetallic.r = metallic;
 	gMetallic.g = roughness;
 	gMetallic.b = reflectance;
-	gNormal.rgb = normal * 0.5 + 0.5;
+	gNormal.rgb = normalize(normal) * 0.5 + 0.5;
 }

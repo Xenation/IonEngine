@@ -1,7 +1,8 @@
 #version 420
 #pragma pass opaque
 
-layout (location = 0) in vec3 vertexPos;
+layout (location = 0) in vec3 vertexPosition;
+layout (location = 1) in vec3 vertexNormal;
 
 layout (std140, binding = 2) uniform Camera {
 	mat4x4 projectionMatrix;
@@ -24,9 +25,10 @@ layout (std140, binding = 10) uniform Material {
 	float reflectance;
 };
 
-out vec4 worldPos;
+out vec3 normal;
 
 void main() {
-	worldPos = modelMatrix * vec4(vertexPos, 1.0);
+	vec4 worldPos = modelMatrix * vec4(vertexPosition, 1.0);
+	normal = normalize((modelMatrix * vec4(vertexNormal, 0.0)).xyz);
 	gl_Position = projectionMatrix * viewMatrix * worldPos;
 }

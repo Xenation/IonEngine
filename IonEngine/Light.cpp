@@ -10,8 +10,8 @@ using namespace IonEngine;
 
 
 const LightType*const LightType::Directional = new LightType(LightType::DirectionalId, nullptr);
-const LightType*const LightType::Point = new LightType(LightType::PointId, MeshImporter::Import("icosphere.obj"));
-const LightType*const LightType::Spot = new LightType(LightType::SpotId, MeshImporter::Import("cone.obj"));
+const LightType*const LightType::Point = new LightType(LightType::PointId, nullptr);
+const LightType*const LightType::Spot = new LightType(LightType::SpotId, nullptr);
 
 
 Light::Light(Entity* entity, const LightType* type) : Component(entity), type(type), color(Color::white) {

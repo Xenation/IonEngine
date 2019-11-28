@@ -209,6 +209,14 @@ void Mesh::setIndex(unsigned int indexIndex, unsigned int index) {
 	indices[indexIndex] = index;
 }
 
+void Mesh::reverseWindingOrder() {
+	for (unsigned int t = 0; t < indexCount / 3; t++) {
+		unsigned int tmp = indices[3 * t + 1];
+		indices[3 * t + 1] = indices[3 * t + 2];
+		indices[3 * t + 2] = tmp;
+	}
+}
+
 void Mesh::setTopology(GLenum topology) {
 	this->topology = topology;
 }
