@@ -1,6 +1,7 @@
 #version 430
 
 #define PI 3.14159265359
+#define DEG_TO_RAD 0.0174533
 
 layout (std140, binding = 1) uniform GlobalsVars {
 	float time;
@@ -202,7 +203,8 @@ vec3 EnvDFGPolynomial(vec3 specularColor, float roughness, float NoV) {
 
 vec3 EnvironmentColor(vec3 direction) {
 	float DoU = dot(direction, vec3(0.0, 1.0, 0.0));
-	return vec3(0.52, 0.80, 0.97) * clamp(remap(DoU, -0.2, 1.0, 0.0, 4.0), 0.0, 1.0);
+	float s = clamp(remap(acos(DoU), 110.0 * DEG_TO_RAD, 90.0 * DEG_TO_RAD, 0.0, 1.0), 0.0, 1.0);
+	return mix(vec3(0.10, 0.10, 0.10), vec3(0.85, 1.00, 1.00), s);
 }
 
 vec3 Environment(SurfaceData surfData, vec3 envColor) {

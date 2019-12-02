@@ -1798,8 +1798,28 @@ namespace IonEngine {
 				);
 			}
 
+			// Conversions
 			const char* toCString();
 			std::string toString();
+			inline Vec3f eulerRotation() {
+				Vec3f t;
+				if (m12 < 1.0f) {
+					if (m12 > -1.0f) {
+						t.x = asinf(-m12);
+						t.y = atan2f(m02, m22);
+						t.z = atan2f(m10, m11);
+					} else {
+						t.x = half_pi;
+						t.y = -atan2f(-m01, m00);
+						t.z = 0.0f;
+					}
+				} else {
+					t.x = -half_pi;
+					t.y = atan2f(-m01, m00);
+					t.z = 0.0f;
+				}
+				return t;
+			}
 		};
 		#pragma endregion
 

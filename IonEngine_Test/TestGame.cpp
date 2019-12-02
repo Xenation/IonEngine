@@ -52,6 +52,13 @@ void TestGame::initialize() {
 	wallMaterial->setField(2, 0.0f);
 	wallMaterial->setField(3, 0.3f);
 	wallMaterial->setField(4, 0.0f);
+
+	sponzaMaterial = new Material("Sponza", testShader, "opaque");
+	sponzaMaterial->setField(0, Color(0.6f, 0.6f, 0.6f));
+	sponzaMaterial->setField(1, 0.1f);
+	sponzaMaterial->setField(2, 0.0f);
+	sponzaMaterial->setField(3, 0.7f);
+	sponzaMaterial->setField(4, 0.0f);
 }
 
 void TestGame::preUpdate() {
@@ -66,6 +73,9 @@ void TestGame::cleanUp() {
 	//delete postTestMaterial;
 	//delete postTestShader;
 	delete testMaterial;
+	delete wallMaterial;
+	delete groundMaterial;
+	delete sponzaMaterial;
 	delete testShader;
 	delete particleMaterial;
 	delete particleShader;

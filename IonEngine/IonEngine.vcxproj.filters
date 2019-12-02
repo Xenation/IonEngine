@@ -306,6 +306,9 @@
     <ClCompile Include="ComputeShader.cpp">
       <Filter>Source Files\Engine\Render\Shader</Filter>
     </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\Engine\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -559,6 +562,9 @@
     </ClInclude>
     <ClInclude Include="ext\tiny_obj_loader.h">
       <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\Engine\Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

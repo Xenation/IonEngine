@@ -21,9 +21,10 @@ private:
 	IonEngine::Material* postTestMaterial;
 	IonEngine::ShaderProgram* testShader;
 	IonEngine::Material* testMaterial;
-	IonEngine::ShaderProgram* particleShader;
-	IonEngine::Material* particleMaterial;
 	IonEngine::Material* groundMaterial;
 	IonEngine::Material* wallMaterial;
+	IonEngine::Material* sponzaMaterial;
+	IonEngine::ShaderProgram* particleShader;
+	IonEngine::Material* particleMaterial;
 };
 

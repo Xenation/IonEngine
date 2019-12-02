@@ -20,6 +20,7 @@ private:
 	IonEngine::Entity* camera;
 	IonEngine::Entity* sun;
 	IonEngine::Entity* rotatingEnt;
+	IonEngine::Entity* mapRoot;
 	IonEngine::Entity* ground;
 	IonEngine::Entity* ball;
 	IonEngine::Entity* refCube;
@@ -29,5 +30,6 @@ private:
 	IonEngine::Entity* rayEntity;
 	IonEngine::Mesh* cubeMesh;
 	IonEngine::Mesh* sphereMesh;
+	IonEngine::Mesh* sponzaMesh;
 };
 

@@ -40,6 +40,9 @@
     <Filter Include="Resource Files\shaders\lightassign">
       <UniqueIdentifier>{09c1f5b6-4936-4e70-b0c8-1578a2ee82ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\procedural_sky">
+      <UniqueIdentifier>{9e784eb2-36ca-4ea0-b138-96641c324a78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -102,6 +105,12 @@
     </None>
     <None Include="res\shaders\lightassign\cs.glsl">
       <Filter>Resource Files\shaders\lightassign</Filter>
+    </None>
+    <None Include="res\shaders\procedural_sky\fs.glsl">
+      <Filter>Resource Files\shaders\procedural_sky</Filter>
+    </None>
+    <None Include="res\shaders\procedural_sky\vs.glsl">
+      <Filter>Resource Files\shaders\procedural_sky</Filter>
     </None>
   </ItemGroup>
 </Project>

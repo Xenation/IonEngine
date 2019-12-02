@@ -13,8 +13,9 @@ void TransformInspector::drawGui(Component* component) {
 		transform->setPosition(pos);
 	}
 	Rotor3f rotor = transform->getRotation();
-	if (ImGui::InputFloat4("rotor", rotor.data)) {
-		rotor.normalize();
+	Vec3f euler = Matrix4x4f::rotation(rotor).eulerRotation() * rad2deg;
+	if (ImGui::InputFloat3("rotation", euler.data)) {
+		rotor = Rotor3f::euler(euler * deg2rad);
 		transform->setRotation(rotor);
 	}
 	Vec3f scale = transform->getScale();

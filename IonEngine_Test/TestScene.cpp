@@ -135,6 +135,7 @@ void TestScene::load() {
 	Material* testMaterial = Material::find("Test");
 	Material* groundMaterial = Material::find("Ground");
 	Material* wallMaterial = Material::find("Wall");
+	Material* sponzaMaterial = Material::find("Sponza");
 
 	rotatingEnt = new Entity("Rotating");
 	rotatingEnt->addComponent<TestRotator>();
@@ -199,6 +200,20 @@ void TestScene::load() {
 	sphereMesh = MeshImporter::Import("icosphere_high.obj");
 	sphereMesh->uploadToGL();
 	sphereRenderer->setMesh(sphereMesh);
+
+	// Map
+	mapRoot = new Entity("Map");
+
+	Entity* sponza = new Entity("Sponza");
+	sponza->setParent(mapRoot);
+	sponza->transform->setWorldPosition({0.0f, -2.0f, 0.0f});
+	sponza->transform->setWorldScale({0.015f, 0.015f, 0.015f});
+	MeshRenderer* sponzaRenderer = sponza->addComponent<MeshRenderer>();
+	sponzaRenderer->setMaterial(sponzaMaterial);
+	sponzaMesh = MeshImporter::Import("sponza.obj");
+	sponzaMesh->uploadToGL();
+	sponzaRenderer->setMesh(sponzaMesh);
+
 
 	ball = new Entity("Cube");
 	ball->transform->setPosition(Vec3f(0, 20, 0));
@@ -328,6 +343,8 @@ void TestScene::destroy() {
 	delete ball;
 	delete refCube;
 	delete mirCube;
+	delete mapRoot;
 	delete cubeMesh;
 	delete sphereMesh;
+	delete sponzaMesh;
 }

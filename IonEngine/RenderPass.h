@@ -19,6 +19,8 @@ namespace IonEngine {
 	class AtomicCounterBuffer;
 	class Light;
 	class ComputeShader;
+	class Mesh;
+	class Skybox;
 
 	class RenderPass {
 	public:
@@ -85,6 +87,22 @@ namespace IonEngine {
 		Framebuffer* renderBuffer;
 
 		void updateLightsData();
+	};
+
+	class RenderPassSkybox : public RenderPass {
+	public:
+		RenderPassSkybox(Pipeline* pipeline);
+		~RenderPassSkybox();
+
+		virtual void onShadersInitialized() override;
+		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
+
+		SpecializedShaderProgram* getProceduralSkyShader() { return proceduralSkySpecShader; }
+
+	private:
+		Mesh* skyMesh;
+		SpecializedShaderProgram* proceduralSkySpecShader;
+		Skybox* defaultSkybox;
 	};
 
 	class RenderPassTransparent : public RenderPass {

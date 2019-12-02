@@ -19,6 +19,8 @@
 #include "Texture.h"
 #include "Time.h" //
 #include "ComputeShader.h"
+#include "MeshImporter.h"
+#include "Skybox.h"
 using namespace IonEngine;
 
 
@@ -160,7 +162,7 @@ void RenderPassShadows::render(Camera* camera, const SimpleSet<unsigned int>& vi
 RenderPassOpaque::RenderPassOpaque(const char* name, Pipeline* pipeline, unsigned int width, unsigned int height, unsigned int samples) : RenderPass(name, pipeline), deferredMaterial(deferredMaterial) {
 	renderBuffer = new Framebuffer("RenderBuffer", width, height, samples);
 	renderBuffer->createAttachments(4, new Framebuffer::Attachment[4]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA), Framebuffer::Attachment(GL_COLOR_ATTACHMENT1, GL_RGB, GL_RGB16), Framebuffer::Attachment(GL_COLOR_ATTACHMENT2, GL_RGBA), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
-	renderBuffer->clearColor = Color(0.52f, 0.80f, 0.97f, 0.0); //135-206-250
+	//renderBuffer->clearColor = Color(0.52f, 0.80f, 0.97f, 0.0); //135-206-250
 }
 
 RenderPassOpaque::~RenderPassOpaque() {
@@ -252,22 +254,40 @@ void RenderPassOpaque::updateLightsData() {
 		}
 		deferredMaterial->setField(10, i, indicesSlice);
 	}
+}
 
-	// Test data
-	//deferredMaterial->setField(6, 25);
-	//for (unsigned int i = 0; i < 25; i++) {
-	//	Color color = Color::white;
-	//	color.a = 2.0f;
-	//	deferredMaterial->setField(7, color, i);
-	//}
-	//for (unsigned int i = 0; i < 25; i++) {
-	//	deferredMaterial->setField(8, Vec4f(10 + (i % 5) * 7, -3, 10 + (i / 5) * 7, 20), i);
-	//}
-	//for (unsigned int i = 0; i < 25; i++) {
-	//	//Vec2f dir = encodeNormal(Vec3f(0.577350f, -0.577350f, 0.577350f));
-	//	Vec2f dir = encodeNormal(Vec3f(cosf(Time::time), -1, sinf(Time::time)).normalized());
-	//	deferredMaterial->setField(9, Vec4f(dir.x, dir.y, 1.099557f, 1.256637f), i);
-	//}
+
+
+/* ==== SKYBOX ==== */
+RenderPassSkybox::RenderPassSkybox(Pipeline* pipeline) : RenderPass("skybox", pipeline) {}
+
+RenderPassSkybox::~RenderPassSkybox() {}
+
+
+void RenderPassSkybox::onShadersInitialized() {
+	skyMesh = MeshImporter::Import("icosphere_high.obj");
+	skyMesh->reverseWindingOrder();
+	skyMesh->uploadToGL();
+
+	ShaderProgram* proceduralSkyShader = ShaderProgram::find("procedural_sky");
+	proceduralSkyShader->load();
+	unsigned int count;
+	proceduralSkySpecShader = proceduralSkyShader->getAllSpecializedPrograms(count)[0];
+
+	defaultSkybox = new Skybox();
+	defaultSkybox->getMaterial()->setField(0, Color(0.52f, 0.80f, 0.97f, 0.0).vec);
+	defaultSkybox->getMaterial()->setField(1, Color(0.10f, 0.10f, 0.10f, 0.0).vec);
+	defaultSkybox->getMaterial()->setField(2, 100.0f);
+	defaultSkybox->getMaterial()->setField(3, 80.0f);
+}
+
+void RenderPassSkybox::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+	glDepthFunc(GL_LEQUAL);
+	proceduralSkySpecShader->use();
+	defaultSkybox->getMaterial()->use();
+	skyMesh->render();
+	proceduralSkySpecShader->unuse();
+	glDepthFunc(GL_LESS);
 }
 
 
