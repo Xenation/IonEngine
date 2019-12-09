@@ -14,6 +14,7 @@
 #include "LightManager.h"
 #include "Light.h"
 #include "ShadowAtlas.h"
+#include "Texture.h"
 using namespace IonEngine;
 
 #define RENDERERS_START_SIZE 32
@@ -27,6 +28,7 @@ using namespace IonEngine;
 
 Pipeline::Pipeline(int width, int height, LightManager* lightManager)
 	: lightManager(lightManager), renderers(RENDERERS_START_SIZE, RENDERERS_INCREASE), cameras(CAMERAS_START_SIZE, CAMERAS_INCREASE), renderPasses(RENDERPASSES_START_SIZE, RENDERERS_INCREASE) {
+	Texture::initializeDefaults();
 
 	resizeFrameBuffer(width, height);
 

@@ -350,6 +350,19 @@ namespace IonEngine {
 		return byteSize;
 	}
 
+	inline constexpr unsigned int glFormatChannelCount(GLenum format) {
+		switch (format) {
+			case GL_RED: return 1;
+			case GL_RG: return 2;
+			case GL_RGB: return 3;
+			case GL_RGBA: return 4;
+			case GL_DEPTH_COMPONENT: return 1;
+			case GL_STENCIL_INDEX: return 1;
+			case GL_DEPTH_STENCIL: return 2;
+			default: return 0; // Unknown
+		}
+	}
+
 	inline GLenum glGetDefaultInternalFormat(GLenum format) { // TODO add more
 		switch (format) {
 		default:

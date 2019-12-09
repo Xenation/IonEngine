@@ -14,7 +14,7 @@ Mesh* Skybox::Skybox::skyMesh = nullptr;
 
 Skybox::Skybox() {
 	if (skyMesh == nullptr) {
-		skyMesh = MeshImporter::Import("icosphere_high.obj");
+		skyMesh = MeshImporter::import("icosphere_high.obj");
 		skyMesh->reverseWindingOrder();
 		skyMesh->uploadToGL();
 	}

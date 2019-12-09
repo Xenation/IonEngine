@@ -265,7 +265,7 @@ RenderPassSkybox::~RenderPassSkybox() {}
 
 
 void RenderPassSkybox::onShadersInitialized() {
-	skyMesh = MeshImporter::Import("icosphere_high.obj");
+	skyMesh = MeshImporter::import("icosphere_high.obj");
 	skyMesh->reverseWindingOrder();
 	skyMesh->uploadToGL();
 

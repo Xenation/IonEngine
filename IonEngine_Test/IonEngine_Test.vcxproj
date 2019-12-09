@@ -306,6 +306,8 @@ exit 0
     <None Include="res\shaders\lightpass\vs.glsl" />
     <None Include="res\shaders\procedural_sky\fs.glsl" />
     <None Include="res\shaders\procedural_sky\vs.glsl" />
+    <None Include="res\shaders\standard\fs.glsl" />
+    <None Include="res\shaders\standard\vs.glsl" />
     <None Include="res\shaders\test\fs.glsl">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

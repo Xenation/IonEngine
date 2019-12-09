@@ -30,6 +30,7 @@ void ShadowAtlas::initializeShaders() {
 	depthSpecShader = depthShader->getAllSpecializedPrograms(count)[0];
 	depthMaterial = new Material("Depth", depthSpecShader);
 	worldToLightMatrixLocation = depthSpecShader->getUniformLocation("worldToLightMatrix");
+	localToWorldMatrixLocation = depthSpecShader->getUniformLocation("localToWorldMatrix");
 }
 
 void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers) {
@@ -58,7 +59,8 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 		unsigned int counted = 0;
 		for (unsigned int i = 0; i < renderers.capacity && counted < renderers.count; i++) {
 			if (renderers[i] == nullptr) continue;
-			renderers[i]->render();
+			depthSpecShader->loadMatrix4x4f(localToWorldMatrixLocation, renderers[i]->entity->transform->getLocalToWorldMatrix());
+			renderers[i]->renderNoUniform();
 			counted++;
 		}
 		#ifdef _DEBUG
@@ -80,7 +82,8 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 		unsigned int counted = 0;
 		for (unsigned int i = 0; i < renderers.capacity && counted < renderers.count; i++) {
 			if (renderers[i] == nullptr) continue;
-			renderers[i]->render();
+			depthSpecShader->loadMatrix4x4f(localToWorldMatrixLocation, renderers[i]->entity->transform->getLocalToWorldMatrix());
+			renderers[i]->renderNoUniform();
 			counted++;
 		}
 		#ifdef _DEBUG

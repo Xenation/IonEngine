@@ -32,6 +32,7 @@ namespace IonEngine {
 		Vec2i size;
 		Material* depthMaterial;
 		unsigned int worldToLightMatrixLocation = 0;
+		unsigned int localToWorldMatrixLocation = 0;
 		SpecializedShaderProgram* depthSpecShader;
 		SimpleSet<ShadowCaster*> directionalCasters;
 		SimpleSet<ShadowCaster*> spotCasters;

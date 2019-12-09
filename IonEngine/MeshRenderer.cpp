@@ -38,6 +38,11 @@ void MeshRenderer::render() {
 	mesh->render();
 }
 
+void MeshRenderer::renderNoUniform() {
+	if (mesh == nullptr) return;
+	mesh->render();
+}
+
 void MeshRenderer::recalculateWorldBounds() {
 	if (mesh == nullptr) return;
 	// TODO optimize

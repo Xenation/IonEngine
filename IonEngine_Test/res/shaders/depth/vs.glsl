@@ -8,12 +8,12 @@ layout (std140, binding = 3) uniform Object {
 };
 
 uniform mat4x4 worldToLightMatrix;
-uniform mat4x4 modelMatrix;
+uniform mat4x4 localToWorldMatrix;
 
 layout (std140, binding = 10) uniform Material {
 	float placeholder;
 };
 
 void main() {
-	gl_Position = worldToLightMatrix * modelMatrix * vec4(vertexPos, 1.0);
+	gl_Position = worldToLightMatrix * localToWorldMatrix * vec4(vertexPos, 1.0);
 }

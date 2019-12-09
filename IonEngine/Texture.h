@@ -1,18 +1,25 @@
 #pragma once
 #include <string>
 #include <gl3w.h>
+#include "XMath.h"
 
 namespace IonEngine {
 	class Texture {
 	public:
+		static Texture*const defWhite;
+		static Texture*const defBlack;
+
 		Texture(std::string name = "");
 		Texture(const Texture&) = delete;
 		~Texture();
+
+		static void initializeDefaults();
 
 		Texture* copy();
 		void createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int mulisamples = 0, bool noalloc = false, bool mipmapped = true);
 		void loadFromFile(const char* filePath);
 		void setTextureData(unsigned char* data, unsigned int dataSize, GLenum format, GLenum internalFormat);
+		void fillWithColor(Color color);
 		void deleteLocal();
 		void uploadToGL();
 		void deleteFromGL();

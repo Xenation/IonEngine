@@ -11,6 +11,7 @@ namespace IonEngine {
 		~Renderer();
 
 		virtual void render() = 0;
+		virtual void renderNoUniform() = 0; // TODO remove when using batched UBOs for per object variables
 
 		virtual void onEnable() override;
 		virtual void onDisable() override;

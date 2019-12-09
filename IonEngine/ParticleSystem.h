@@ -35,6 +35,7 @@ namespace IonEngine {
 
 		virtual void setMaterial(Material* mat) override;
 		virtual void render() override;
+		virtual void renderNoUniform() override;
 
 	private:
 		Mesh* mesh = nullptr;

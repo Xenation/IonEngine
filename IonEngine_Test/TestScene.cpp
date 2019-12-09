@@ -197,22 +197,17 @@ void TestScene::load() {
 	sphere->transform->setWorldScale({1, 1, 1});
 	MeshRenderer* sphereRenderer = sphere->addComponent<MeshRenderer>();
 	sphereRenderer->setMaterial(wallMaterial);
-	sphereMesh = MeshImporter::Import("icosphere_high.obj");
+	sphereMesh = MeshImporter::import("icosphere_high.obj");
 	sphereMesh->uploadToGL();
 	sphereRenderer->setMesh(sphereMesh);
 
 	// Map
 	mapRoot = new Entity("Map");
 
-	Entity* sponza = new Entity("Sponza");
+	Entity* sponza = MeshImporter::importAll("sponza.obj");
 	sponza->setParent(mapRoot);
 	sponza->transform->setWorldPosition({0.0f, -2.0f, 0.0f});
 	sponza->transform->setWorldScale({0.015f, 0.015f, 0.015f});
-	MeshRenderer* sponzaRenderer = sponza->addComponent<MeshRenderer>();
-	sponzaRenderer->setMaterial(sponzaMaterial);
-	sponzaMesh = MeshImporter::Import("sponza.obj");
-	sponzaMesh->uploadToGL();
-	sponzaRenderer->setMesh(sponzaMesh);
 
 
 	ball = new Entity("Cube");

@@ -43,6 +43,9 @@
     <Filter Include="Resource Files\shaders\procedural_sky">
       <UniqueIdentifier>{9e784eb2-36ca-4ea0-b138-96641c324a78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders\standard">
+      <UniqueIdentifier>{e514b9a2-17a2-4931-9603-e096849f5921}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -111,6 +114,12 @@
     </None>
     <None Include="res\shaders\procedural_sky\vs.glsl">
       <Filter>Resource Files\shaders\procedural_sky</Filter>
+    </None>
+    <None Include="res\shaders\standard\fs.glsl">
+      <Filter>Resource Files\shaders\standard</Filter>
+    </None>
+    <None Include="res\shaders\standard\vs.glsl">
+      <Filter>Resource Files\shaders\standard</Filter>
     </None>
   </ItemGroup>
 </Project>

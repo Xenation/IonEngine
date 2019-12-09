@@ -16,6 +16,7 @@ namespace IonEngine {
 
 		virtual void onUpdate() override;
 		virtual void render() override;
+		virtual void renderNoUniform() override;
 
 	private:
 		Mesh* mesh = nullptr;

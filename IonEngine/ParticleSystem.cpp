@@ -84,6 +84,12 @@ void ParticleSystem::render() {
 	}*/
 }
 
+void ParticleSystem::renderNoUniform() {
+	if (!isEnabled() || mesh == nullptr) return;
+
+	mesh->render();
+}
+
 void ParticleSystem::createParticle(const Vec3f& pos, const Vec3f& vel, float lifetime) {
 	particles.add({pos, vel, Time::time, lifetime});
 }

@@ -8,6 +8,20 @@ using namespace IonEngine;
 
 
 
+Texture*const Texture::defWhite = new Texture("white");
+Texture*const Texture::defBlack = new Texture("black");
+
+void Texture::initializeDefaults() {
+	defWhite->createEmpty(32, 32, GL_RGBA, GL_RGBA8, 0U, false, false);
+	defWhite->fillWithColor(Color::white);
+	defWhite->uploadToGL();
+
+	defBlack->createEmpty(32, 32, GL_RGBA, GL_RGBA8, 0U, false, false);
+	defBlack->fillWithColor(Color::black);
+	defBlack->uploadToGL();
+}
+
+
 Texture::Texture(std::string name) : name(name) {}
 
 Texture::~Texture() {
@@ -61,11 +75,11 @@ void Texture::loadFromFile(const char* filePath) { // TODO update with internalF
 	unsigned char* pngData;
 	size_t pngDataSize;
 
-	LodePNGState state;
+	lodepng::State state;
 	unsigned int error;
 	error = lodepng_load_file(&pngData, &pngDataSize, filePath);
 	if (error) {
-		Debug::log("Texture", ("Unable to load texture from file: png load error " + std::to_string(error) + ": " + std::string(lodepng_error_text(error))).c_str());
+		Debug::log("Texture", ("Unable to load texture from file '" + std::string(filePath) + "': png load error " + std::to_string(error) + ": " + std::string(lodepng_error_text(error))).c_str());
 		return;
 	}
 	error = lodepng_inspect(&width, &height, &state, pngData, pngDataSize);
@@ -76,28 +90,30 @@ void Texture::loadFromFile(const char* filePath) { // TODO update with internalF
 
 	switch (state.info_png.color.colortype) {
 	case LodePNGColorType::LCT_GREY:
+		pixelFormat = GL_RED;
 		switch (state.info_png.color.bitdepth) {
 		case 1:
 		case 2:
 		case 4:
 		case 8:
-			pixelFormat = GL_R8;
+			pixelInternalFormat = GL_R8;
 			state.info_raw.bitdepth = 8;
 			break;
 		case 16:
-			pixelFormat = GL_R16;
+			pixelInternalFormat = GL_R16;
 			state.info_raw.bitdepth = 16;
 			break;
 		}
 		break;
 	case LodePNGColorType::LCT_GREY_ALPHA:
+		pixelFormat = GL_RG;
 		switch (state.info_png.color.bitdepth) {
 		case 8:
-			pixelFormat = GL_RG8;
+			pixelInternalFormat = GL_RG8;
 			state.info_raw.bitdepth = 8;
 			break;
 		case 16:
-			pixelFormat = GL_RG16;
+			pixelInternalFormat = GL_RG16;
 			state.info_raw.bitdepth = 16;
 			break;
 		}
@@ -106,25 +122,27 @@ void Texture::loadFromFile(const char* filePath) { // TODO update with internalF
 		Debug::log("Texture", "Unable to load texture from file: palette png format not supported!");
 		break;
 	case LodePNGColorType::LCT_RGB:
+		pixelFormat = GL_RGB;
 		switch (state.info_png.color.bitdepth) {
 		case 8:
-			pixelFormat = GL_RGB8;
+			pixelInternalFormat = GL_RGB8;
 			state.info_raw.bitdepth = 8;
 			break;
 		case 16:
-			pixelFormat = GL_RGB16;
+			pixelInternalFormat = GL_RGB16;
 			state.info_raw.bitdepth = 16;
 			break;
 		}
 		break;
 	case LodePNGColorType::LCT_RGBA:
+		pixelFormat = GL_RGBA;
 		switch (state.info_png.color.bitdepth) {
 		case 8:
-			pixelFormat = GL_RGBA8;
+			pixelInternalFormat = GL_RGBA8;
 			state.info_raw.bitdepth = 8;
 			break;
 		case 16:
-			pixelFormat = GL_RGBA16;
+			pixelInternalFormat = GL_RGBA16;
 			state.info_raw.bitdepth = 16;
 			break;
 		}
@@ -138,7 +156,7 @@ void Texture::loadFromFile(const char* filePath) { // TODO update with internalF
 		return;
 	}
 
-	textureDataSize = glFormatByteSize(pixelFormat, width * height);
+	textureDataSize = glFormatByteSize(pixelInternalFormat, width * height);
 
 	delete[] pngData;
 
@@ -151,6 +169,18 @@ void Texture::setTextureData(unsigned char* data, unsigned int dataSize, GLenum 
 	pixelInternalFormat = internalFormat;
 	pixelFormat = format;
 	cachedInLocal = true;
+}
+
+void Texture::fillWithColor(Color color) {
+	if (pixelInternalFormat != GL_R8 && pixelInternalFormat != GL_RG8 && pixelInternalFormat != GL_RGB8 && pixelInternalFormat != GL_RGBA8) {
+		Debug::logError("Texture", "Tried filling an unsupported format!");
+		return;
+	}
+	unsigned int channelCount = glFormatChannelCount(pixelFormat);
+	// Assumes each channel uses exactly a byte
+	for (unsigned int pi = 0; pi < width * height; pi++) {
+		textureData[pi * channelCount] = (unsigned char) color.vec.data;
+	}
 }
 
 void Texture::deleteLocal() {
