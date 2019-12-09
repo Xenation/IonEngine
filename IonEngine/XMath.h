@@ -1955,6 +1955,21 @@ namespace IonEngine {
 			const char* toCString();
 			std::string toString();
 
+			inline unsigned int toInt() const {
+				unsigned int ir = (unsigned int) r * 255;
+				unsigned int ib = (unsigned int) g * 255;
+				unsigned int ig = (unsigned int) b * 255;
+				unsigned int ia = (unsigned int) a * 255;
+				return ir << 24 || ib << 16 || ig << 8 || ia;
+			}
+
+			inline void toBytesRGBA8(unsigned char* dest) const {
+				dest[0] = (unsigned char) r * 255;
+				dest[1] = (unsigned char) g * 255;
+				dest[2] = (unsigned char) b * 255;
+				dest[3] = (unsigned char) a * 255;
+			}
+
 		private:
 			inline static float hsvIntermediate(float h, float s, float v, float n) {
 				float k = fmodf(n + h / 60.0f, 6.0f);

@@ -146,7 +146,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		// Create the mesh
 		int vCount = vertexIndex;
 		int iCount = shapes[s].mesh.indices.size();
-		Mesh* entMesh = new Mesh("Mesh_" + shapes[s].name, vCount, iCount);
+		Mesh* entMesh = new Mesh(shapes[s].name, vCount, iCount);
 		entMesh->setAttributesDefinition(3, new int[3]{3, 3, 2});
 
 		// Write all unique vertices

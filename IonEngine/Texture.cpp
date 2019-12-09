@@ -71,7 +71,7 @@ void Texture::createEmpty(unsigned int width, unsigned int height, GLenum format
 	}
 }
 
-void Texture::loadFromFile(const char* filePath) { // TODO update with internalFormat
+void Texture::loadFromFile(const char* filePath) {
 	unsigned char* pngData;
 	size_t pngDataSize;
 
@@ -179,7 +179,8 @@ void Texture::fillWithColor(Color color) {
 	unsigned int channelCount = glFormatChannelCount(pixelFormat);
 	// Assumes each channel uses exactly a byte
 	for (unsigned int pi = 0; pi < width * height; pi++) {
-		textureData[pi * channelCount] = (unsigned char) color.vec.data;
+		color.toBytesRGBA8(textureData + pi * channelCount);
+		//textureData[pi * channelCount] = color.toInt();
 	}
 }
 
@@ -196,7 +197,11 @@ void Texture::uploadToGL() {
 
 	glBindTexture(target, textureID);
 
-	glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	if (mipmapped) {
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	} else {
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
 	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);

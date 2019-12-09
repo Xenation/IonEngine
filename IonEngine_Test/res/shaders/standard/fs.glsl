@@ -47,7 +47,7 @@ vec3 bumpToNormal(sampler2D bTex, vec2 uv) {
 }
 
 void main() {
-	vec4 diffuse = texture(diffuseTex, uv);
+	vec4 diffuse = texture(diffuseTex, uv, -1.0);
 	gDiffuse = diffuse;
 	gMetallic.r = metallic;
 	gMetallic.g = roughness;
