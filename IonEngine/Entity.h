@@ -11,11 +11,12 @@ namespace IonEngine {
 	public:
 		typedef unsigned int Id;
 		Id id;
-		const char* name;
+		std::string name;
 		Transform* transform = nullptr;
 		bool isDying = false;
 
 		Entity(const char* name = "Entity", bool hasTransform = true);
+		Entity(std::string name = "Entity", bool hasTransform = true);
 		Entity(const Entity&) = delete;
 		~Entity();
 

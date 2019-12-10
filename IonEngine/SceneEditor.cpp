@@ -61,7 +61,7 @@ void SceneEditor::drawGui(Entity* entity) {
 			}
 		}
 	} else {
-		ImGui::BulletText(entity->name);
+		ImGui::BulletText(entity->name.c_str());
 		ImGui::SameLine(ImGui::GetWindowWidth() - 40);
 		if (ImGui::SmallButton(editIded.c_str())) {
 			EntityEditor* editor = EntityEditor::getActiveEditor(entity);

@@ -14,7 +14,15 @@ using namespace IonEngine;
 
 
 Entity::Entity(const char* name, bool hasTransform)
-	: name(name), components(HollowSet<Component*>(COMPONENTS_ARRAY_START_SIZE, COMPONENTS_ARRAY_INCREASE)), children(CHILDREN_ARRAY_START_SIZE, CHILDREN_ARRAY_INCREASE, true) {
+	: name(name), components(COMPONENTS_ARRAY_START_SIZE, COMPONENTS_ARRAY_INCREASE), children(CHILDREN_ARRAY_START_SIZE, CHILDREN_ARRAY_INCREASE, true) {
+	if (hasTransform) {
+		transform = addComponent(new Transform(this));
+	}
+	Engine::entityManager->registerEntity(this);
+}
+
+Entity::Entity(std::string name, bool hasTransform)
+	: name(name), components(COMPONENTS_ARRAY_START_SIZE, COMPONENTS_ARRAY_INCREASE), children(CHILDREN_ARRAY_START_SIZE, CHILDREN_ARRAY_INCREASE, true) {
 	if (hasTransform) {
 		transform = addComponent(new Transform(this));
 	}

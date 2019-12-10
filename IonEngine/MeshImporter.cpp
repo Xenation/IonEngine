@@ -142,12 +142,11 @@ Entity* MeshImporter::importAll(std::string name) {
 		convertedMaterials.push_back(mat);
 	}
 
-	Entity* root = new Entity();
+	Entity* root = new Entity(name);
 
 	for (size_t s = 0; s < shapes.size(); s++) {
-		Entity* ent = new Entity();
+		Entity* ent = new Entity(shapes[s].name);
 		ent->setParent(root);
-		ent->name = shapes[s].name.c_str();
 
 		// Map all unique vertices with their index in the final mesh array
 		std::unordered_map<Vertex, uint32_t> meshVertices;
