@@ -289,6 +289,7 @@
     <ClInclude Include="ext\imstb_textedit.h" />
     <ClInclude Include="ext\imstb_truetype.h" />
     <ClInclude Include="ext\lodepng.h" />
+    <ClInclude Include="ext\stb_image.h" />
     <ClInclude Include="ext\tiny_obj_loader.h" />
     <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="Game.h" />

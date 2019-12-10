@@ -85,28 +85,60 @@ Entity* MeshImporter::importAll(std::string name) {
 	}
 	for (size_t m = 0; m < materials.size(); m++) {
 		Material* mat = new Material(materials[m].name, stdOpaqueShader);
+
 		Texture* texAlbedo;
 		if (!materials[m].diffuse_texname.empty()) {
 			texAlbedo = new Texture(materials[m].name + "_alb");
-			texAlbedo->loadFromFile(("res/meshes/" + materials[m].diffuse_texname).c_str());
+			texAlbedo->loadFromFile_stbi(("res/meshes/" + materials[m].diffuse_texname).c_str(), true, 16.0f);
 			texAlbedo->uploadToGL();
 		} else {
 			texAlbedo = Texture::defWhite;
 		}
 		mat->setTextureByUnit(0, texAlbedo);
-		Texture* texBump;
+
+		Texture* texNormal;
 		if (!materials[m].bump_texname.empty()) {
-			texBump = new Texture(materials[m].name + "_bump");
-			texBump->loadFromFile(("res/meshes/" + materials[m].bump_texname).c_str());
-			texBump->uploadToGL();
+			texNormal = new Texture(materials[m].name + "_normal");
+			texNormal->loadFromFile_stbi(("res/meshes/" + materials[m].bump_texname).c_str(), true, 16.0f);
+			texNormal->uploadToGL();
 		} else {
-			texBump = Texture::defBlack;
+			texNormal = Texture::defBlack;
 		}
-		mat->setTextureByUnit(1, texBump);
-		mat->setField(0, 0.05f);
-		mat->setField(1, 0.0f);
-		mat->setField(2, 1.0f);
-		mat->setField(3, 0.0f);
+		mat->setTextureByUnit(1, texNormal);
+		
+		Texture* texMetallic;
+		if (!materials[m].ambient_texname.empty()) {
+			texMetallic = new Texture(materials[m].name + "_metal");
+			texMetallic->loadFromFile_stbi(("res/meshes/" + materials[m].ambient_texname).c_str(), true, 16.0f);
+		} else {
+			texMetallic = Texture::defBlack;
+		}
+		Texture* texRough;
+		if (!materials[m].specular_highlight_texname.empty()) {
+			texRough = new Texture(materials[m].name + "_rough");
+			texRough->loadFromFile_stbi(("res/meshes/" + materials[m].specular_highlight_texname).c_str(), true, 16.0f);
+		} else {
+			texRough = Texture::defWhite;
+		}
+		Texture* texMRA;
+		if (texMetallic != Texture::defBlack && texRough != Texture::defWhite) {
+			texMRA = new Texture(materials[m].name + "_mra");
+			texMRA->combineTextures(texMetallic, texRough, nullptr, nullptr);
+			texMRA->uploadToGL();
+			if (texMetallic != Texture::defBlack) {
+				delete texMetallic;
+			}
+			if (texRough != Texture::defWhite) {
+				delete texRough;
+			}
+		} else {
+			texMRA = Texture::defMRA;
+		}
+		mat->setTextureByUnit(2, texMRA);
+
+		mat->setField(0, materials[m].ambient[0]);
+		mat->setField(1, 1.0f);
+		mat->setField(2, 0.0f);
 		convertedMaterials.push_back(mat);
 	}
 
@@ -147,7 +179,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		int vCount = vertexIndex;
 		int iCount = shapes[s].mesh.indices.size();
 		Mesh* entMesh = new Mesh(shapes[s].name, vCount, iCount);
-		entMesh->setAttributesDefinition(3, new int[3]{3, 3, 2});
+		entMesh->setAttributesDefinition(5, new int[5]{3, 3, 2, 3, 3});
 
 		// Write all unique vertices
 		for (std::pair<Vertex, uint32_t> vert : meshVertices) {
@@ -179,12 +211,16 @@ Entity* MeshImporter::importAll(std::string name) {
 		}
 		
 		entMesh->reverseWindingOrder();
+		entMesh->computeTangents(0, 2, 3, 4);
 
 		
 		// Assign the mesh to the object
 		entMesh->uploadToGL();
 		MeshRenderer* renderer = ent->addComponent<MeshRenderer>();
-		renderer->setMaterial(convertedMaterials[shapes[s].mesh.material_ids[0]]);
+		int matId = shapes[s].mesh.material_ids[0];
+		if (matId >= 0) {
+			renderer->setMaterial(convertedMaterials[matId]);
+		}
 		renderer->setMesh(entMesh);
 	}
 

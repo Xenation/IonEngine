@@ -209,14 +209,6 @@ void Mesh::setIndex(unsigned int indexIndex, unsigned int index) {
 	indices[indexIndex] = index;
 }
 
-void Mesh::reverseWindingOrder() {
-	for (unsigned int t = 0; t < indexCount / 3; t++) {
-		unsigned int tmp = indices[3 * t + 1];
-		indices[3 * t + 1] = indices[3 * t + 2];
-		indices[3 * t + 2] = tmp;
-	}
-}
-
 void Mesh::setTopology(GLenum topology) {
 	this->topology = topology;
 }
@@ -289,6 +281,55 @@ void Mesh::resize(unsigned int vCount, unsigned int iCount, bool copy, ResizeMod
 		delete[] indices;
 		indices = nIndices;
 		indexCount = iCount;
+	}
+}
+
+void Mesh::reverseWindingOrder() {
+	for (unsigned int t = 0; t < indexCount / 3; t++) {
+		unsigned int tmp = indices[3 * t + 1];
+		indices[3 * t + 1] = indices[3 * t + 2];
+		indices[3 * t + 2] = tmp;
+	}
+}
+
+void Mesh::computeTangents(unsigned int posAttrIndex, unsigned int uvAttrIndex, unsigned int tanAttrIndex, unsigned int bitanAttrIndex) {
+	int posAttrByteOffset = attributeByteOffsets[posAttrIndex];
+	int uvAttrByteOffset = attributeByteOffsets[uvAttrIndex];
+	int tanAttrByteOffset = attributeByteOffsets[tanAttrIndex];
+	int bitanAttrByteOffset = attributeByteOffsets[bitanAttrIndex]; // TODO remove bitangent to be computed in shader
+	for (unsigned int t = 0; t < indexCount; t += 3) {
+		Vec3f p0 = *(Vec3f*) ((unsigned char*) vertices + indices[t] * vertexByteSize + posAttrByteOffset);
+		Vec3f p1 = *(Vec3f*) ((unsigned char*) vertices + indices[t + 1] * vertexByteSize + posAttrByteOffset);
+		Vec3f p2 = *(Vec3f*) ((unsigned char*) vertices + indices[t + 2] * vertexByteSize + posAttrByteOffset);
+		Vec2f uv0 = *(Vec2f*) ((unsigned char*) vertices + indices[t] * vertexByteSize + uvAttrByteOffset);
+		Vec2f uv1 = *(Vec2f*) ((unsigned char*) vertices + indices[t + 1] * vertexByteSize + uvAttrByteOffset);
+		Vec2f uv2 = *(Vec2f*) ((unsigned char*) vertices + indices[t + 2] * vertexByteSize + uvAttrByteOffset);
+		Vec3f edge1 = p1 - p0;
+		Vec3f edge2 = p2 - p0;
+		Vec2f deltaUV1 = uv1 - uv0;
+		Vec2f deltaUV2 = uv2 - uv0;
+
+		float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+		Vec3f tangent;
+		tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+		tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+		tangent.normalize();
+
+		Vec3f bitangent;
+		bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+		bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+		bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+		bitangent.normalize();
+
+		*((Vec3f*) ((unsigned char*) vertices + indices[t] * vertexByteSize + tanAttrByteOffset)) = tangent;
+		*((Vec3f*) ((unsigned char*) vertices + indices[t + 1] * vertexByteSize + tanAttrByteOffset)) = tangent;
+		*((Vec3f*) ((unsigned char*) vertices + indices[t + 2] * vertexByteSize + tanAttrByteOffset)) = tangent;
+
+		*((Vec3f*) ((unsigned char*) vertices + indices[t] * vertexByteSize + bitanAttrByteOffset)) = bitangent;
+		*((Vec3f*) ((unsigned char*) vertices + indices[t + 1] * vertexByteSize + bitanAttrByteOffset)) = bitangent;
+		*((Vec3f*) ((unsigned char*) vertices + indices[t + 2] * vertexByteSize + bitanAttrByteOffset)) = bitangent;
 	}
 }
 

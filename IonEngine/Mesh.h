@@ -47,11 +47,12 @@ namespace IonEngine {
 		void setAttributeElementData(int attrIndex, int elemIndex, unsigned char* bytes);
 		void setIndices(unsigned int* indices);
 		void setIndex(unsigned int indexIndex, unsigned int index);
-		void reverseWindingOrder();
 		void setTopology(GLenum topology);
 		void setUsageHint(GLenum usage);
 		void setName(std::string n);
 		void resize(unsigned int vCount, unsigned int iCount, bool copy = true, ResizeMode mode = ResizeMode::Force);
+		void reverseWindingOrder();
+		void computeTangents(unsigned int posAttrIndex, unsigned int uvAttrIndex, unsigned int tanAttrIndex, unsigned int bitanAttrIndex);
 		void recalculateBounds();
 		void recalculateBoundsFromIndices();
 

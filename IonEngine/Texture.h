@@ -8,6 +8,7 @@ namespace IonEngine {
 	public:
 		static Texture*const defWhite;
 		static Texture*const defBlack;
+		static Texture*const defMRA;
 
 		Texture(std::string name = "");
 		Texture(const Texture&) = delete;
@@ -16,8 +17,10 @@ namespace IonEngine {
 		static void initializeDefaults();
 
 		Texture* copy();
-		void createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int mulisamples = 0, bool noalloc = false, bool mipmapped = true);
+		void createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int mulisamples = 0, bool noalloc = false, bool mipmapped = true, float anisotropy = 1.0f);
 		void loadFromFile(const char* filePath);
+		void loadFromFile_stbi(const char* filePath, bool mipmapped = true, float anisotropy = 1.0f);
+		void combineTextures(Texture* rTexture, Texture* gTexture, Texture* bTexture, Texture* aTexture);
 		void setTextureData(unsigned char* data, unsigned int dataSize, GLenum format, GLenum internalFormat);
 		void fillWithColor(Color color);
 		void deleteLocal();
@@ -45,6 +48,7 @@ namespace IonEngine {
 		GLenum pixelFormat = GL_RGBA;
 		GLenum target = GL_TEXTURE_2D;
 		unsigned int samples = 0; // 0: no multisamples
+		float anisotropy = 1.0f;
 		bool mipmapped = true;
 	};
 }

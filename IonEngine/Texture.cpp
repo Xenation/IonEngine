@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <lodepng.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 #include "Debug.h"
 #include "GLUtils.h"
 using namespace IonEngine;
@@ -10,6 +12,7 @@ using namespace IonEngine;
 
 Texture*const Texture::defWhite = new Texture("white");
 Texture*const Texture::defBlack = new Texture("black");
+Texture*const Texture::defMRA = new Texture("defMRA");
 
 void Texture::initializeDefaults() {
 	defWhite->createEmpty(32, 32, GL_RGBA, GL_RGBA8, 0U, false, false);
@@ -19,6 +22,9 @@ void Texture::initializeDefaults() {
 	defBlack->createEmpty(32, 32, GL_RGBA, GL_RGBA8, 0U, false, false);
 	defBlack->fillWithColor(Color::black);
 	defBlack->uploadToGL();
+
+	defMRA->combineTextures(defBlack, defWhite, defWhite, nullptr);
+	defMRA->uploadToGL();
 }
 
 
@@ -51,11 +57,12 @@ Texture* Texture::copy() {
 	return texture;
 }
 
-void Texture::createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int multisamples, bool noalloc, bool mipmapped) {
+void Texture::createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int multisamples, bool noalloc, bool mipmapped, float anisotropy) {
 	if (cachedInLocal) {
 		deleteLocal();
 	}
 	this->mipmapped = mipmapped;
+	this->anisotropy = anisotropy;
 	pixelInternalFormat = internalFormat;
 	pixelFormat = format;
 	this->width = width;
@@ -163,6 +170,90 @@ void Texture::loadFromFile(const char* filePath) {
 	cachedInLocal = true;
 }
 
+void Texture::loadFromFile_stbi(const char* filePath, bool mipmapped, float anisotropy) {
+	int channelCount = 0;
+	textureData = stbi_load(filePath, (int*) &width, (int*) &height, &channelCount, 0);
+	if (textureData == nullptr) {
+		Debug::logError("Texture", "Unable to load texture from file '" + std::string(filePath) + "': " + std::string(stbi_failure_reason()));
+		return;
+	}
+	textureDataSize = glFormatByteSize(pixelInternalFormat, width * height);
+
+	this->mipmapped = mipmapped;
+	this->anisotropy = anisotropy;
+
+	switch (channelCount) {
+		case 1:
+			pixelFormat = GL_RED;
+			pixelInternalFormat = GL_R8;
+			break;
+		case 2:
+			pixelFormat = GL_RG;
+			pixelInternalFormat = GL_RG8;
+			break;
+		case 3:
+			pixelFormat = GL_RGB;
+			pixelInternalFormat = GL_RGB8;
+			break;
+		case 4:
+			pixelFormat = GL_RGBA;
+			pixelInternalFormat = GL_RGBA8;
+			break;
+	}
+
+	cachedInLocal = true;
+}
+
+void Texture::combineTextures(Texture* rTex, Texture* gTex, Texture* bTex, Texture* aTex) {
+	if (rTex == nullptr) return;
+	int channelCount = 1;
+	width = rTex->width;
+	height = rTex->height;
+	pixelFormat = GL_RED;
+	pixelInternalFormat = GL_R8;
+	mipmapped = rTex->mipmapped;
+	anisotropy = rTex->anisotropy;
+	if (gTex != nullptr) {
+		pixelFormat = GL_RG;
+		pixelInternalFormat = GL_RG8;
+		channelCount++;
+		if (gTex->width != width || gTex->height != height) {
+			return;
+		}
+	}
+	if (bTex != nullptr) {
+		pixelFormat = GL_RGB;
+		pixelInternalFormat = GL_RGB8;
+		channelCount++;
+		if (bTex->width != width || bTex->height != height) {
+			return;
+		}
+	}
+	if (aTex != nullptr) {
+		pixelFormat = GL_RGBA;
+		pixelInternalFormat = GL_RGBA8;
+		channelCount++;
+		if (aTex->width != width || aTex->height != height) {
+			return;
+		}
+	}
+	textureDataSize = rTex->width * rTex->height * channelCount;
+	textureData = new unsigned char[textureDataSize];
+
+	Texture* channelTextures[4] {rTex, gTex, bTex, aTex};
+	unsigned int writtenChannelIndex = 0;
+	for (int ci = 0; ci < 4; ci++) {
+		if (channelTextures[ci] == nullptr) continue;
+		for (unsigned int pi = 0; pi < width * height; pi++) {
+			unsigned int otherChannelCount = glFormatChannelCount(channelTextures[ci]->pixelFormat);
+			textureData[pi * channelCount + writtenChannelIndex] = channelTextures[ci]->textureData[pi * otherChannelCount];
+		}
+		writtenChannelIndex++;
+	}
+
+	cachedInLocal = true;
+}
+
 void Texture::setTextureData(unsigned char* data, unsigned int dataSize, GLenum format, GLenum internalFormat) {
 	textureData = data;
 	textureDataSize = dataSize;
@@ -205,6 +296,7 @@ void Texture::uploadToGL() {
 	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY, anisotropy);
 
 	if (target == GL_TEXTURE_2D_MULTISAMPLE) {
 		glTexImage2DMultisample(target, samples, pixelInternalFormat, width, height, GL_FALSE);

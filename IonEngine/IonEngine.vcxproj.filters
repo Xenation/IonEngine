@@ -566,5 +566,8 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files\Engine\Render</Filter>
     </ClInclude>
+    <ClInclude Include="ext\stb_image.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

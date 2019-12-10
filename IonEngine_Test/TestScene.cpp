@@ -48,7 +48,7 @@ void TestScene::load() {
 	Light* sunLight = new Light(sun, LightType::Directional);
 	sunLight->setCastShadow(true);
 	sun->addComponent(sunLight);
-	sun->transform->setRotation(Rotor3f::euler({Math::quarter_pi, Math::quarter_pi * 0.5f, 0}));
+	sun->transform->setRotation(Rotor3f::euler({60.0f * Math::deg2rad, 22.5f * Math::deg2rad, 0}));
 
 	cubeMesh = new Mesh("Cube", 24, 36);
 	cubeMesh->setAttributesDefinition(2, new int[2]{3, 3});
