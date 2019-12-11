@@ -148,6 +148,13 @@ void TestScene::load() {
 	childEntRend->setMaterial(testMaterial);
 	childEntRend->setMesh(cubeMesh);
 
+	// Map
+	mapRoot = new Entity("Map");
+	Entity* sponza = MeshImporter::importAll("sponza.obj");
+	sponza->setParent(mapRoot);
+	sponza->transform->setWorldPosition({0.0f, -2.0f, 0.0f});
+	sponza->transform->setWorldScale({0.015f, 0.015f, 0.015f});
+
 	Entity* sphere = new Entity("Sphere");
 	sphere->setParent(mapRoot);
 	sphere->transform->setWorldPosition({0, 0, 0});
@@ -157,14 +164,6 @@ void TestScene::load() {
 	sphereMesh = MeshImporter::import("icosphere_high.obj");
 	sphereMesh->uploadToGL();
 	sphereRenderer->setMesh(sphereMesh);
-
-	// Map
-	mapRoot = new Entity("Map");
-
-	Entity* sponza = MeshImporter::importAll("sponza.obj");
-	sponza->setParent(mapRoot);
-	sponza->transform->setWorldPosition({0.0f, -2.0f, 0.0f});
-	sponza->transform->setWorldScale({0.015f, 0.015f, 0.015f});
 
 	Entity* dynLightEntity = new Entity("Light");
 	dynLightEntity->transform->setPosition({6, 10, 0});

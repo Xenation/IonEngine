@@ -178,7 +178,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		int vCount = vertexIndex;
 		int iCount = shapes[s].mesh.indices.size();
 		Mesh* entMesh = new Mesh(shapes[s].name, vCount, iCount);
-		entMesh->setAttributesDefinition(5, new int[5]{3, 3, 2, 3, 3});
+		entMesh->setAttributesDefinition(5, new int[5]{3, 3, 2, 3});
 
 		// Write all unique vertices
 		for (std::pair<Vertex, uint32_t> vert : meshVertices) {
@@ -210,7 +210,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		}
 		
 		entMesh->reverseWindingOrder();
-		entMesh->computeTangents(0, 2, 3, 4);
+		entMesh->computeTangents(0, 2, 3);
 
 		
 		// Assign the mesh to the object

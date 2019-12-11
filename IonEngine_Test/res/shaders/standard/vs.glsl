@@ -37,8 +37,8 @@ void main() {
 	normal = normalize((modelMatrix * vec4(vertexNormal, 0.0)).xyz);
 	
 	vec3 t = normalize(vec3(modelMatrix * vec4(vertexTangent, 0.0)));
-	vec3 b = normalize(vec3(modelMatrix * vec4(vertexBitangent, 0.0)));
 	vec3 n = normalize(vec3(modelMatrix * vec4(vertexNormal, 0.0)));
+	vec3 b = cross(n, t);
 	tbnMatrix = mat3x3(t, b, n);
 
 	gl_Position = projectionMatrix * viewMatrix * worldPos;
