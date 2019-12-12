@@ -36,7 +36,7 @@ Framebuffer* Framebuffer::copy(std::string name) {
 	Framebuffer* fb = new Framebuffer(name, width, height, samples);
 	Attachment* fbAttachments = new Attachment[attachmentCount];
 	for (uint i = 0; i < attachmentCount; i++) {
-		fbAttachments[i] = Attachment(attachments[i].slot, attachments[i].format); // Copies attachments definition
+		fbAttachments[i] = Attachment(attachments[i].slot, attachments[i].descriptor.format, attachments[i].descriptor.internalFormat); // Copies attachments definition
 	}
 	fb->createAttachments(attachmentCount, fbAttachments);
 	return fb;
@@ -80,12 +80,31 @@ void Framebuffer::createAttachment(int index) {
 	if (attachment.texture == nullptr) {
 		attachment.texture = new Texture(name + "/" + glAttachmentString(attachment.slot));
 	}
-	if (attachment.internalFormat == 0) {
-		attachment.internalFormat = glGetDefaultInternalFormat(attachment.format);
+	if (attachment.descriptor.internalFormat == 0) {
+		attachment.descriptor.internalFormat = glGetDefaultInternalFormat(attachment.descriptor.format);
 	}
-	attachment.texture->createEmpty(width, height, attachment.format, attachment.internalFormat, samples, true, false);
+
+	Texture::Descriptor texDesc;
+	texDesc.allocateLocal = false;
+	texDesc.width = width;
+	texDesc.height = height;
+	texDesc.target = (samples == 0) ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE;
+	texDesc.format = attachment.descriptor.format;
+	texDesc.internalFormat = attachment.descriptor.internalFormat;
+	texDesc.multisamples = samples;
+	texDesc.minFilter = attachment.descriptor.minFilter;
+	texDesc.magFilter = attachment.descriptor.magFilter;
+	texDesc.wrapS = attachment.descriptor.wrapS;
+	texDesc.wrapT = attachment.descriptor.wrapT;
+	texDesc.wrapR = attachment.descriptor.wrapR;
+	texDesc.mipmapped = attachment.descriptor.mipmapped;
+	texDesc.compareMode = attachment.descriptor.compareMode;
+	texDesc.compareFunc = attachment.descriptor.compareFunc;
+	texDesc.borderColor = attachment.descriptor.borderColor;
+
+	attachment.texture->createEmpty(texDesc);
 	attachment.texture->uploadToGL();
-	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment.slot, (samples == 0) ? GL_TEXTURE_2D : GL_TEXTURE_2D_MULTISAMPLE, attachment.texture->getTextureID(), 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, attachment.slot, texDesc.target, attachment.texture->getTextureID(), 0);
 }
 
 void Framebuffer::resize(uint width, uint height) {

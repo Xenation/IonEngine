@@ -43,13 +43,11 @@ Texture::~Texture() {
 Texture* Texture::copy() {
 	Texture* texture = new Texture();
 	if (textureData != nullptr) {
-		texture->width = width;
-		texture->height = height;
-		texture->target = target;
+		texture->desc = desc;
 		// samples are 0 if texture has local data
-		texture->setTextureData(new unsigned char[textureDataSize], textureDataSize, pixelFormat, pixelInternalFormat);
+		texture->setTextureData(new unsigned char[textureDataSize], textureDataSize, desc.format, desc.internalFormat);
 	} else {
-		texture->createEmpty(width, height, pixelFormat, samples, true);
+		texture->createEmpty(desc);
 	}
 	if (loadedToGL) {
 		texture->uploadToGL();
@@ -57,24 +55,34 @@ Texture* Texture::copy() {
 	return texture;
 }
 
+void Texture::createEmpty(Descriptor descriptor) {
+	if (cachedInLocal) {
+		deleteLocal();
+	}
+	desc = descriptor;
+	if (desc.multisamples == 0 && desc.allocateLocal) {
+		textureDataSize = glFormatByteSize(desc.format, desc.width * desc.height);
+		textureData = new unsigned char[textureDataSize];
+	}
+}
+
 void Texture::createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int multisamples, bool noalloc, bool mipmapped, float anisotropy) {
 	if (cachedInLocal) {
 		deleteLocal();
 	}
-	this->mipmapped = mipmapped;
-	this->anisotropy = anisotropy;
-	pixelInternalFormat = internalFormat;
-	pixelFormat = format;
-	this->width = width;
-	this->height = height;
-	samples = multisamples;
+	desc.allocateLocal = !noalloc;
+	desc.mipmapped = mipmapped;
+	desc.anisotropy = anisotropy;
+	desc.internalFormat = internalFormat;
+	desc.format = format;
+	desc.width = width;
+	desc.height = height;
+	desc.multisamples = multisamples;
 	if (multisamples != 0) {
-		target = GL_TEXTURE_2D_MULTISAMPLE;
-	} else {
-		if (!noalloc) {
-			textureDataSize = glFormatByteSize(pixelFormat, width * height);
-			textureData = new unsigned char[textureDataSize];
-		}
+		desc.target = GL_TEXTURE_2D_MULTISAMPLE;
+	} else if (desc.allocateLocal) {
+		textureDataSize = glFormatByteSize(desc.format, desc.width * desc.height);
+		textureData = new unsigned char[textureDataSize];
 	}
 }
 
@@ -89,7 +97,7 @@ void Texture::loadFromFile(const char* filePath) {
 		Debug::log("Texture", ("Unable to load texture from file '" + std::string(filePath) + "': png load error " + std::to_string(error) + ": " + std::string(lodepng_error_text(error))).c_str());
 		return;
 	}
-	error = lodepng_inspect(&width, &height, &state, pngData, pngDataSize);
+	error = lodepng_inspect(&desc.width, &desc.height, &state, pngData, pngDataSize);
 	if (error) {
 		Debug::log("Texture", ("Unable to load texture from file: png inspect error " + std::to_string(error) + ": " + std::string(lodepng_error_text(error))).c_str());
 		return;
@@ -97,30 +105,30 @@ void Texture::loadFromFile(const char* filePath) {
 
 	switch (state.info_png.color.colortype) {
 	case LodePNGColorType::LCT_GREY:
-		pixelFormat = GL_RED;
+		desc.format = GL_RED;
 		switch (state.info_png.color.bitdepth) {
 		case 1:
 		case 2:
 		case 4:
 		case 8:
-			pixelInternalFormat = GL_R8;
+			desc.internalFormat = GL_R8;
 			state.info_raw.bitdepth = 8;
 			break;
 		case 16:
-			pixelInternalFormat = GL_R16;
+			desc.internalFormat = GL_R16;
 			state.info_raw.bitdepth = 16;
 			break;
 		}
 		break;
 	case LodePNGColorType::LCT_GREY_ALPHA:
-		pixelFormat = GL_RG;
+		desc.format = GL_RG;
 		switch (state.info_png.color.bitdepth) {
 		case 8:
-			pixelInternalFormat = GL_RG8;
+			desc.internalFormat = GL_RG8;
 			state.info_raw.bitdepth = 8;
 			break;
 		case 16:
-			pixelInternalFormat = GL_RG16;
+			desc.internalFormat = GL_RG16;
 			state.info_raw.bitdepth = 16;
 			break;
 		}
@@ -129,27 +137,27 @@ void Texture::loadFromFile(const char* filePath) {
 		Debug::log("Texture", "Unable to load texture from file: palette png format not supported!");
 		break;
 	case LodePNGColorType::LCT_RGB:
-		pixelFormat = GL_RGB;
+		desc.format = GL_RGB;
 		switch (state.info_png.color.bitdepth) {
 		case 8:
-			pixelInternalFormat = GL_RGB8;
+			desc.internalFormat = GL_RGB8;
 			state.info_raw.bitdepth = 8;
 			break;
 		case 16:
-			pixelInternalFormat = GL_RGB16;
+			desc.internalFormat = GL_RGB16;
 			state.info_raw.bitdepth = 16;
 			break;
 		}
 		break;
 	case LodePNGColorType::LCT_RGBA:
-		pixelFormat = GL_RGBA;
+		desc.format = GL_RGBA;
 		switch (state.info_png.color.bitdepth) {
 		case 8:
-			pixelInternalFormat = GL_RGBA8;
+			desc.internalFormat = GL_RGBA8;
 			state.info_raw.bitdepth = 8;
 			break;
 		case 16:
-			pixelInternalFormat = GL_RGBA16;
+			desc.internalFormat = GL_RGBA16;
 			state.info_raw.bitdepth = 16;
 			break;
 		}
@@ -157,13 +165,13 @@ void Texture::loadFromFile(const char* filePath) {
 	}
 	state.info_raw.colortype = state.info_png.color.colortype;
 
-	error = lodepng_decode(&textureData, &width, &height, &state, pngData, pngDataSize);
+	error = lodepng_decode(&textureData, &desc.width, &desc.height, &state, pngData, pngDataSize);
 	if (error) {
 		Debug::log("Texture", ("Unable to load texture from file: png decode error " + std::to_string(error) + ": " + std::string(lodepng_error_text(error))).c_str());
 		return;
 	}
 
-	textureDataSize = glFormatByteSize(pixelInternalFormat, width * height);
+	textureDataSize = glFormatByteSize(desc.internalFormat, desc.width * desc.height);
 
 	delete[] pngData;
 
@@ -172,32 +180,36 @@ void Texture::loadFromFile(const char* filePath) {
 
 void Texture::loadFromFile_stbi(const char* filePath, bool mipmapped, float anisotropy) {
 	int channelCount = 0;
-	textureData = stbi_load(filePath, (int*) &width, (int*) &height, &channelCount, 0);
+	textureData = stbi_load(filePath, (int*) &desc.width, (int*) &desc.height, &channelCount, 0);
 	if (textureData == nullptr) {
 		Debug::logError("Texture", "Unable to load texture from file '" + std::string(filePath) + "': " + std::string(stbi_failure_reason()));
 		return;
 	}
-	textureDataSize = glFormatByteSize(pixelInternalFormat, width * height);
+	textureDataSize = glFormatByteSize(desc.internalFormat, desc.width * desc.height);
 
-	this->mipmapped = mipmapped;
-	this->anisotropy = anisotropy;
+	desc.mipmapped = mipmapped;
+	desc.anisotropy = anisotropy;
+
+	if (desc.mipmapped) {
+		desc.minFilter = GL_LINEAR_MIPMAP_LINEAR;
+	}
 
 	switch (channelCount) {
 		case 1:
-			pixelFormat = GL_RED;
-			pixelInternalFormat = GL_R8;
+			desc.format = GL_RED;
+			desc.internalFormat = GL_R8;
 			break;
 		case 2:
-			pixelFormat = GL_RG;
-			pixelInternalFormat = GL_RG8;
+			desc.format = GL_RG;
+			desc.internalFormat = GL_RG8;
 			break;
 		case 3:
-			pixelFormat = GL_RGB;
-			pixelInternalFormat = GL_RGB8;
+			desc.format = GL_RGB;
+			desc.internalFormat = GL_RGB8;
 			break;
 		case 4:
-			pixelFormat = GL_RGBA;
-			pixelInternalFormat = GL_RGBA8;
+			desc.format = GL_RGBA;
+			desc.internalFormat = GL_RGBA8;
 			break;
 	}
 
@@ -207,45 +219,42 @@ void Texture::loadFromFile_stbi(const char* filePath, bool mipmapped, float anis
 void Texture::combineTextures(Texture* rTex, Texture* gTex, Texture* bTex, Texture* aTex) {
 	if (rTex == nullptr) return;
 	int channelCount = 1;
-	width = rTex->width;
-	height = rTex->height;
-	pixelFormat = GL_RED;
-	pixelInternalFormat = GL_R8;
-	mipmapped = rTex->mipmapped;
-	anisotropy = rTex->anisotropy;
+	desc = rTex->desc;
+	desc.format = GL_RED;
+	desc.internalFormat = GL_R8;
 	if (gTex != nullptr) {
-		pixelFormat = GL_RG;
-		pixelInternalFormat = GL_RG8;
+		desc.format = GL_RG;
+		desc.internalFormat = GL_RG8;
 		channelCount++;
-		if (gTex->width != width || gTex->height != height) {
+		if (gTex->desc.width != desc.width || gTex->desc.height != desc.height) {
 			return;
 		}
 	}
 	if (bTex != nullptr) {
-		pixelFormat = GL_RGB;
-		pixelInternalFormat = GL_RGB8;
+		desc.format = GL_RGB;
+		desc.internalFormat = GL_RGB8;
 		channelCount++;
-		if (bTex->width != width || bTex->height != height) {
+		if (bTex->desc.width != desc.width || bTex->desc.height != desc.height) {
 			return;
 		}
 	}
 	if (aTex != nullptr) {
-		pixelFormat = GL_RGBA;
-		pixelInternalFormat = GL_RGBA8;
+		desc.format = GL_RGBA;
+		desc.internalFormat = GL_RGBA8;
 		channelCount++;
-		if (aTex->width != width || aTex->height != height) {
+		if (aTex->desc.width != desc.width || aTex->desc.height != desc.height) {
 			return;
 		}
 	}
-	textureDataSize = rTex->width * rTex->height * channelCount;
+	textureDataSize = rTex->desc.width * rTex->desc.height * channelCount;
 	textureData = new unsigned char[textureDataSize];
 
 	Texture* channelTextures[4] {rTex, gTex, bTex, aTex};
 	unsigned int writtenChannelIndex = 0;
 	for (int ci = 0; ci < 4; ci++) {
 		if (channelTextures[ci] == nullptr) continue;
-		for (unsigned int pi = 0; pi < width * height; pi++) {
-			unsigned int otherChannelCount = glFormatChannelCount(channelTextures[ci]->pixelFormat);
+		for (unsigned int pi = 0; pi < desc.width * desc.height; pi++) {
+			unsigned int otherChannelCount = glFormatChannelCount(channelTextures[ci]->desc.format);
 			textureData[pi * channelCount + writtenChannelIndex] = channelTextures[ci]->textureData[pi * otherChannelCount];
 		}
 		writtenChannelIndex++;
@@ -257,19 +266,19 @@ void Texture::combineTextures(Texture* rTex, Texture* gTex, Texture* bTex, Textu
 void Texture::setTextureData(unsigned char* data, unsigned int dataSize, GLenum format, GLenum internalFormat) {
 	textureData = data;
 	textureDataSize = dataSize;
-	pixelInternalFormat = internalFormat;
-	pixelFormat = format;
+	desc.internalFormat = internalFormat;
+	desc.format = format;
 	cachedInLocal = true;
 }
 
 void Texture::fillWithColor(Color color) {
-	if (pixelInternalFormat != GL_R8 && pixelInternalFormat != GL_RG8 && pixelInternalFormat != GL_RGB8 && pixelInternalFormat != GL_RGBA8) {
+	if (desc.internalFormat != GL_R8 && desc.internalFormat != GL_RG8 && desc.internalFormat != GL_RGB8 && desc.internalFormat != GL_RGBA8) {
 		Debug::logError("Texture", "Tried filling an unsupported format!");
 		return;
 	}
-	unsigned int channelCount = glFormatChannelCount(pixelFormat);
+	unsigned int channelCount = glFormatChannelCount(desc.format);
 	// Assumes each channel uses exactly a byte
-	for (unsigned int pi = 0; pi < width * height; pi++) {
+	for (unsigned int pi = 0; pi < desc.width * desc.height; pi++) {
 		color.toBytesRGBA8(textureData + pi * channelCount);
 		//textureData[pi * channelCount] = color.toInt();
 	}
@@ -286,28 +295,30 @@ void Texture::deleteLocal() {
 void Texture::uploadToGL() {
 	glGenTextures(1, &textureID);
 
-	glBindTexture(target, textureID);
+	glBindTexture(desc.target, textureID);
 
-	if (mipmapped) {
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	} else {
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(desc.target, GL_TEXTURE_MIN_FILTER, desc.minFilter);
+	glTexParameteri(desc.target, GL_TEXTURE_MAG_FILTER, desc.magFilter);
+	glTexParameteri(desc.target, GL_TEXTURE_WRAP_S, desc.wrapS);
+	glTexParameteri(desc.target, GL_TEXTURE_WRAP_T, desc.wrapT);
+	glTexParameteri(desc.target, GL_TEXTURE_WRAP_R, desc.wrapR);
+	if (desc.wrapS == GL_CLAMP_TO_BORDER || desc.wrapT == GL_CLAMP_TO_BORDER || desc.wrapR == GL_CLAMP_TO_BORDER) {
+		glTexParameterfv(desc.target, GL_TEXTURE_BORDER_COLOR, desc.borderColor.data);
 	}
-	glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(target, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(target, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY, anisotropy);
+	glTexParameterf(desc.target, GL_TEXTURE_MAX_ANISOTROPY, desc.anisotropy);
+	glTexParameteri(desc.target, GL_TEXTURE_COMPARE_MODE, desc.compareMode);
+	glTexParameteri(desc.target, GL_TEXTURE_COMPARE_FUNC, desc.compareFunc);
 
-	if (target == GL_TEXTURE_2D_MULTISAMPLE) {
-		glTexImage2DMultisample(target, samples, pixelInternalFormat, width, height, GL_FALSE);
+	if (desc.target == GL_TEXTURE_2D_MULTISAMPLE) {
+		glTexImage2DMultisample(desc.target, desc.multisamples, desc.internalFormat, desc.width, desc.height, GL_FALSE);
 	} else {
-		glTexImage2D(target, 0, pixelInternalFormat, width, height, 0, pixelFormat, GL_UNSIGNED_BYTE, textureData);
-		if (mipmapped) {
-			glGenerateMipmap(target);
+		glTexImage2D(desc.target, 0, desc.internalFormat, desc.width, desc.height, 0, desc.format, GL_UNSIGNED_BYTE, textureData);
+		if (desc.mipmapped) {
+			glGenerateMipmap(desc.target);
 		}
 	}
 
-	glBindTexture(target, 0);
+	glBindTexture(desc.target, 0);
 
 	loadedToGL = true;
 
@@ -334,9 +345,9 @@ void Texture::setName(std::string n) {
 }
 
 void Texture::bind() {
-	glBindTexture(target, textureID);
+	glBindTexture(desc.target, textureID);
 }
 
 void Texture::unbind() {
-	glBindTexture(target, 0);
+	glBindTexture(desc.target, 0);
 }

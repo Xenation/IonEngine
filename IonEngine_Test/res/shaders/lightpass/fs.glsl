@@ -24,7 +24,7 @@ layout (binding = 0) uniform sampler2DMS gAlbedo;
 layout (binding = 1) uniform sampler2DMS gNormal;
 layout (binding = 2) uniform sampler2DMS gMetallic;
 layout (binding = 3) uniform sampler2DMS gDepth;
-layout (binding = 4) uniform sampler2D shadowAtlas;
+layout (binding = 4) uniform sampler2DShadow shadowAtlas;
 
 layout (std140, binding = 10) uniform Material {
 	uint directionalCount;
@@ -79,9 +79,9 @@ vec4 worldPosFromDepth(vec2 uv, float depth, mat4 invView, mat4 invProj) {
 	return worldPos;
 }
 
-float sampleShadowAtlas(vec4 viewport, vec2 pos) {
+float sampleShadowAtlas(vec4 viewport, vec3 pos) {
 	if (pos.x < 0 || pos.x > 1 || pos.y < 0 || pos.y > 1) return 1.0;
-	vec2 atlasPos = viewport.xy + pos * viewport.zw;
+	vec3 atlasPos = vec3(viewport.xy + pos.xy * viewport.zw, pos.z);
 	return texture(shadowAtlas, atlasPos).r;
 }
 
@@ -92,31 +92,8 @@ float computeShadow(uint atlasIndex, vec4 worldPos) {
 	vec4 lightPos = shadowAtlasWTLMatrices[atlasIndex] * worldPos;
 	vec3 projPos = lightPos.xyz / lightPos.w;
 	projPos = projPos * 0.5 + 0.5;
-	if (projPos.x < 0 || projPos.y < 0 || projPos.z < 0 || projPos.x > 1 || projPos.y > 1 || projPos.z > 1) return 1.0;
-	float currentDepth = projPos.z;
 
-	float shadow = 0;
-	for (int y = -1; y <= 1; y++) {
-		for (int x = -1; x <= 1; x++) {
-			float lightDepth = sampleShadowAtlas(shadowAtlasCoords[atlasIndex], projPos.xy + vec2(x, y) * texelSize).r;
-			shadow += (currentDepth > lightDepth) ? 0.0 : 1.0;
-		}
-	}
-	shadow /= 9;
-
-	return shadow;
-}
-
-float computeShadowHard(uint atlasIndex, vec4 worldPos) {
-	vec4 lightPos = shadowAtlasWTLMatrices[atlasIndex] * worldPos;
-	vec3 projPos = lightPos.xyz / lightPos.w;
-	projPos = projPos * 0.5 + 0.5;
-	if (projPos.x < 0 || projPos.y < 0 || projPos.z < 0 || projPos.x > 1 || projPos.y > 1 || projPos.z > 1) return 1.0;
-	float currentDepth = projPos.z;
-
-	float lightDepth = sampleShadowAtlas(shadowAtlasCoords[atlasIndex], projPos.xy).r;
-
-	return (currentDepth > lightDepth) ? 0.0 : 1.0;
+	return sampleShadowAtlas(shadowAtlasCoords[atlasIndex], projPos);
 }
 
 uint depthSlice(float viewDepth) {

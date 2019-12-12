@@ -12,15 +12,32 @@ namespace IonEngine {
 	class Framebuffer {
 	public:
 		struct Attachment {
+			struct Descriptor {
+				GLenum format = GL_RGBA;
+				GLenum internalFormat = GL_RGBA8;
+				bool mipmapped = false;
+				unsigned int multisample = 0;
+				GLenum minFilter = GL_NEAREST;
+				GLenum magFilter = GL_NEAREST;
+				GLenum wrapS = GL_CLAMP_TO_BORDER;
+				GLenum wrapT = GL_CLAMP_TO_BORDER;
+				GLenum wrapR = GL_CLAMP_TO_BORDER;
+				GLenum compareMode = GL_NONE;
+				GLenum compareFunc = GL_LEQUAL;
+				Color borderColor = Color::clear;
+			};
+
 			GLenum slot;
-			GLenum format;
-			GLenum internalFormat;
+			Descriptor descriptor;
 			Texture* texture;
 
 		public:
-			Attachment() : slot(0), format(GL_RGBA), internalFormat(0), texture(nullptr) {}
-			Attachment(GLenum attachPoint, GLenum format) : slot(attachPoint), format(format), internalFormat(0), texture(nullptr) {}
-			Attachment(GLenum attachPoint, GLenum format, GLenum internalFormat) : slot(attachPoint), format(format), internalFormat(internalFormat), texture(nullptr) {}
+			Attachment() : slot(0), descriptor(), texture(nullptr) {}
+			Attachment(GLenum attachPoint, Descriptor desc) : slot(attachPoint), descriptor(desc), texture(nullptr) {}
+			Attachment(GLenum attachPoint, GLenum format, GLenum internalFormat) : slot(attachPoint), descriptor(), texture(nullptr) {
+				descriptor.format = format;
+				descriptor.internalFormat = internalFormat;
+			}
 		};
 
 		static Mesh* fullscreenQuadMesh;

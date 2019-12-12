@@ -15,7 +15,14 @@ using namespace IonEngine;
 ShadowAtlas::ShadowAtlas() : directionalCasters(1, 1), spotCasters(16, 16) {
 	size = Vec2i(4096, 4096);
 	shadowAtlas = new Framebuffer("ShadowAtlas", size.x, size.y);
-	shadowAtlas->createAttachments(1, new Framebuffer::Attachment[1]{Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT)});
+	Framebuffer::Attachment::Descriptor depthDesc;
+	depthDesc.format = GL_DEPTH_COMPONENT;
+	depthDesc.internalFormat = GL_DEPTH_COMPONENT24;
+	depthDesc.minFilter = GL_LINEAR;
+	depthDesc.magFilter = GL_LINEAR;
+	depthDesc.compareMode = GL_COMPARE_REF_TO_TEXTURE;
+	depthDesc.borderColor = Color::white;
+	shadowAtlas->createAttachments(1, new Framebuffer::Attachment[1]{Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, depthDesc)});
 }
 
 ShadowAtlas::~ShadowAtlas() {
