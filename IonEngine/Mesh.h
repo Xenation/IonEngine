@@ -52,7 +52,7 @@ namespace IonEngine {
 		void setName(std::string n);
 		void resize(unsigned int vCount, unsigned int iCount, bool copy = true, ResizeMode mode = ResizeMode::Force);
 		void reverseWindingOrder();
-		void computeTangents(unsigned int posAttrIndex, unsigned int uvAttrIndex, unsigned int tanAttrIndex, unsigned int bitanAttrIndex);
+		void computeTangents(unsigned int posAttrIndex, unsigned int uvAttrIndex, unsigned int tanAttrIndex);
 		void recalculateBounds();
 		void recalculateBoundsFromIndices();
 

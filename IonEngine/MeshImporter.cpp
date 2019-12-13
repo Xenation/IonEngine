@@ -142,12 +142,11 @@ Entity* MeshImporter::importAll(std::string name) {
 		convertedMaterials.push_back(mat);
 	}
 
-	Entity* root = new Entity();
+	Entity* root = new Entity(name);
 
 	for (size_t s = 0; s < shapes.size(); s++) {
-		Entity* ent = new Entity();
+		Entity* ent = new Entity(shapes[s].name);
 		ent->setParent(root);
-		ent->name = shapes[s].name.c_str();
 
 		// Map all unique vertices with their index in the final mesh array
 		std::unordered_map<Vertex, uint32_t> meshVertices;
@@ -179,7 +178,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		int vCount = vertexIndex;
 		int iCount = shapes[s].mesh.indices.size();
 		Mesh* entMesh = new Mesh(shapes[s].name, vCount, iCount);
-		entMesh->setAttributesDefinition(5, new int[5]{3, 3, 2, 3, 3});
+		entMesh->setAttributesDefinition(5, new int[5]{3, 3, 2, 3});
 
 		// Write all unique vertices
 		for (std::pair<Vertex, uint32_t> vert : meshVertices) {
@@ -211,7 +210,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		}
 		
 		entMesh->reverseWindingOrder();
-		entMesh->computeTangents(0, 2, 3, 4);
+		entMesh->computeTangents(0, 2, 3);
 
 		
 		// Assign the mesh to the object

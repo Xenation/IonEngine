@@ -292,12 +292,11 @@ void Mesh::reverseWindingOrder() {
 	}
 }
 
-void Mesh::computeTangents(unsigned int posAttrIndex, unsigned int uvAttrIndex, unsigned int tanAttrIndex, unsigned int bitanAttrIndex) {
+void Mesh::computeTangents(unsigned int posAttrIndex, unsigned int uvAttrIndex, unsigned int tanAttrIndex) {
 	int posAttrByteOffset = attributeByteOffsets[posAttrIndex];
 	int uvAttrByteOffset = attributeByteOffsets[uvAttrIndex];
 	int tanAttrByteOffset = attributeByteOffsets[tanAttrIndex];
-	int bitanAttrByteOffset = attributeByteOffsets[bitanAttrIndex]; // TODO remove bitangent to be computed in shader
-	for (unsigned int t = 0; t < indexCount; t += 3) {
+	for (unsigned int t = 0; t < indexCount; t += 3) { // Can probably be improved
 		Vec3f p0 = *(Vec3f*) ((unsigned char*) vertices + indices[t] * vertexByteSize + posAttrByteOffset);
 		Vec3f p1 = *(Vec3f*) ((unsigned char*) vertices + indices[t + 1] * vertexByteSize + posAttrByteOffset);
 		Vec3f p2 = *(Vec3f*) ((unsigned char*) vertices + indices[t + 2] * vertexByteSize + posAttrByteOffset);
@@ -317,19 +316,9 @@ void Mesh::computeTangents(unsigned int posAttrIndex, unsigned int uvAttrIndex, 
 		tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 		tangent.normalize();
 
-		Vec3f bitangent;
-		bitangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-		bitangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-		bitangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-		bitangent.normalize();
-
 		*((Vec3f*) ((unsigned char*) vertices + indices[t] * vertexByteSize + tanAttrByteOffset)) = tangent;
 		*((Vec3f*) ((unsigned char*) vertices + indices[t + 1] * vertexByteSize + tanAttrByteOffset)) = tangent;
 		*((Vec3f*) ((unsigned char*) vertices + indices[t + 2] * vertexByteSize + tanAttrByteOffset)) = tangent;
-
-		*((Vec3f*) ((unsigned char*) vertices + indices[t] * vertexByteSize + bitanAttrByteOffset)) = bitangent;
-		*((Vec3f*) ((unsigned char*) vertices + indices[t + 1] * vertexByteSize + bitanAttrByteOffset)) = bitangent;
-		*((Vec3f*) ((unsigned char*) vertices + indices[t + 2] * vertexByteSize + bitanAttrByteOffset)) = bitangent;
 	}
 }
 
