@@ -89,7 +89,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		Texture* texAlbedo;
 		if (!materials[m].diffuse_texname.empty()) {
 			texAlbedo = new Texture(materials[m].name + "_alb");
-			texAlbedo->loadFromFile_stbi(("res/meshes/" + materials[m].diffuse_texname).c_str(), true, 16.0f);
+			texAlbedo->loadFromFile(("res/meshes/" + materials[m].diffuse_texname).c_str(), true, 16.0f);
 			texAlbedo->uploadToGL();
 		} else {
 			texAlbedo = Texture::defWhite;
@@ -99,7 +99,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		Texture* texNormal;
 		if (!materials[m].bump_texname.empty()) {
 			texNormal = new Texture(materials[m].name + "_normal");
-			texNormal->loadFromFile_stbi(("res/meshes/" + materials[m].bump_texname).c_str(), true, 16.0f);
+			texNormal->loadFromFile(("res/meshes/" + materials[m].bump_texname).c_str(), true, 16.0f);
 			texNormal->uploadToGL();
 		} else {
 			texNormal = Texture::defBlack;
@@ -109,14 +109,14 @@ Entity* MeshImporter::importAll(std::string name) {
 		Texture* texMetallic;
 		if (!materials[m].ambient_texname.empty()) {
 			texMetallic = new Texture(materials[m].name + "_metal");
-			texMetallic->loadFromFile_stbi(("res/meshes/" + materials[m].ambient_texname).c_str(), true, 16.0f);
+			texMetallic->loadFromFile(("res/meshes/" + materials[m].ambient_texname).c_str(), true, 16.0f);
 		} else {
 			texMetallic = Texture::defBlack;
 		}
 		Texture* texRough;
 		if (!materials[m].specular_highlight_texname.empty()) {
 			texRough = new Texture(materials[m].name + "_rough");
-			texRough->loadFromFile_stbi(("res/meshes/" + materials[m].specular_highlight_texname).c_str(), true, 16.0f);
+			texRough->loadFromFile(("res/meshes/" + materials[m].specular_highlight_texname).c_str(), true, 16.0f);
 		} else {
 			texRough = Texture::defWhite;
 		}

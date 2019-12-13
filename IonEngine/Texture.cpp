@@ -1,7 +1,6 @@
 #include "Texture.h"
 
 #include <vector>
-#include <lodepng.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #include "Debug.h"
@@ -78,99 +77,7 @@ void Texture::createEmpty(unsigned int width, unsigned int height, GLenum format
 	}
 }
 
-void Texture::loadFromFile(const char* filePath) {
-	unsigned char* pngData;
-	size_t pngDataSize;
-
-	lodepng::State state;
-	unsigned int error;
-	error = lodepng_load_file(&pngData, &pngDataSize, filePath);
-	if (error) {
-		Debug::log("Texture", ("Unable to load texture from file '" + std::string(filePath) + "': png load error " + std::to_string(error) + ": " + std::string(lodepng_error_text(error))).c_str());
-		return;
-	}
-	error = lodepng_inspect(&width, &height, &state, pngData, pngDataSize);
-	if (error) {
-		Debug::log("Texture", ("Unable to load texture from file: png inspect error " + std::to_string(error) + ": " + std::string(lodepng_error_text(error))).c_str());
-		return;
-	}
-
-	switch (state.info_png.color.colortype) {
-	case LodePNGColorType::LCT_GREY:
-		pixelFormat = GL_RED;
-		switch (state.info_png.color.bitdepth) {
-		case 1:
-		case 2:
-		case 4:
-		case 8:
-			pixelInternalFormat = GL_R8;
-			state.info_raw.bitdepth = 8;
-			break;
-		case 16:
-			pixelInternalFormat = GL_R16;
-			state.info_raw.bitdepth = 16;
-			break;
-		}
-		break;
-	case LodePNGColorType::LCT_GREY_ALPHA:
-		pixelFormat = GL_RG;
-		switch (state.info_png.color.bitdepth) {
-		case 8:
-			pixelInternalFormat = GL_RG8;
-			state.info_raw.bitdepth = 8;
-			break;
-		case 16:
-			pixelInternalFormat = GL_RG16;
-			state.info_raw.bitdepth = 16;
-			break;
-		}
-		break;
-	case LodePNGColorType::LCT_PALETTE:
-		Debug::log("Texture", "Unable to load texture from file: palette png format not supported!");
-		break;
-	case LodePNGColorType::LCT_RGB:
-		pixelFormat = GL_RGB;
-		switch (state.info_png.color.bitdepth) {
-		case 8:
-			pixelInternalFormat = GL_RGB8;
-			state.info_raw.bitdepth = 8;
-			break;
-		case 16:
-			pixelInternalFormat = GL_RGB16;
-			state.info_raw.bitdepth = 16;
-			break;
-		}
-		break;
-	case LodePNGColorType::LCT_RGBA:
-		pixelFormat = GL_RGBA;
-		switch (state.info_png.color.bitdepth) {
-		case 8:
-			pixelInternalFormat = GL_RGBA8;
-			state.info_raw.bitdepth = 8;
-			break;
-		case 16:
-			pixelInternalFormat = GL_RGBA16;
-			state.info_raw.bitdepth = 16;
-			break;
-		}
-		break;
-	}
-	state.info_raw.colortype = state.info_png.color.colortype;
-
-	error = lodepng_decode(&textureData, &width, &height, &state, pngData, pngDataSize);
-	if (error) {
-		Debug::log("Texture", ("Unable to load texture from file: png decode error " + std::to_string(error) + ": " + std::string(lodepng_error_text(error))).c_str());
-		return;
-	}
-
-	textureDataSize = glFormatByteSize(pixelInternalFormat, width * height);
-
-	delete[] pngData;
-
-	cachedInLocal = true;
-}
-
-void Texture::loadFromFile_stbi(const char* filePath, bool mipmapped, float anisotropy) {
+void Texture::loadFromFile(const char* filePath, bool mipmapped, float anisotropy) {
 	int channelCount = 0;
 	textureData = stbi_load(filePath, (int*) &width, (int*) &height, &channelCount, 0);
 	if (textureData == nullptr) {

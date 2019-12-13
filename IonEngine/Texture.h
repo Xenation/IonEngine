@@ -18,8 +18,7 @@ namespace IonEngine {
 
 		Texture* copy();
 		void createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int mulisamples = 0, bool noalloc = false, bool mipmapped = true, float anisotropy = 1.0f);
-		void loadFromFile(const char* filePath);
-		void loadFromFile_stbi(const char* filePath, bool mipmapped = true, float anisotropy = 1.0f);
+		void loadFromFile(const char* filePath, bool mipmapped = true, float anisotropy = 1.0f);
 		void combineTextures(Texture* rTexture, Texture* gTexture, Texture* bTexture, Texture* aTexture);
 		void setTextureData(unsigned char* data, unsigned int dataSize, GLenum format, GLenum internalFormat);
 		void fillWithColor(Color color);

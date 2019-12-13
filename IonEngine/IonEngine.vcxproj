@@ -210,7 +210,6 @@
     <ClCompile Include="ext\imgui_impl_glfw.cpp" />
     <ClCompile Include="ext\imgui_impl_opengl3.cpp" />
     <ClCompile Include="ext\imgui_widgets.cpp" />
-    <ClCompile Include="ext\lodepng.cpp" />
     <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gui.cpp" />
@@ -288,7 +287,6 @@
     <ClInclude Include="ext\imstb_rectpack.h" />
     <ClInclude Include="ext\imstb_textedit.h" />
     <ClInclude Include="ext\imstb_truetype.h" />
-    <ClInclude Include="ext\lodepng.h" />
     <ClInclude Include="ext\stb_image.h" />
     <ClInclude Include="ext\tiny_obj_loader.h" />
     <ClInclude Include="Framebuffer.h" />

@@ -144,9 +144,6 @@
     <ClCompile Include="ext\gl3w.c">
       <Filter>Source Files\Engine\Render\Core</Filter>
     </ClCompile>
-    <ClCompile Include="ext\lodepng.cpp">
-      <Filter>Source Files\External</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\Engine\Render</Filter>
     </ClCompile>
@@ -385,9 +382,6 @@
     </ClInclude>
     <ClInclude Include="ext\glcorearb.h">
       <Filter>Header Files\Engine\Render\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\lodepng.h">
-      <Filter>Header Files\External</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files\Engine\Render</Filter>
