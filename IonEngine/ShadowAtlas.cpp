@@ -54,7 +54,7 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 	// Directional Casters
 	for (unsigned int ci = 0; ci < directionalCasters.count; ci++) {
 		#ifdef _DEBUG
-		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei) strlen(directionalCasters[ci]->light->entity->name), directionalCasters[ci]->light->entity->name);
+		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei) directionalCasters[ci]->light->entity->name.length(), directionalCasters[ci]->light->entity->name.c_str());
 		#endif
 		// Setup
 		directionalCasters[ci]->setAtlasIndex(ci);
@@ -77,7 +77,7 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 	// Spot Casters
 	for (unsigned int ci = 0; ci < spotCasters.count; ci++) {
 		#ifdef _DEBUG
-		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei) strlen(spotCasters[ci]->light->entity->name), spotCasters[ci]->light->entity->name);
+		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei) spotCasters[ci]->light->entity->name.length(), spotCasters[ci]->light->entity->name.c_str());
 		#endif
 		// Setup
 		spotCasters[ci]->setAtlasIndex(directionalCasters.count + ci);
