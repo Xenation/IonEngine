@@ -1,5 +1,7 @@
 # IonEngine
 
+![Sample_01](https://raw.githubusercontent.com/wiki/Xenation/IonEngine/img/sample_01.png)
+
 IonEngine is currently under developpement. It's main purpose is to experiment with several techniques.
 
 ### Features
