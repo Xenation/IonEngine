@@ -7,9 +7,9 @@ using namespace IonEngine;
 Random* Random::i = new Random(666);
 
 
-Random::Random(unsigned int seed) : seed(seed), mersenneTwister(seed) {}
+Random::Random(u32 seed) : seed(seed), mersenneTwister(seed) {}
 Random::Random(std::string seed) : seed(0) {
-	std::seed_seq(seed.begin(), seed.end()).generate((unsigned int*) this, ((unsigned int*) this) + 1);
+	std::seed_seq(seed.begin(), seed.end()).generate((u32*) this, ((u32*) this) + 1);
 	mersenneTwister = std::mt19937(this->seed);
 }
 
@@ -25,7 +25,7 @@ float Random::range(float min, float max) {
 	return mersenneTwister() * m + min;
 }
 
-int Random::range(int min, int max) {
+int Random::range(i32 min, i32 max) {
 	return floorToInt(range((float) min, (float) max));
 }
 

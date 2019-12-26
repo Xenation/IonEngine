@@ -4,13 +4,13 @@
 namespace IonEngine {
 
 	struct ShaderStorageBlock {
-		unsigned int binding;
-		unsigned int offset;
-		unsigned int size;
-		unsigned char* buffer;
+		u32 binding;
+		u32 offset;
+		u32 size;
+		u8* buffer;
 
 	public:
-		ShaderStorageBlock(unsigned int binding, unsigned int offset, unsigned int size) : binding(binding), offset(offset), size(size) {}
+		ShaderStorageBlock(u32 binding, u32 offset, u32 size) : binding(binding), offset(offset), size(size), buffer(nullptr) {}
 		~ShaderStorageBlock() {}
 	};
 
@@ -21,20 +21,20 @@ namespace IonEngine {
 		ShaderStorageBuffer(std::string name);
 		~ShaderStorageBuffer();
 
-		void setBlocks(unsigned int blockCount, ShaderStorageBlock* blocks);
-		ShaderStorageBlock& getStorageBlock(unsigned int index);
-		void updateStorageBlock(unsigned int index);
-		void bindStorageBlock(unsigned int index);
+		void setBlocks(u32 blockCount, ShaderStorageBlock* blocks);
+		ShaderStorageBlock& getStorageBlock(u32 index);
+		void updateStorageBlock(u32 index);
+		void bindStorageBlock(u32 index);
 		void clearData();
 		void uploadToGL();
 		void deleteFromGL();
 
 	private:
-		unsigned int ssbo = 0;
+		u32 ssbo = 0;
 		ShaderStorageBlock* blocks = nullptr;
-		unsigned int blockCount = 0;
-		unsigned char* buffer = nullptr;
-		unsigned int bufferSize = 0;
+		u32 blockCount = 0;
+		u8* buffer = nullptr;
+		u32 bufferSize = 0;
 		bool loadedToGL = false;
 	};
 }

@@ -20,7 +20,7 @@ namespace IonEngine {
 
 	private:
 		Mesh* mesh = nullptr;
-		unsigned int modelMatrixLocation = 0;
+		u32 modelMatrixLocation = 0;
 
 		void recalculateWorldBounds();
 	};

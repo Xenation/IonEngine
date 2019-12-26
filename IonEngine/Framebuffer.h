@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <gl3w.h>
-#include "XTypes.h"
 #include "XMath.h"
 
 namespace IonEngine {
@@ -16,7 +15,7 @@ namespace IonEngine {
 				GLenum format = GL_RGBA;
 				GLenum internalFormat = GL_RGBA8;
 				bool mipmapped = false;
-				unsigned int multisample = 0;
+				u32 multisample = 0;
 				GLenum minFilter = GL_NEAREST;
 				GLenum magFilter = GL_NEAREST;
 				GLenum wrapS = GL_CLAMP_TO_BORDER;
@@ -44,35 +43,35 @@ namespace IonEngine {
 
 		Color clearColor = Color::clear;
 
-		Framebuffer(std::string name, uint width, uint height, uint samples = 0);
+		Framebuffer(std::string name, u32 width, u32 height, u32 samples = 0);
 		Framebuffer(const Framebuffer&) = delete;
 		~Framebuffer();
 
 		Framebuffer* copy(std::string name);
-		void createAttachments(uint count, Attachment* attachments);
-		void resize(uint width, uint height);
+		void createAttachments(u32 count, Attachment* attachments);
+		void resize(u32 width, u32 height);
 
 		void bind();
 		void unbind();
 		void blitTo(Framebuffer* framebuffer);
 		void blitTo(Framebuffer* framebuffer, Material* material, bool bindDepth = false);
 
-		inline uint getWidth() const { return width; }
-		inline uint getHeight() const { return height; }
-		Texture* getTexture(unsigned int index);
+		inline u32 getWidth() const { return width; }
+		inline u32 getHeight() const { return height; }
+		Texture* getTexture(u32 index);
 
 	private:
 		static void createFullscreenQuadMesh();
 
 		std::string name;
 		GLuint fbo = 0;
-		unsigned int width = 0;
-		unsigned int height = 0;
-		unsigned int samples = 0;
+		u32 width = 0;
+		u32 height = 0;
+		u32 samples = 0;
 		Attachment* attachments = nullptr;
-		unsigned int attachmentCount = 0;
+		u32 attachmentCount = 0;
 		GLenum* drawBuffers = nullptr;
 
-		void createAttachment(int index);
+		void createAttachment(u32 index);
 	};
 }

@@ -6,7 +6,7 @@ namespace IonEngine {
 	public:
 		const std::string name;
 
-		AtomicCounterBuffer(std::string name, unsigned int binding, unsigned int size);
+		AtomicCounterBuffer(std::string name, u32 binding, u32 size);
 		~AtomicCounterBuffer();
 
 		void bind();
@@ -18,10 +18,10 @@ namespace IonEngine {
 
 
 	private:
-		unsigned int acbo = 0;
-		unsigned int binding = 0;
-		unsigned char* buffer = nullptr;
-		unsigned int bufferSize = 0;
+		u32 acbo = 0;
+		u32 binding = 0;
+		u8* buffer = nullptr;
+		u32 bufferSize = 0;
 		bool loadedToGL = false;
 	};
 }

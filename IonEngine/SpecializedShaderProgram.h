@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <gl3w.h>
-#include "XTypes.h"
 #include "XMath.h"
 #include "HollowSet.h"
 
@@ -34,8 +33,8 @@ namespace IonEngine {
 		GLuint getUniformLocation(const char* str);
 		GLuint getUniformLocation(std::string str);
 		void loadBool(GLuint location, bool b);
-		void loadInt(GLuint location, int i);
-		void loadUInt(GLuint location, uint u);
+		void loadInt(GLuint location, i32 i);
+		void loadUInt(GLuint location, u32 u);
 		void loadFloat(GLuint location, float f);
 		void loadDouble(GLuint location, double d);
 		void loadVec2f(GLuint location, Vec2f vec);
@@ -55,11 +54,11 @@ namespace IonEngine {
 		GLuint geometry = 0;
 		GLuint fragment = 0;
 
-		uint idInPass = 0;
+		u32 idInPass = 0;
 
 		void load(GLuint vs, GLuint tcs, GLuint tes, GLuint gs, GLuint fs, bool silent = false);
 		GLuint loadShaderFromSource(GLenum type, const char* src, bool silent = false);
-		GLuint loadShaderFromSourceArray(GLenum type, const char** src, uint srcPiecesCount, bool silent = false);
+		GLuint loadShaderFromSourceArray(GLenum type, const char** src, u32 srcPiecesCount, bool silent = false);
 
 	};
 }

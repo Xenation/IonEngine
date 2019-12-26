@@ -12,7 +12,7 @@ namespace IonEngine::Editor {
 		static SimpleSet<BaseComponentInspector*> availableInspectors;
 
 		static BaseComponentInspector* getInspector(std::type_index type) {
-			for (unsigned int i = 0; i < availableInspectors.count; i++) {
+			for (u32 i = 0; i < availableInspectors.count; i++) {
 				if (availableInspectors[i]->getInspectedType() == type) {
 					return availableInspectors[i]; // TODO switch to having one inspector instance per component for more flexibility
 				}

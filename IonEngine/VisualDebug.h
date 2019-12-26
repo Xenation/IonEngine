@@ -51,20 +51,20 @@ namespace IonEngine {
 		static Mesh* wireMesh;
 		static Mesh* solidMesh;
 		static Mesh* sphereMesh;
-		static unsigned int wireVerticesIndex;
-		static unsigned int wireIndicesIndex;
-		static unsigned int solidVerticesIndex;
-		static unsigned int solidIndicesIndex;
+		static u32 wireVerticesIndex;
+		static u32 wireIndicesIndex;
+		static u32 solidVerticesIndex;
+		static u32 solidIndicesIndex;
 		static SimpleList<MeshCall> meshCalls;
-		static unsigned int ltwMatrixLocation;
+		static u32 ltwMatrixLocation;
 
 		static void initialize();
 		static void initializeMaterials();
 		static void initializeMeshes();
 
 		static void addWireVertex(Vec3f pos, Color col);
-		static void addWireIndex(int index);
+		static void addWireIndex(u32 index);
 		static void addSolidVertex(const Vec3f& pos, const Color& col);
-		static void addSolidIndex(int index);
+		static void addSolidIndex(u32 index);
 	};
 }

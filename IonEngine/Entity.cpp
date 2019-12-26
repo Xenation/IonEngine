@@ -32,8 +32,8 @@ Entity::Entity(std::string name, bool hasTransform)
 Entity::~Entity() {
 	isDying = true;
 	Engine::entityManager->unregisterEntity(this);
-	unsigned int deletedCount = 0;
-	for (unsigned int i = 0; i < components.capacity; i++) {
+	u32 deletedCount = 0;
+	for (u32 i = 0; i < components.capacity; i++) {
 		if (deletedCount == components.count) break;
 		if (components[i] == nullptr) continue;
 		if (components[i]->isEnabled()) {
@@ -52,8 +52,8 @@ Entity::~Entity() {
 }
 
 void Entity::updateComponents() {
-	unsigned int updated = 0;
-	for (unsigned int i = 0; i < components.capacity; i++) {
+	u32 updated = 0;
+	for (u32 i = 0; i < components.capacity; i++) {
 		if (updated == components.count) break;
 		if (components[i] == nullptr || !components[i]->isEnabled()) continue;
 		components[i]->onUpdate();
@@ -66,8 +66,8 @@ void Entity::replaceTransformPointers(Transform* nTransform) {
 		delete transform;
 	}
 	transform = nTransform;
-	unsigned int updated = 0;
-	for (unsigned int i = 0; i < components.capacity; i++) {
+	u32 updated = 0;
+	for (u32 i = 0; i < components.capacity; i++) {
 		if (updated == components.count) break;
 		if (components[i] == nullptr) continue;
 		components[i]->transform = transform;
@@ -87,7 +87,7 @@ void Entity::setParent(Entity* parent) {
 	parentChangeNotifyChildren();
 }
 
-Entity* Entity::getChild(unsigned int index) {
+Entity* Entity::getChild(u32 index) {
 	if (index < 0 || index >= children.count) return nullptr;
 	return children[index];
 }
@@ -96,9 +96,9 @@ void Entity::addChild(Entity* child) {
 	child->childIndex = children.add(child);
 }
 
-void Entity::removeChild(unsigned int index) {
+void Entity::removeChild(u32 index) {
 	children.removeAt(index);
-	for (unsigned int i = index; i < children.count; i++) {
+	for (u32 i = index; i < children.count; i++) {
 		children[i]->childIndex--;
 	}
 }
@@ -107,13 +107,13 @@ void Entity::parentChangeNotifyChildren() {
 	if (transform != nullptr) {
 		transform->parentChanged();
 	}
-	for (unsigned int i = 0; i < children.count; i++) {
+	for (u32 i = 0; i < children.count; i++) {
 		children[i]->parentChangeNotifyChildren();
 	}
 }
 
 void Entity::ltwChangeNotifyChildren() {
-	for (unsigned int i = 0; i < children.count; i++) {
+	for (u32 i = 0; i < children.count; i++) {
 		children[i]->parentChangeNotifyChildren();
 	}
 }

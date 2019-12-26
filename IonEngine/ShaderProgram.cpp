@@ -15,7 +15,7 @@ using namespace IonEngine;
 namespace fs = std::filesystem;
 
 ShaderProgram** ShaderProgram::shaders = nullptr;
-uint ShaderProgram::shaderCount = 0;
+u32 ShaderProgram::shaderCount = 0;
 Pipeline* ShaderProgram::defaultPipeline = nullptr;
 
 void ShaderProgram::initializeAll(Pipeline* pipeline) {
@@ -34,7 +34,7 @@ void ShaderProgram::initializeAll(Pipeline* pipeline) {
 	}
 	Debug::log("ShaderInit", "Found " + std::to_string(shaderCount) + " potential shaders:");
 	shaders = new ShaderProgram*[shaderCount];
-	uint index = 0;
+	u32 index = 0;
 	for (fs::directory_entry entry : fs::directory_iterator(SHADER_DIRECTORY)) {
 		if (!entry.is_directory()) continue;
 		if (fs::exists(entry / fs::path("cs.glsl"))) continue; // Skip compute shaders
@@ -47,13 +47,13 @@ void ShaderProgram::initializeAll(Pipeline* pipeline) {
 
 void ShaderProgram::reloadAll() {
 	Debug::log("==== Shaders Reload ====");
-	for (uint i = 0; i < shaderCount; i++) {
+	for (u32 i = 0; i < shaderCount; i++) {
 		shaders[i]->reload();
 	}
 }
 
 ShaderProgram* ShaderProgram::find(std::string name) {
-	for (uint i = 0; i < shaderCount; i++) {
+	for (u32 i = 0; i < shaderCount; i++) {
 		ShaderProgram* shader = shaders[i];
 		if (shader->name == name) {
 			return shader;
@@ -82,7 +82,7 @@ ShaderProgram::~ShaderProgram() {
 		unload();
 	}
 	if (specializedPrograms != nullptr) {
-		for (uint i = 0; i < specializedProgramsCount; i++) {
+		for (u32 i = 0; i < specializedProgramsCount; i++) {
 			delete specializedPrograms[i];
 		}
 		delete[] specializedPrograms;
@@ -107,7 +107,7 @@ void ShaderProgram::load() {
 	} else {
 		specializedProgramsCount = info->passCount;
 		specializedPrograms = new SpecializedShaderProgram*[specializedProgramsCount];
-		for (uint i = 0; i < specializedProgramsCount; i++) {
+		for (u32 i = 0; i < specializedProgramsCount; i++) {
 			specializedPrograms[i] = new SpecializedShaderProgram(this, defaultPipeline->getRenderPass(info->passNames[i]));
 			specializedPrograms[i]->load((reader->vsSources == nullptr) ? nullptr : reader->vsSources[i].source, (reader->tcsSources == nullptr) ? nullptr : reader->tcsSources[i].source, (reader->tesSources == nullptr) ? nullptr : reader->tesSources[i].source, (reader->gsSources == nullptr) ? nullptr : reader->gsSources[i].source, (reader->fsSources == nullptr) ? nullptr : reader->fsSources[i].source);
 		}
@@ -125,20 +125,20 @@ void ShaderProgram::reload() {
 	
 	if (reader->programInfo->passCount != info->passCount) {
 		if (specializedPrograms != nullptr) { // TODO avoid deleting specialized programs that already existed
-			for (uint i = 0; i < specializedProgramsCount; i++) {
+			for (u32 i = 0; i < specializedProgramsCount; i++) {
 				delete specializedPrograms[i];
 			}
 			delete[] specializedPrograms;
 		}
 		specializedProgramsCount = info->passCount;
 		specializedPrograms = new SpecializedShaderProgram*[specializedProgramsCount];
-		for (uint i = 0; i < specializedProgramsCount; i++) {
+		for (u32 i = 0; i < specializedProgramsCount; i++) {
 			specializedPrograms[i] = new SpecializedShaderProgram(this, defaultPipeline->getRenderPass(info->passNames[i]));
 			specializedPrograms[i]->load((reader->vsSources == nullptr) ? nullptr : reader->vsSources[i].source, (reader->tcsSources == nullptr) ? nullptr : reader->tcsSources[i].source, (reader->tesSources == nullptr) ? nullptr : reader->tesSources[i].source, (reader->gsSources == nullptr) ? nullptr : reader->gsSources[i].source, (reader->fsSources == nullptr) ? nullptr : reader->fsSources[i].source);
 		}
 	} else {
 		info = reader->programInfo;
-		for (uint i = 0; i < specializedProgramsCount; i++) {
+		for (u32 i = 0; i < specializedProgramsCount; i++) {
 			specializedPrograms[i]->reload((reader->vsSources == nullptr) ? nullptr : reader->vsSources[i].source, (reader->tcsSources == nullptr) ? nullptr : reader->tcsSources[i].source, (reader->tesSources == nullptr) ? nullptr : reader->tesSources[i].source, (reader->gsSources == nullptr) ? nullptr : reader->gsSources[i].source, (reader->fsSources == nullptr) ? nullptr : reader->fsSources[i].source);
 		}
 	}
@@ -148,7 +148,7 @@ void ShaderProgram::reload() {
 
 void ShaderProgram::unload() {
 	if (!loaded) return;
-	for (uint i = 0; i < specializedProgramsCount; i++) {
+	for (u32 i = 0; i < specializedProgramsCount; i++) {
 		specializedPrograms[i]->unload();
 	}
 	loaded = false;
@@ -176,7 +176,7 @@ SpecializedShaderProgram* ShaderProgram::getSpecializedProgram(std::string rende
 }
 
 SpecializedShaderProgram* ShaderProgram::getSpecializedProgram(RenderPass* renderPass) {
-	for (uint i = 0; i < specializedProgramsCount; i++) {
+	for (u32 i = 0; i < specializedProgramsCount; i++) {
 		if (specializedPrograms[i]->getRenderPass() == renderPass) {
 			return specializedPrograms[i];
 		}

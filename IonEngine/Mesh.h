@@ -13,46 +13,46 @@ namespace IonEngine {
 			Force,
 		};
 
-		static unsigned int triangleCount;
+		static u32 triangleCount;
 
-		Mesh(int vCount, int iCount);
-		Mesh(std::string name, int vCount, int iCount);
+		Mesh(u32 vCount, u32 iCount);
+		Mesh(std::string name, u32 vCount, u32 iCount);
 		~Mesh();
 
-		void setAttributesDefinition(int count, int* sizes);
-		void setAttributesDefinition(int count, int* sizes, GLenum* types);
-		void setAttribute(int index, signed char* values);
-		void setAttribute(int index, char* values);
-		void setAttribute(int index, short* values);
-		void setAttribute(int index, unsigned short* values);
-		void setAttribute(int index, int* values);
-		void setAttribute(int index, unsigned int* values);
-		void setAttribute(int index, float* values);
-		void setAttribute(int index, double* values);
-		void setAttributeData(int index, char* bytes);
-		void setAttributeElement(int attrIndex, int elemIndex, signed char value);
-		void setAttributeElement(int attrIndex, int elemIndex, char value);
-		void setAttributeElement(int attrIndex, int elemIndex, short value);
-		void setAttributeElement(int attrIndex, int elemIndex, unsigned short value);
-		void setAttributeElement(int attrIndex, int elemIndex, int value);
-		void setAttributeElement(int attrIndex, int elemIndex, unsigned int value);
-		void setAttributeElement(int attrIndex, int elemIndex, float value);
-		void setAttributeElement(int attrIndex, int elemIndex, double value);
-		void setAttributeElement(int attrIndex, int elemIndex, Vec2i value);
-		void setAttributeElement(int attrIndex, int elemIndex, Vec3i value);
-		void setAttributeElement(int attrIndex, int elemIndex, Vec4i value);
-		void setAttributeElement(int attrIndex, int elemIndex, Vec2f value);
-		void setAttributeElement(int attrIndex, int elemIndex, Vec3f value);
-		void setAttributeElement(int attrIndex, int elemIndex, Vec4f value);
-		void setAttributeElementData(int attrIndex, int elemIndex, unsigned char* bytes);
-		void setIndices(unsigned int* indices);
-		void setIndex(unsigned int indexIndex, unsigned int index);
+		void setAttributesDefinition(u32 count, u32* sizes);
+		void setAttributesDefinition(u32 count, u32* sizes, GLenum* types);
+		void setAttribute(u32 index, i8* values);
+		void setAttribute(u32 index, u8* values);
+		void setAttribute(u32 index, i16* values);
+		void setAttribute(u32 index, u16* values);
+		void setAttribute(u32 index, i32* values);
+		void setAttribute(u32 index, u32* values);
+		void setAttribute(u32 index, float* values);
+		void setAttribute(u32 index, double* values);
+		void setAttributeData(u32 index, u8* bytes);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, i8 value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, u8 value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, i16 value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, u16 value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, i32 value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, u32 value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, float value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, double value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, Vec2i value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, Vec3i value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, Vec4i value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, Vec2f value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, Vec3f value);
+		void setAttributeElement(u32 attrIndex, u32 elemIndex, Vec4f value);
+		void setAttributeElementData(u32 attrIndex, u32 elemIndex, u8* bytes);
+		void setIndices(u32* indices);
+		void setIndex(u32 indexIndex, u32 index);
 		void setTopology(GLenum topology);
 		void setUsageHint(GLenum usage);
 		void setName(std::string n);
-		void resize(unsigned int vCount, unsigned int iCount, bool copy = true, ResizeMode mode = ResizeMode::Force);
+		void resize(u32 vCount, u32 iCount, bool copy = true, ResizeMode mode = ResizeMode::Force);
 		void reverseWindingOrder();
-		void computeTangents(unsigned int posAttrIndex, unsigned int uvAttrIndex, unsigned int tanAttrIndex);
+		void computeTangents(u32 posAttrIndex, u32 uvAttrIndex, u32 tanAttrIndex);
 		void recalculateBounds();
 		void recalculateBoundsFromIndices();
 
@@ -62,18 +62,18 @@ namespace IonEngine {
 		void deleteFromGL();
 		void render() const;
 
-		inline unsigned int getVertexCount() const { return vertexCount; }
-		inline unsigned int getIndexCount() const { return indexCount; }
-		inline void setDrawnIndexCount(int drawnCount) { drawnIndexCount = drawnCount; }
-		inline int getDrawnIndexCount() const { return drawnIndexCount; }
+		inline u32 getVertexCount() const { return vertexCount; }
+		inline u32 getIndexCount() const { return indexCount; }
+		inline void setDrawnIndexCount(i32 drawnCount) { drawnIndexCount = drawnCount; }
+		inline i32 getDrawnIndexCount() const { return drawnIndexCount; }
 		inline bool isLoadedToGL() const { return loadedToGL; }
 		inline bool isCachedInLocal() const { return cachedInLocal; }
 		inline GLenum getTopology() const { return topology; }
 		inline std::string getName() const { return name; }
 		inline Boxf getBounds() const { return bounds; }
 
-		void* getAttributePointer(int attrIndex, int& stride) const;
-		inline unsigned int* getIndicesPointer() const { return indices; }
+		u8* getAttributePointer(u32 attrIndex, u32& stride) const;
+		inline u32* getIndicesPointer() const { return indices; }
 
 	private:
 		std::string name;
@@ -82,20 +82,20 @@ namespace IonEngine {
 		GLuint vboIndices = 0;
 		bool loadedToGL = false;
 		bool cachedInLocal = false;
-		int attributeCount;
-		int* attributeSizes = nullptr;
+		u32 attributeCount;
+		u32* attributeSizes = nullptr;
 		GLenum* attributeTypes = nullptr;
-		unsigned int* attributeByteOffsets = nullptr;
-		int vertexByteSize;
-		unsigned int vertexCount;
-		void* vertices = nullptr;
-		unsigned int indexCount;
-		unsigned int* indices = nullptr;
-		int drawnIndexCount = -1; // -1 means draw all
+		u32* attributeByteOffsets = nullptr;
+		u32 vertexByteSize;
+		u32 vertexCount;
+		u8* vertices = nullptr;
+		u32 indexCount;
+		u32* indices = nullptr;
+		i32 drawnIndexCount = -1; // -1 means draw all
 		GLenum topology = GL_TRIANGLES;
 		GLenum usage = GL_STATIC_DRAW;
-		unsigned int loadedVertexBufferSize = 0;
-		unsigned int loadedIndexBufferSize = 0;
+		u32 loadedVertexBufferSize = 0;
+		u32 loadedIndexBufferSize = 0;
 		Boxf bounds = Boxf(Vec3f::zero, Vec3f::zero);
 
 		void updateLabel();

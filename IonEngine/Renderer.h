@@ -21,14 +21,14 @@ namespace IonEngine {
 		Boxf getWorldBounds() { return worldBounds; }
 		void setWorldBounds(Boxf bounds) { worldBounds = bounds; }
 
-		unsigned int getID() { return id; }
+		u32 getID() { return id; }
 
 	protected:
 		Material* material = nullptr;
 		Boxf worldBounds = Boxf(Vec3f::nan, Vec3f::nan);
 
 	private:
-		unsigned int id;
-		unsigned int matID;
+		u32 id;
+		u32 matID;
 	};
 }

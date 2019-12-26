@@ -44,7 +44,7 @@ Texture* Texture::copy() {
 	if (textureData != nullptr) {
 		texture->desc = desc;
 		// samples are 0 if texture has local data
-		texture->setTextureData(new unsigned char[textureDataSize], textureDataSize, desc.format, desc.internalFormat);
+		texture->setTextureData(new u8[textureDataSize], textureDataSize, desc.format, desc.internalFormat);
 	} else {
 		texture->createEmpty(desc);
 	}
@@ -61,11 +61,11 @@ void Texture::createEmpty(Descriptor descriptor) {
 	desc = descriptor;
 	if (desc.multisamples == 0 && desc.allocateLocal) {
 		textureDataSize = glFormatByteSize(desc.format, desc.width * desc.height);
-		textureData = new unsigned char[textureDataSize];
+		textureData = new u8[textureDataSize];
 	}
 }
 
-void Texture::createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int multisamples, bool noalloc, bool mipmapped, float anisotropy) {
+void Texture::createEmpty(u32 width, u32 height, GLenum format, GLenum internalFormat, u32 multisamples, bool noalloc, bool mipmapped, float anisotropy) {
 	if (cachedInLocal) {
 		deleteLocal();
 	}
@@ -81,7 +81,7 @@ void Texture::createEmpty(unsigned int width, unsigned int height, GLenum format
 		desc.target = GL_TEXTURE_2D_MULTISAMPLE;
 	} else if (desc.allocateLocal) {
 		textureDataSize = glFormatByteSize(desc.format, desc.width * desc.height);
-		textureData = new unsigned char[textureDataSize];
+		textureData = new u8[textureDataSize];
 	}
 }
 
@@ -125,7 +125,7 @@ void Texture::loadFromFile(const char* filePath, bool mipmapped, float anisotrop
 
 void Texture::combineTextures(Texture* rTex, Texture* gTex, Texture* bTex, Texture* aTex) {
 	if (rTex == nullptr) return;
-	int channelCount = 1;
+	i32 channelCount = 1;
 	desc = rTex->desc;
 	desc.format = GL_RED;
 	desc.internalFormat = GL_R8;
@@ -154,14 +154,14 @@ void Texture::combineTextures(Texture* rTex, Texture* gTex, Texture* bTex, Textu
 		}
 	}
 	textureDataSize = rTex->desc.width * rTex->desc.height * channelCount;
-	textureData = new unsigned char[textureDataSize];
+	textureData = new u8[textureDataSize];
 
 	Texture* channelTextures[4] {rTex, gTex, bTex, aTex};
-	unsigned int writtenChannelIndex = 0;
-	for (int ci = 0; ci < 4; ci++) {
+	u32 writtenChannelIndex = 0;
+	for (u32 ci = 0; ci < 4; ci++) {
 		if (channelTextures[ci] == nullptr) continue;
-		for (unsigned int pi = 0; pi < desc.width * desc.height; pi++) {
-			unsigned int otherChannelCount = glFormatChannelCount(channelTextures[ci]->desc.format);
+		for (u32 pi = 0; pi < desc.width * desc.height; pi++) {
+			u32 otherChannelCount = glFormatChannelCount(channelTextures[ci]->desc.format);
 			textureData[pi * channelCount + writtenChannelIndex] = channelTextures[ci]->textureData[pi * otherChannelCount];
 		}
 		writtenChannelIndex++;
@@ -170,7 +170,7 @@ void Texture::combineTextures(Texture* rTex, Texture* gTex, Texture* bTex, Textu
 	cachedInLocal = true;
 }
 
-void Texture::setTextureData(unsigned char* data, unsigned int dataSize, GLenum format, GLenum internalFormat) {
+void Texture::setTextureData(u8* data, u32 dataSize, GLenum format, GLenum internalFormat) {
 	textureData = data;
 	textureDataSize = dataSize;
 	desc.internalFormat = internalFormat;
@@ -183,9 +183,9 @@ void Texture::fillWithColor(Color color) {
 		Debug::logError("Texture", "Tried filling an unsupported format!");
 		return;
 	}
-	unsigned int channelCount = glFormatChannelCount(desc.format);
+	u32 channelCount = glFormatChannelCount(desc.format);
 	// Assumes each channel uses exactly a byte
-	for (unsigned int pi = 0; pi < desc.width * desc.height; pi++) {
+	for (u32 pi = 0; pi < desc.width * desc.height; pi++) {
 		color.toBytesRGBA8(textureData + pi * channelCount);
 		//textureData[pi * channelCount] = color.toInt();
 	}

@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "XTypes.h"
 #include "GLUtils.h"
 
 
@@ -45,7 +44,7 @@ namespace IonEngine {
 		unsigned int arraySize = 0;
 
 	public:
-		ShaderNativeTypeArrayFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, unsigned int arraySize) : ShaderNativeTypeFieldInfo(fieldType, name, type), arraySize(arraySize) {}
+		ShaderNativeTypeArrayFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, u32 arraySize) : ShaderNativeTypeFieldInfo(fieldType, name, type), arraySize(arraySize) {}
 
 		inline virtual ShaderFieldInfo* copy() override {
 			return new ShaderNativeTypeArrayFieldInfo(fieldType, std::string(name), type, arraySize);
@@ -53,10 +52,10 @@ namespace IonEngine {
 	};
 
 	struct ShaderInLayoutFieldInfo : public ShaderNativeTypeFieldInfo {
-		uint location = 0;
+		u32 location = 0;
 
 	public:
-		ShaderInLayoutFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, uint location) : ShaderNativeTypeFieldInfo(fieldType, name, type), location(location) {}
+		ShaderInLayoutFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, u32 location) : ShaderNativeTypeFieldInfo(fieldType, name, type), location(location) {}
 
 		inline virtual ShaderFieldInfo* copy() override {
 			return new ShaderInLayoutFieldInfo(fieldType, std::string(name), type, location);
@@ -64,10 +63,10 @@ namespace IonEngine {
 	};
 
 	struct ShaderUniformLayoutFieldInfo : public ShaderNativeTypeFieldInfo {
-		uint binding = 0;
+		u32 binding = 0;
 
 	public:
-		ShaderUniformLayoutFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, uint binding) : ShaderNativeTypeFieldInfo(fieldType, name, type), binding(binding) {}
+		ShaderUniformLayoutFieldInfo(ShaderFieldType fieldType, std::string name, GLSLType type, u32 binding) : ShaderNativeTypeFieldInfo(fieldType, name, type), binding(binding) {}
 
 		inline virtual ShaderFieldInfo* copy() override {
 			return new ShaderUniformLayoutFieldInfo(fieldType, name, type, binding);
@@ -76,15 +75,15 @@ namespace IonEngine {
 
 	struct ShaderUniformBufferLayoutFieldInfo : public ShaderFieldInfo {
 		UniformLayoutType layoutType = UniformLayoutType::STD140;
-		uint binding = 0;
+		u32 binding = 0;
 		ShaderFieldInfo** subFields = nullptr;
-		uint subFieldCount = 0;
+		u32 subFieldCount = 0;
 
 	public:
-		ShaderUniformBufferLayoutFieldInfo(ShaderFieldType fieldType, std::string name, UniformLayoutType layoutType, uint binding) : ShaderFieldInfo(fieldType, name), layoutType(layoutType), binding(binding) {}
+		ShaderUniformBufferLayoutFieldInfo(ShaderFieldType fieldType, std::string name, UniformLayoutType layoutType, u32 binding) : ShaderFieldInfo(fieldType, name), layoutType(layoutType), binding(binding) {}
 		~ShaderUniformBufferLayoutFieldInfo() {
 			if (subFields != nullptr) {
-				for (uint i = 0; i < subFieldCount; i++) {
+				for (u32 i = 0; i < subFieldCount; i++) {
 					delete subFields[i];
 				}
 				delete[] subFields;
@@ -95,7 +94,7 @@ namespace IonEngine {
 			ShaderUniformBufferLayoutFieldInfo* c = new ShaderUniformBufferLayoutFieldInfo(fieldType, std::string(name), layoutType, binding);
 			c->subFields = new ShaderFieldInfo*[subFieldCount];
 			c->subFieldCount = subFieldCount;
-			for (uint i = 0; i < subFieldCount; i++) {
+			for (u32 i = 0; i < subFieldCount; i++) {
 				c->subFields[i] = subFields[i]->copy();
 			}
 			return c;
@@ -103,7 +102,7 @@ namespace IonEngine {
 
 		inline GLSLType* getMembersTypes() {
 			GLSLType* types = new GLSLType[subFieldCount];
-			for (uint i = 0; i < subFieldCount; i++) {
+			for (u32 i = 0; i < subFieldCount; i++) {
 				types[i] = ((ShaderNativeTypeFieldInfo*) subFields[i])->type;
 			}
 			return types;
@@ -114,7 +113,7 @@ namespace IonEngine {
 	// ---- Meta Info ----
 	struct ShaderFileMetaInfo { // TODO rename
 		ShaderFieldInfo** shaderFields = nullptr;
-		uint shaderFieldCount = 0;
+		u32 shaderFieldCount = 0;
 
 	public:
 		ShaderFileMetaInfo();
@@ -123,9 +122,9 @@ namespace IonEngine {
 
 	struct ShaderProgramMetaInfo {
 		std::string* passNames = nullptr;
-		uint passCount = 0;
+		u32 passCount = 0;
 		ShaderFieldInfo** programFields = nullptr;
-		uint programFieldCount = 0;
+		u32 programFieldCount = 0;
 
 	public:
 		ShaderProgramMetaInfo();

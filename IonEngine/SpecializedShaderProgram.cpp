@@ -66,8 +66,8 @@ void SpecializedShaderProgram::reload(const char* vsSource[3], const char* tcsSo
 		unload();
 	}
 	load(vsSource, tcsSource, tesSource, gsSource, fsSource);
-	uint reloadedMaterials = 0;
-	for (uint i = 0; i < materials.capacity && reloadedMaterials < materials.count; reloadedMaterials++) {
+	u32 reloadedMaterials = 0;
+	for (u32 i = 0; i < materials.capacity && reloadedMaterials < materials.count; reloadedMaterials++) {
 		if (materials[i] == nullptr) continue;
 		materials[i]->reload();
 		reloadedMaterials++;
@@ -128,10 +128,10 @@ GLuint SpecializedShaderProgram::getUniformLocation(std::string str) {
 void SpecializedShaderProgram::loadBool(GLuint location, bool b) {
 	glUniform1i(location, (int) b);
 }
-void SpecializedShaderProgram::loadInt(GLuint location, int i) {
+void SpecializedShaderProgram::loadInt(GLuint location, i32 i) {
 	glUniform1i(location, i);
 }
-void SpecializedShaderProgram::loadUInt(GLuint location, uint u) {
+void SpecializedShaderProgram::loadUInt(GLuint location, u32 u) {
 	glUniform1ui(location, u);
 }
 void SpecializedShaderProgram::loadFloat(GLuint location, float f) {
@@ -233,7 +233,7 @@ GLuint SpecializedShaderProgram::loadShaderFromSource(GLenum type, const char* s
 	return loadShaderFromSourceArray(type, &src, 1, silent);
 }
 
-GLuint SpecializedShaderProgram::loadShaderFromSourceArray(GLenum type, const char** src, uint srcPiecesCount, bool silent) {
+GLuint SpecializedShaderProgram::loadShaderFromSourceArray(GLenum type, const char** src, u32 srcPiecesCount, bool silent) {
 	GLuint shader = 0;
 	GLsizei logSize = 0;
 	GLint compileStatus = GL_TRUE;

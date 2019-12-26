@@ -26,7 +26,7 @@ using namespace IonEngine;
 
 
 
-Pipeline::Pipeline(int width, int height, LightManager* lightManager)
+Pipeline::Pipeline(u32 width, u32 height, LightManager* lightManager)
 	: lightManager(lightManager), renderers(RENDERERS_START_SIZE, RENDERERS_INCREASE), cameras(CAMERAS_START_SIZE, CAMERAS_INCREASE), renderPasses(RENDERPASSES_START_SIZE, RENDERERS_INCREASE) {
 	Texture::initializeDefaults();
 
@@ -43,7 +43,7 @@ Pipeline::Pipeline(int width, int height, LightManager* lightManager)
 	SpecializedShaderProgram::initialize(this);
 	ShaderProgram::initializeAll(this);
 
-	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
+	for (u32 passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		renderPasses[passIndex]->onShadersInitialized();
 	}
 
@@ -71,12 +71,12 @@ void Pipeline::render() {
 	}
 	globalUniformBuffer->updateLayout(0);
 
-	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
+	for (u32 passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		renderPasses[passIndex]->prepareFrame();
 	}
 
-	unsigned int rendered = 0;
-	for (unsigned int i = 0; i < cameras.capacity && rendered < cameras.count; i++) {
+	u32 rendered = 0;
+	for (u32 i = 0; i < cameras.capacity && rendered < cameras.count; i++) {
 		if (cameras[i] == nullptr) continue;
 		render(cameras[i]);
 		rendered++;
@@ -86,9 +86,9 @@ void Pipeline::render() {
 void Pipeline::render(Camera* camera) {
 	// Frustum Culling
 	Frustum3f cameraFrustum = camera->getFrustum();
-	SimpleSet<unsigned int> visibleRenderers(32, 32);
-	unsigned int counted = 0;
-	for (unsigned int i = 0; i < renderers.capacity && counted < renderers.count; i++) {
+	SimpleSet<u32> visibleRenderers(32, 32);
+	u32 counted = 0;
+	for (u32 i = 0; i < renderers.capacity && counted < renderers.count; i++) {
 		if (renderers[i] == nullptr) continue;
 		if (cameraFrustum.intersect(renderers[i]->getWorldBounds()) || renderers[i]->getWorldBounds().min == Vec3f::nan || renderers[i]->getWorldBounds().max == Vec3f::nan) {
 			visibleRenderers.add(i);
@@ -107,7 +107,7 @@ void Pipeline::render(Camera* camera) {
 	globalUniformBuffer->getLayout(1).setMember(7, samples);
 	globalUniformBuffer->updateLayout(1);
 
-	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
+	for (u32 passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		RenderPass* renderPass = renderPasses[passIndex];
 		#ifdef _DEBUG // May be overkill
 		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei) renderPass->name.length(), renderPass->name.c_str());
@@ -120,41 +120,41 @@ void Pipeline::render(Camera* camera) {
 	
 }
 
-void Pipeline::resizeFrameBuffer(int width, int height) {
+void Pipeline::resizeFrameBuffer(u32 width, u32 height) {
 	this->width = width;
 	this->height = height;
 	glViewport(0, 0, width, height);
 	aspectRatio = ((float) width) / ((float) height);
-	unsigned int adjusted = 0;
-	for (unsigned int i = 0; i < cameras.capacity && adjusted < cameras.count; i++) {
+	u32 adjusted = 0;
+	for (u32 i = 0; i < cameras.capacity && adjusted < cameras.count; i++) {
 		if (cameras[i] == nullptr) continue;
 		cameras[i]->setAspect(aspectRatio);
 		adjusted++;
 	}
-	for (unsigned int passIndex = 0; passIndex < renderPasses.count; passIndex++) {
+	for (u32 passIndex = 0; passIndex < renderPasses.count; passIndex++) {
 		RenderPass* renderPass = renderPasses[passIndex];
 		renderPass->onResize(width, height);
 	}
 }
 
-unsigned int Pipeline::registerRenderer(Renderer* renderer) {
+u32 Pipeline::registerRenderer(Renderer* renderer) {
 	return renderers.add(renderer);
 }
 
-void Pipeline::unregisterRenderer(unsigned int id) {
+void Pipeline::unregisterRenderer(u32 id) {
 	renderers.remove(id);
 }
 
-unsigned int Pipeline::registerCamera(Camera* camera) {
+u32 Pipeline::registerCamera(Camera* camera) {
 	return cameras.add(camera);
 }
 
-void Pipeline::unregisterCamera(unsigned int id) {
+void Pipeline::unregisterCamera(u32 id) {
 	cameras.remove(id);
 }
 
 RenderPass* Pipeline::getRenderPass(std::string name) {
-	for (unsigned int i = 0; i < renderPasses.count; i++) {
+	for (u32 i = 0; i < renderPasses.count; i++) {
 		if (renderPasses[i]->name == name) {
 			return renderPasses[i];
 		}

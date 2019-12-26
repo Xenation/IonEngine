@@ -29,7 +29,7 @@ namespace IonEngine {
 		void setAspect(float aspect);
 
 	private:
-		unsigned int id;
+		u32 id;
 
 		Frustum3f frustum = Frustum3f(0.1f, 1000.0f, 100.0f, 1.0f);
 		bool frustumExpired = true;

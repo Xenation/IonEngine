@@ -40,14 +40,14 @@ namespace IonEngine {
 	private:
 		Mesh* mesh = nullptr;
 		bool isEmitting = false;
-		unsigned int maxParticles = 0;
+		u32 maxParticles = 0;
 		float emissionInterval = 0;
 		float lastEmissionTime = 0;
 
-		unsigned int modelMatrixLocation = 0;
+		u32 modelMatrixLocation = 0;
 
 		void createParticle(const Vec3f& pos, const Vec3f& vel, float lifetime);
-		void resizeParticleData(unsigned int nCount);
+		void resizeParticleData(u32 nCount);
 		void updateMesh();
 	};
 }

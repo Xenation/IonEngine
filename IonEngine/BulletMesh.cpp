@@ -11,7 +11,7 @@ BulletMesh::~BulletMesh() {}
 
 
 void BulletMesh::getLockedVertexIndexBase(unsigned char** vertexbase, int& numverts, PHY_ScalarType& type, int& stride, unsigned char** indexbase, int& indexstride, int& numfaces, PHY_ScalarType& indicestype, int subpart) {
-	*vertexbase = (unsigned char*) mesh->getAttributePointer(0, stride); // TODO very unsafe, assumes position is at attribute index 0
+	*vertexbase = (unsigned char*) mesh->getAttributePointer(0, (u32&) stride); // TODO very unsafe, assumes position is at attribute index 0
 	numverts = mesh->getVertexCount();
 	type = PHY_ScalarType::PHY_FLOAT;
 	*indexbase = (unsigned char*) mesh->getIndicesPointer();
@@ -21,7 +21,7 @@ void BulletMesh::getLockedVertexIndexBase(unsigned char** vertexbase, int& numve
 }
 
 void BulletMesh::getLockedReadOnlyVertexIndexBase(const unsigned char** vertexbase, int& numverts, PHY_ScalarType& type, int& stride, const unsigned char** indexbase, int& indexstride, int& numfaces, PHY_ScalarType& indicestype, int subpart) const {
-	*vertexbase = (unsigned char*) mesh->getAttributePointer(0, stride); // TODO very unsafe, assumes position is at attribute index 0
+	*vertexbase = (unsigned char*) mesh->getAttributePointer(0, (u32&) stride); // TODO very unsafe, assumes position is at attribute index 0
 	numverts = mesh->getVertexCount();
 	type = PHY_ScalarType::PHY_FLOAT;
 	*indexbase = (unsigned char*) mesh->getIndicesPointer();

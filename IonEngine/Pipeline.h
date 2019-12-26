@@ -21,18 +21,18 @@ namespace IonEngine {
 		LightManager* lightManager; // Maybe hide
 		ShadowAtlas* shadowAtlas; // Maybe hide
 
-		Pipeline(int width, int height, LightManager* lightManager);
+		Pipeline(u32 width, u32 height, LightManager* lightManager);
 		Pipeline(const Pipeline&) = delete;
 		~Pipeline();
 
 		void render();
-		void resizeFrameBuffer(int width, int height);
+		void resizeFrameBuffer(u32 width, u32 height);
 		inline float getAspectRatio() { return aspectRatio; }
 
-		unsigned int registerRenderer(Renderer* renderer);
-		void unregisterRenderer(unsigned int id);
-		unsigned int registerCamera(Camera* camera);
-		void unregisterCamera(unsigned int id);
+		u32 registerRenderer(Renderer* renderer);
+		void unregisterRenderer(u32 id);
+		u32 registerCamera(Camera* camera);
+		void unregisterCamera(u32 id);
 
 		RenderPass* getRenderPass(std::string name);
 		HollowSet<Renderer*>* getRenderersSet() { return &renderers; } // Unsure
@@ -42,9 +42,9 @@ namespace IonEngine {
 		HollowSet<Camera*> cameras;
 		UniformBuffer* globalUniformBuffer;
 		float aspectRatio = 1.0f;
-		unsigned int width;
-		unsigned int height;
-		unsigned int samples = 4;
+		u32 width;
+		u32 height;
+		u32 samples = 4;
 
 		void render(Camera* camera);
 	};

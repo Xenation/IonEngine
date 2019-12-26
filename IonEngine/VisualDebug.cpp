@@ -13,11 +13,11 @@ using namespace IonEngine;
 #define SHADER_CODE_DEBUG_MESH_VS "#version 420 core\n#pragma pass opaque\nlayout (location = 0) in vec3 vp;\nlayout (std140, binding = 2) uniform CameraMatrices {\nmat4x4 projectionMatrix;\nmat4x4 invProjectionMatrix;\nmat4x4 viewMatrix;\nmat4x4 invViewMatrix;\n};\nuniform mat4x4 ltwMatrix;\nvoid main() { gl_Position = projectionMatrix * viewMatrix * ltwMatrix * vec4(vp, 1.0); }\n\0"
 #define SHADER_CODE_DEBUG_MESH_FS "#version 420 core\nlayout (std140, binding = 10) uniform Material {\nvec4 color;\n};\nout vec4 fc;\nvoid main() { fc = color; }\n\0"
 constexpr Vec3f icoSphereVertices[42] = {Vec3f(0.000000f, -0.500000f, 0.000000f), Vec3f(0.361804f, -0.223610f, 0.262863f), Vec3f(-0.138194f, -0.223610f, 0.425325f), Vec3f(-0.447213f, -0.223608f, 0.000000f), Vec3f(-0.138194f, -0.223610f, -0.425325f), Vec3f(0.361804f, -0.223610f, -0.262863f), Vec3f(0.138194f, 0.223610f, 0.425325f), Vec3f(-0.361804f, 0.223610f, 0.262863f), Vec3f(-0.361804f, 0.223610f, -0.262863f), Vec3f(0.138194f, 0.223610f, -0.425325f), Vec3f(0.447213f, 0.223608f, 0.000000f), Vec3f(0.000000f, 0.500000f, 0.000000f), Vec3f(-0.081228f, -0.425327f, 0.249998f), Vec3f(0.212661f, -0.425327f, 0.154506f), Vec3f(0.131434f, -0.262869f, 0.404506f), Vec3f(0.425324f, -0.262868f, 0.000000f), Vec3f(0.212661f, -0.425327f, -0.154506f), Vec3f(-0.262865f, -0.425326f, 0.000000f), Vec3f(-0.344095f, -0.262868f, 0.249998f), Vec3f(-0.081228f, -0.425327f, -0.249998f), Vec3f(-0.344095f, -0.262868f, -0.249998f), Vec3f(0.131434f, -0.262869f, -0.404506f), Vec3f(0.475529f, 0.000000f, 0.154506f), Vec3f(0.475529f, 0.000000f, -0.154506f), Vec3f(0.000000f, 0.000000f, 0.500000f), Vec3f(0.293893f, 0.000000f, 0.404508f), Vec3f(-0.475529f, 0.000000f, 0.154506f), Vec3f(-0.293893f, 0.000000f, 0.404508f), Vec3f(-0.293893f, 0.000000f, -0.404508f), Vec3f(-0.475529f, 0.000000f, -0.154506f), Vec3f(0.293893f, 0.000000f, -0.404508f), Vec3f(0.000000f, 0.000000f, -0.500000f), Vec3f(0.344095f, 0.262868f, 0.249998f), Vec3f(-0.131434f, 0.262869f, 0.404506f), Vec3f(-0.425324f, 0.262868f, 0.000000f), Vec3f(-0.131434f, 0.262869f, -0.404506f), Vec3f(0.344095f, 0.262868f, -0.249998f), Vec3f(0.081228f, 0.425327f, 0.249998f), Vec3f(0.262865f, 0.425326f, 0.000000f), Vec3f(-0.212661f, 0.425327f, 0.154506f), Vec3f(-0.212661f, 0.425327f, -0.154506f), Vec3f(0.081228f, 0.425327f, -0.249998f)};
-constexpr unsigned int icoSphereIndices[240] = {0, 12, 13, 1, 15, 13, 0, 17, 12, 0, 19, 17, 0, 16, 19, 1, 22, 15, 2, 24, 14, 3, 26, 18, 4, 28, 20, 5, 30, 21, 1, 25, 22, 2, 27, 24, 3, 29, 26, 4, 31, 28, 5, 23, 30, 6, 37, 32, 7, 39, 33, 8, 40, 34, 9, 41, 35, 10, 38, 36, 38, 11, 41, 38, 41, 36, 36, 41, 9, 41, 11, 40, 41, 40, 35, 35, 40, 8, 40, 11, 39, 40, 39, 34, 34, 39, 7, 39, 11, 37, 39, 37, 33, 33, 37, 6, 37, 11, 38, 37, 38, 32, 32, 38, 10, 23, 10, 36, 23, 36, 30, 30, 36, 9, 31, 9, 35, 31, 35, 28, 28, 35, 8, 29, 8, 34, 29, 34, 26, 26, 34, 7, 27, 7, 33, 27, 33, 24, 24, 33, 6, 25, 6, 32, 25, 32, 22, 22, 32, 10, 30, 9, 31, 30, 31, 21, 21, 31, 4, 28, 8, 29, 28, 29, 20, 20, 29, 3, 26, 7, 27, 26, 27, 18, 18, 27, 2, 24, 6, 25, 24, 25, 14, 14, 25, 1, 22, 10, 23, 22, 23, 15, 15, 23, 5, 16, 5, 21, 16, 21, 19, 19, 21, 4, 19, 4, 20, 19, 20, 17, 17, 20, 3, 17, 3, 18, 17, 18, 12, 12, 18, 2, 15, 5, 16, 15, 16, 13, 13, 16, 0, 12, 2, 14, 12, 14, 13, 13, 14, 1};
-constexpr unsigned int wireMeshVertexIncrease = 128;
-constexpr unsigned int wireMeshIndexIncrease = 128;
-constexpr unsigned int solidMeshVertexIncrease = 128;
-constexpr unsigned int solidMeshIndexIncrease = 128;
+constexpr u32 icoSphereIndices[240] = {0, 12, 13, 1, 15, 13, 0, 17, 12, 0, 19, 17, 0, 16, 19, 1, 22, 15, 2, 24, 14, 3, 26, 18, 4, 28, 20, 5, 30, 21, 1, 25, 22, 2, 27, 24, 3, 29, 26, 4, 31, 28, 5, 23, 30, 6, 37, 32, 7, 39, 33, 8, 40, 34, 9, 41, 35, 10, 38, 36, 38, 11, 41, 38, 41, 36, 36, 41, 9, 41, 11, 40, 41, 40, 35, 35, 40, 8, 40, 11, 39, 40, 39, 34, 34, 39, 7, 39, 11, 37, 39, 37, 33, 33, 37, 6, 37, 11, 38, 37, 38, 32, 32, 38, 10, 23, 10, 36, 23, 36, 30, 30, 36, 9, 31, 9, 35, 31, 35, 28, 28, 35, 8, 29, 8, 34, 29, 34, 26, 26, 34, 7, 27, 7, 33, 27, 33, 24, 24, 33, 6, 25, 6, 32, 25, 32, 22, 22, 32, 10, 30, 9, 31, 30, 31, 21, 21, 31, 4, 28, 8, 29, 28, 29, 20, 20, 29, 3, 26, 7, 27, 26, 27, 18, 18, 27, 2, 24, 6, 25, 24, 25, 14, 14, 25, 1, 22, 10, 23, 22, 23, 15, 15, 23, 5, 16, 5, 21, 16, 21, 19, 19, 21, 4, 19, 4, 20, 19, 20, 17, 17, 20, 3, 17, 3, 18, 17, 18, 12, 12, 18, 2, 15, 5, 16, 15, 16, 13, 13, 16, 0, 12, 2, 14, 12, 14, 13, 13, 14, 1};
+constexpr u32 wireMeshVertexIncrease = 128;
+constexpr u32 wireMeshIndexIncrease = 128;
+constexpr u32 solidMeshVertexIncrease = 128;
+constexpr u32 solidMeshIndexIncrease = 128;
 
 
 
@@ -29,12 +29,12 @@ Material* VisualDebug::debugMeshMaterial = nullptr;
 Mesh* VisualDebug::wireMesh = nullptr;
 Mesh* VisualDebug::solidMesh = nullptr;
 Mesh* VisualDebug::sphereMesh = nullptr;
-unsigned int VisualDebug::wireVerticesIndex = 0;
-unsigned int VisualDebug::wireIndicesIndex = 0;
-unsigned int VisualDebug::solidVerticesIndex = 0;
-unsigned int VisualDebug::solidIndicesIndex = 0;
+u32 VisualDebug::wireVerticesIndex = 0;
+u32 VisualDebug::wireIndicesIndex = 0;
+u32 VisualDebug::solidVerticesIndex = 0;
+u32 VisualDebug::solidIndicesIndex = 0;
 SimpleList<VisualDebug::MeshCall> VisualDebug::meshCalls(64, 64);
-unsigned int VisualDebug::ltwMatrixLocation = 0;
+u32 VisualDebug::ltwMatrixLocation = 0;
 
 
 void VisualDebug::drawLine(const Vec3f& from, const Vec3f& to, const Color& color) {
@@ -149,15 +149,15 @@ void VisualDebug::drawWireMesh(const Mesh* mesh, const Matrix4x4f& ltwMatrix, co
 		return;
 	}
 	initialize();
-	int stride = 0;
-	int vertexCount = mesh->getVertexCount();
-	unsigned char* vertices = (unsigned char*) mesh->getAttributePointer(0, stride);
-	for (int vi = 0; vi < vertexCount * stride; vi += stride) {
+	u32 stride = 0;
+	u32 vertexCount = mesh->getVertexCount();
+	u8* vertices = mesh->getAttributePointer(0, stride);
+	for (u32 vi = 0; vi < vertexCount * stride; vi += stride) {
 		addWireVertex(ltwMatrix.multPoint(*((Vec3f*) (vertices + vi))), color);
 	}
-	int indexCount = mesh->getIndexCount();
-	unsigned int* indices = mesh->getIndicesPointer();
-	for (int ii = 0; ii < indexCount; ii += 3) {
+	u32 indexCount = mesh->getIndexCount();
+	u32* indices = mesh->getIndicesPointer();
+	for (u32 ii = 0; ii < indexCount; ii += 3) {
 		addWireIndex(wireVerticesIndex - (vertexCount - indices[ii]));
 		addWireIndex(wireVerticesIndex - (vertexCount - indices[ii + 1]));
 		addWireIndex(wireVerticesIndex - (vertexCount - indices[ii + 1]));
@@ -186,12 +186,12 @@ void VisualDebug::drawWireDisk(const Vec3f& center, const Vec3f& normal, float r
 	right.normalize();
 	Vec3f up = normal.cross(right);
 	up.normalize();
-	const unsigned int subDivs = 32;
-	for (unsigned int i = 0; i < subDivs; i++) {
+	const u32 subDivs = 32;
+	for (u32 i = 0; i < subDivs; i++) {
 		float perim = (i / (float) subDivs) * IonEngine::Math::two_pi;
 		addWireVertex(center + cosf(perim) * radius * right + sinf(perim) * radius * up, color);
 	}
-	for (unsigned int i = 0; i < subDivs - 1; i++) {
+	for (u32 i = 0; i < subDivs - 1; i++) {
 		addWireIndex(wireVerticesIndex - i - 1);
 		addWireIndex(wireVerticesIndex - i - 2);
 	}
@@ -311,7 +311,7 @@ void VisualDebug::render() {
 
 	debugMeshMaterial->specializedProgram->use();
 	debugMeshMaterial->use();
-	for (unsigned int i = 0; i < meshCalls.count; i++) {
+	for (u32 i = 0; i < meshCalls.count; i++) {
 		debugMeshMaterial->setField(0, meshCalls[i].color.vec);
 		debugMeshMaterial->updateFields();
 		debugMeshMaterial->specializedProgram->loadMatrix4x4f(ltwMatrixLocation, meshCalls[i].transf);
@@ -356,26 +356,26 @@ void VisualDebug::initializeMaterials() {
 
 void VisualDebug::initializeMeshes() {
 	wireMesh = new Mesh("VD Wire Mesh", wireMeshVertexIncrease, wireMeshIndexIncrease);
-	wireMesh->setAttributesDefinition(2, new int[2]{3, 4}, new GLenum[2]{GL_FLOAT, GL_FLOAT}); // attr0: vertex pos, attr1: color
+	wireMesh->setAttributesDefinition(2, new u32[2]{3, 4}, new GLenum[2]{GL_FLOAT, GL_FLOAT}); // attr0: vertex pos, attr1: color
 	wireMesh->setDrawnIndexCount(0);
 	wireMesh->setUsageHint(GL_DYNAMIC_DRAW);
 	wireMesh->setTopology(GL_LINES);
 	wireMesh->uploadToGL();
 	solidMesh = new Mesh("VD Solid Mesh", wireMeshVertexIncrease, wireMeshIndexIncrease);
-	solidMesh->setAttributesDefinition(2, new int[2]{3, 4}, new GLenum[2]{GL_FLOAT, GL_FLOAT}); // attr0: vertex pos, attr1: color
+	solidMesh->setAttributesDefinition(2, new u32[2]{3, 4}, new GLenum[2]{GL_FLOAT, GL_FLOAT}); // attr0: vertex pos, attr1: color
 	solidMesh->setDrawnIndexCount(0);
 	solidMesh->setUsageHint(GL_DYNAMIC_DRAW);
 	solidMesh->uploadToGL();
 
 	sphereMesh = new Mesh("VD Sphere", 42, 240);
-	sphereMesh->setAttributesDefinition(1, new int[1]{3});
+	sphereMesh->setAttributesDefinition(1, new u32[1]{3});
 	sphereMesh->setAttribute(0, (float*) icoSphereVertices);
-	sphereMesh->setIndices((unsigned int*) icoSphereIndices);
+	sphereMesh->setIndices((u32*) icoSphereIndices);
 	sphereMesh->uploadToGL();
 }
 
 void VisualDebug::addWireVertex(Vec3f pos, Color col) {
-	unsigned int vertexCapacity = wireMesh->getVertexCount();
+	u32 vertexCapacity = wireMesh->getVertexCount();
 	if (wireVerticesIndex >= vertexCapacity) {
 		vertexCapacity += wireMeshVertexIncrease;
 		wireMesh->resize(vertexCapacity, wireMesh->getIndexCount(), true, Mesh::ResizeMode::GrowOrShrinkQuarter);
@@ -384,8 +384,8 @@ void VisualDebug::addWireVertex(Vec3f pos, Color col) {
 	wireMesh->setAttributeElement(1, wireVerticesIndex++, col.vec);
 }
 
-void VisualDebug::addWireIndex(int index) {
-	unsigned int indexCapacity = wireMesh->getIndexCount();
+void VisualDebug::addWireIndex(u32 index) {
+	u32 indexCapacity = wireMesh->getIndexCount();
 	if (wireIndicesIndex >= indexCapacity) {
 		indexCapacity += wireMeshIndexIncrease;
 		wireMesh->resize(wireMesh->getVertexCount(), indexCapacity, true, Mesh::ResizeMode::GrowOrShrinkQuarter);
@@ -395,7 +395,7 @@ void VisualDebug::addWireIndex(int index) {
 }
 
 void VisualDebug::addSolidVertex(const Vec3f& pos, const Color& col) {
-	unsigned int vertexCapacity = solidMesh->getVertexCount();
+	u32 vertexCapacity = solidMesh->getVertexCount();
 	if (solidVerticesIndex >= vertexCapacity) {
 		vertexCapacity += solidMeshVertexIncrease;
 		solidMesh->resize(vertexCapacity, solidMesh->getIndexCount(), true, Mesh::ResizeMode::GrowOrShrinkQuarter);
@@ -404,8 +404,8 @@ void VisualDebug::addSolidVertex(const Vec3f& pos, const Color& col) {
 	solidMesh->setAttributeElement(1, solidVerticesIndex++, col.vec);
 }
 
-void VisualDebug::addSolidIndex(int index) {
-	unsigned int indexCapacity = solidMesh->getIndexCount();
+void VisualDebug::addSolidIndex(u32 index) {
+	u32 indexCapacity = solidMesh->getIndexCount();
 	if (solidIndicesIndex >= indexCapacity) {
 		indexCapacity += solidMeshIndexIncrease;
 		solidMesh->resize(solidMesh->getVertexCount(), indexCapacity, true, Mesh::ResizeMode::GrowOrShrinkQuarter);

@@ -20,7 +20,7 @@ Skybox::Skybox() {
 	}
 
 	ShaderProgram* procSkyShader = ShaderProgram::find("procedural_sky");
-	unsigned int count;
+	u32 count;
 	SpecializedShaderProgram* procSkySpecShader = procSkyShader->getAllSpecializedPrograms(count)[0];
 	skyMaterial = new Material("Skybox", procSkySpecShader);
 }

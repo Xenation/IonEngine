@@ -8,12 +8,12 @@ namespace IonEngine {
 	public:
 		struct Descriptor {
 			bool allocateLocal = true;
-			unsigned int width = 32;
-			unsigned int height = 32;
+			u32 width = 32;
+			u32 height = 32;
 			GLenum format = GL_RGBA;
 			GLenum internalFormat = GL_RGBA8;
 			GLenum target = GL_TEXTURE_2D;
-			unsigned int multisamples = 0; // 0: no multisamples
+			u32 multisamples = 0; // 0: no multisamples
 			bool mipmapped = true;
 			float anisotropy = 1.0f;
 			GLenum minFilter = GL_LINEAR;
@@ -38,10 +38,10 @@ namespace IonEngine {
 
 		Texture* copy();
 		void createEmpty(Descriptor descriptor);
-		void createEmpty(unsigned int width, unsigned int height, GLenum format, GLenum internalFormat, unsigned int mulisamples = 0, bool noalloc = false, bool mipmapped = true, float anisotropy = 1.0f);
+		void createEmpty(u32 width, u32 height, GLenum format, GLenum internalFormat, u32 mulisamples = 0, bool noalloc = false, bool mipmapped = true, float anisotropy = 1.0f);
 		void loadFromFile(const char* filePath, bool mipmapped = true, float anisotropy = 1.0f);
 		void combineTextures(Texture* rTexture, Texture* gTexture, Texture* bTexture, Texture* aTexture);
-		void setTextureData(unsigned char* data, unsigned int dataSize, GLenum format, GLenum internalFormat);
+		void setTextureData(u8* data, u32 dataSize, GLenum format, GLenum internalFormat);
 		void fillWithColor(Color color);
 		void deleteLocal();
 		void uploadToGL();
@@ -60,8 +60,8 @@ namespace IonEngine {
 		GLuint textureID = 0;
 		bool loadedToGL = false;
 		bool cachedInLocal = false;
-		unsigned char* textureData = nullptr;
-		unsigned int textureDataSize = 0;
+		u8* textureData = nullptr;
+		u32 textureDataSize = 0;
 		Descriptor desc;
 	};
 }

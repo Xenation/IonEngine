@@ -41,7 +41,7 @@ void LightManager::unregisterLight(Light* light) {
 Light* LightManager::getMainDirectional() {
 	if (directionalLights.count == 0) return nullptr;
 	Light* mainDirectional = directionalLights[0];
-	for (unsigned int i = 1; i < directionalLights.count; i++) {
+	for (u32 i = 1; i < directionalLights.count; i++) {
 		if (mainDirectional->intensity < directionalLights[i]->intensity) {
 			mainDirectional = directionalLights[i];
 		}

@@ -116,7 +116,7 @@ void ComputeShader::loadProgram(bool silent) {
 	loaded = true;
 }
 
-void ComputeShader::loadComputeShaderFromSourceArray(const char** src, unsigned int srcPiecesCount, bool silent) {
+void ComputeShader::loadComputeShaderFromSourceArray(const char** src, u32 srcPiecesCount, bool silent) {
 	GLuint shader = 0;
 	GLsizei logSize = 0;
 	GLint compileStatus = GL_TRUE;

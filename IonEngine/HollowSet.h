@@ -6,15 +6,15 @@ namespace IonEngine {
 	template<typename T>
 	class HollowSet {
 	public:
-		unsigned int capacity;
-		unsigned int count;
-		unsigned int growAmount;
+		u32 capacity;
+		u32 count;
+		u32 growAmount;
 
 		HollowSet() = delete;
 		HollowSet(const HollowSet<T>&) = delete;
-		HollowSet(unsigned int capacity, unsigned int growAmount)
+		HollowSet(u32 capacity, u32 growAmount)
 			: capacity(capacity), arr(new T[capacity]), count(0), growAmount(growAmount) {
-			for (unsigned int i = 0; i < this->capacity; i++) {
+			for (u32 i = 0; i < this->capacity; i++) {
 				arr[i] = nullptr;
 			}
 		}
@@ -22,39 +22,39 @@ namespace IonEngine {
 			delete[] arr;
 		}
 
-		unsigned int add(T elem) {
+		u32 add(T elem) {
 			if (count == capacity) {
 				growArray();
 			}
 			count++;
-			unsigned int index = getFreeIndex();
+			u32 index = getFreeIndex();
 			arr[index] = elem;
 			return index;
 		}
 
-		void remove(unsigned int index) {
+		void remove(u32 index) {
 			arr[index] = nullptr;
 		}
 
 		void clear() {
-			for (unsigned int i = 0; i < capacity; i++) {
+			for (u32 i = 0; i < capacity; i++) {
 				arr[i] = nullptr;
 			}
 		}
 
-		inline T& operator[](const unsigned int index) {
+		inline T& operator[](const u32 index) {
 			return arr[index];
 		}
 
-		inline const T& operator[](unsigned int index) const {
+		inline const T& operator[](u32 index) const {
 			return arr[index];
 		}
 
 	private:
 		T* arr;
 
-		unsigned int getFreeIndex() {
-			unsigned int fIndex = 0;
+		u32 getFreeIndex() {
+			u32 fIndex = 0;
 			for (; fIndex < capacity; fIndex++) {
 				if (arr[fIndex] == nullptr) break;
 			}
@@ -68,7 +68,7 @@ namespace IonEngine {
 				Debug::logError("HollowSet", "Could not allocate memory for array growth!");
 				return;
 			}
-			unsigned int index = 0;
+			u32 index = 0;
 			for (; index < count; index++) {
 				nArr[index] = arr[index];
 			}

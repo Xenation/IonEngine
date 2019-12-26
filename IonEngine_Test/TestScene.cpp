@@ -45,7 +45,7 @@ void TestScene::load() {
 	sun->transform->setRotation(Rotor3f::euler({60.0f * Math::deg2rad, 22.5f * Math::deg2rad, 0}));
 
 	cubeMesh = new Mesh("Cube", 24, 36);
-	cubeMesh->setAttributesDefinition(2, new int[2]{3, 3});
+	cubeMesh->setAttributesDefinition(2, new u32[2]{3, 3});
 	cubeMesh->setAttribute(0, new float[72]{
 		// Front
 		-0.5f, -0.5f, -0.5f,

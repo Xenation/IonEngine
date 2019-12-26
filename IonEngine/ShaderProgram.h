@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "XTypes.h"
 #include "ShaderMetaInfo.h"
 
 namespace IonEngine {
@@ -12,7 +11,7 @@ namespace IonEngine {
 	class ShaderProgram {
 	public:
 		static ShaderProgram** shaders;
-		static unsigned int shaderCount;
+		static u32 shaderCount;
 
 		static void initializeAll(Pipeline* pipeline);
 		static void reloadAll();
@@ -32,13 +31,13 @@ namespace IonEngine {
 
 		SpecializedShaderProgram* getSpecializedProgram(std::string renderPassName);
 		SpecializedShaderProgram* getSpecializedProgram(RenderPass* renderPass);
-		SpecializedShaderProgram** getAllSpecializedPrograms(unsigned int& count) { count = specializedProgramsCount; return specializedPrograms; }
+		SpecializedShaderProgram** getAllSpecializedPrograms(u32& count) { count = specializedProgramsCount; return specializedPrograms; }
 
 	private:
 		static Pipeline* defaultPipeline;
 
 		SpecializedShaderProgram** specializedPrograms = nullptr;
-		uint specializedProgramsCount = 0;
+		u32 specializedProgramsCount = 0;
 		bool loaded = false;
 		// Used when source needs to be in program
 		bool useRaw = false;

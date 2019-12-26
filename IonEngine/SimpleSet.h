@@ -6,13 +6,13 @@ namespace IonEngine {
 	template<typename T>
 	class SimpleSet {
 	public:
-		unsigned int capacity;
-		unsigned int count;
-		unsigned int growAmount;
+		u32 capacity;
+		u32 count;
+		u32 growAmount;
 
 		SimpleSet() = delete;
 		SimpleSet(const SimpleSet&) = delete;
-		SimpleSet(unsigned int capacity, unsigned int growAmount, bool lazyInit = false)
+		SimpleSet(u32 capacity, u32 growAmount, bool lazyInit = false)
 			: capacity(capacity), arr((lazyInit) ? nullptr : new T[capacity]), count(0), growAmount(growAmount) {
 
 		}
@@ -20,25 +20,25 @@ namespace IonEngine {
 			delete[] arr;
 		}
 
-		unsigned int add(T elem) {
+		u32 add(T elem) {
 			if (arr == nullptr) { // Lazy initialize
 				arr = new T[capacity];
 			}
 			if (count == capacity) {
 				growArray();
 			}
-			int index = count++;
+			u32 index = count++;
 			arr[index] = elem;
 			return index;
 		}
 
-		void removeAt(unsigned int index) {
+		void removeAt(u32 index) {
 			arr[index] = arr[count - 1];
 			count--;
 		}
 
 		void remove(T item) {
-			unsigned int i;
+			u32 i;
 			for (i = 0; i < count; i++) {
 				if (arr[i] == item) break;
 			}
@@ -52,7 +52,7 @@ namespace IonEngine {
 		}
 
 		bool contains(T item) const {
-			for (unsigned int i = 0; i < count; i++) {
+			for (u32 i = 0; i < count; i++) {
 				if (arr[i] == item) {
 					return true;
 				}
@@ -60,7 +60,7 @@ namespace IonEngine {
 			return false;
 		}
 
-		inline T& operator[](unsigned int index) {
+		inline T& operator[](u32 index) {
 			return arr[index];
 		}
 
@@ -74,7 +74,7 @@ namespace IonEngine {
 				Debug::logError("SimpleList", "Could not allocate memory for array growth!");
 				return;
 			}
-			unsigned int index = 0;
+			u32 index = 0;
 			for (; index < count; index++) {
 				nArr[index] = arr[index];
 			}

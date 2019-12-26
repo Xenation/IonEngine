@@ -1,7 +1,7 @@
 #pragma once
 
 namespace IonEngine {
-	const unsigned int zorder_x[256] = {
+	const u32 zorder_x[256] = {
 		0b000000000000000000000000,
 		0b000000000000000000000001,
 		0b000000000000000000001000,
@@ -260,7 +260,7 @@ namespace IonEngine {
 		0b001001001001001001001001
 	};
 
-	const unsigned int zorder_y[256] = {
+	const u32 zorder_y[256] = {
 		0b000000000000000000000000,
 		0b000000000000000000000010,
 		0b000000000000000000010000,
@@ -519,7 +519,7 @@ namespace IonEngine {
 		0b010010010010010010010010
 	};
 
-	const unsigned int zorder_z[256] = {
+	const u32 zorder_z[256] = {
 		0b000000000000000000000000,
 		0b000000000000000000000100,
 		0b000000000000000000100000,
@@ -778,7 +778,7 @@ namespace IonEngine {
 		0b100100100100100100100100
 	};
 
-	const unsigned short zorder2_x[] = {
+	const u16 zorder2_x[] = {
 		0b0000000000000000,
 		0b0000000000000001,
 		0b0000000000000100,
@@ -1037,7 +1037,7 @@ namespace IonEngine {
 		0b0101010101010101
 	};
 
-	const unsigned short zorder2_y[] = {
+	const u16 zorder2_y[] = {
 		0b0000000000000000,
 		0b0000000000000010,
 		0b0000000000001000,
@@ -1296,11 +1296,11 @@ namespace IonEngine {
 		0b1010101010101010
 	};
 
-	inline unsigned int zorder(char x, char y, char z) {
+	inline u32 zorder(u8 x, u8 y, u8 z) {
 		return zorder_x[x] | zorder_y[y] | zorder_z[z];
 	}
 
-	inline unsigned short zorder(char x, char y) {
+	inline u16 zorder(u8 x, u8 y) {
 		return zorder2_x[x] | zorder2_y[y];
 	}
 }

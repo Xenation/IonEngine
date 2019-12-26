@@ -18,25 +18,25 @@ ShaderStorageBuffer::~ShaderStorageBuffer() {
 }
 
 
-void ShaderStorageBuffer::setBlocks(unsigned int blockCount, ShaderStorageBlock* blocks) {
-	unsigned int currentOffset = 0;
-	for (unsigned int i = 0; i < blockCount; i++) {
+void ShaderStorageBuffer::setBlocks(u32 blockCount, ShaderStorageBlock* blocks) {
+	u32 currentOffset = 0;
+	for (u32 i = 0; i < blockCount; i++) {
 		blocks[i].offset = currentOffset;
 		currentOffset += blocks[i].size;
 		currentOffset = glGetStorageBlockAlignment(currentOffset);
 	}
 
-	unsigned int nBufferSize = blocks[blockCount - 1].offset + blocks[blockCount - 1].size;
-	unsigned char* nBuffer = nullptr;
+	u32 nBufferSize = blocks[blockCount - 1].offset + blocks[blockCount - 1].size;
+	u8* nBuffer = nullptr;
 	bool resized = false;
 	if (nBufferSize != bufferSize) {
-		nBuffer = new unsigned char[nBufferSize];
+		nBuffer = new u8[nBufferSize];
 		resized = true;
 	} else {
 		nBuffer = buffer;
 	}
 
-	for (unsigned int i = 0; i < blockCount; i++) {
+	for (u32 i = 0; i < blockCount; i++) {
 		blocks[i].buffer = nBuffer + blocks[i].offset;
 		// TODO copy data from old buffer
 	}
@@ -56,11 +56,11 @@ void ShaderStorageBuffer::setBlocks(unsigned int blockCount, ShaderStorageBlock*
 	}
 }
 
-ShaderStorageBlock& ShaderStorageBuffer::getStorageBlock(unsigned int index) {
+ShaderStorageBlock& ShaderStorageBuffer::getStorageBlock(u32 index) {
 	return blocks[index];
 }
 
-void ShaderStorageBuffer::updateStorageBlock(unsigned int index) {
+void ShaderStorageBuffer::updateStorageBlock(u32 index) {
 	if (!loadedToGL) {
 		Debug::logError("SSBO", "Tried updating a block from a buffer not yet uploaded!");
 		return;
@@ -70,7 +70,7 @@ void ShaderStorageBuffer::updateStorageBlock(unsigned int index) {
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
-void ShaderStorageBuffer::bindStorageBlock(unsigned int index) {
+void ShaderStorageBuffer::bindStorageBlock(u32 index) {
 	glBindBufferRange(GL_SHADER_STORAGE_BLOCK, blocks[index].binding, ssbo, blocks[index].offset, blocks[index].size);
 }
 
@@ -90,7 +90,7 @@ void ShaderStorageBuffer::uploadToGL() {
 	glBufferData(GL_SHADER_STORAGE_BUFFER, bufferSize, nullptr, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	for (unsigned int i = 0; i < blockCount; i++) {
+	for (u32 i = 0; i < blockCount; i++) {
 		glBindBufferRange(GL_SHADER_STORAGE_BUFFER, blocks[i].binding, ssbo, blocks[i].offset, blocks[i].size);
 	}
 

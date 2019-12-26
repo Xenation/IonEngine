@@ -149,8 +149,8 @@ Entity* MeshImporter::importAll(std::string name) {
 		ent->setParent(root);
 
 		// Map all unique vertices with their index in the final mesh array
-		std::unordered_map<Vertex, uint32_t> meshVertices;
-		int vertexIndex = 0;
+		std::unordered_map<Vertex, u32> meshVertices;
+		u32 vertexIndex = 0;
 		for (size_t i = 0; i < shapes[s].mesh.indices.size(); i++) {
 			Vertex vert;
 			vert.position = {
@@ -169,16 +169,16 @@ Entity* MeshImporter::importAll(std::string name) {
 			};
 
 			if (meshVertices.count(vert) == 0) {
-				meshVertices[vert] = static_cast<uint32_t>(vertexIndex);
+				meshVertices[vert] = vertexIndex;
 				vertexIndex++;
 			}
 		}
 
 		// Create the mesh
-		int vCount = vertexIndex;
-		int iCount = shapes[s].mesh.indices.size();
+		u32 vCount = vertexIndex;
+		u32 iCount = static_cast<u32>(shapes[s].mesh.indices.size());
 		Mesh* entMesh = new Mesh(shapes[s].name, vCount, iCount);
-		entMesh->setAttributesDefinition(5, new int[5]{3, 3, 2, 3});
+		entMesh->setAttributesDefinition(5, new u32[5]{3, 3, 2, 3});
 
 		// Write all unique vertices
 		for (std::pair<Vertex, uint32_t> vert : meshVertices) {
@@ -188,7 +188,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		}
 
 		// Write all indices, kinda slow
-		int indicesIndex = 0;
+		u32 indicesIndex = 0;
 		for (size_t i = 0; i < shapes[s].mesh.indices.size(); i++) {
 			Vertex vert;
 			vert.position = {
@@ -216,7 +216,7 @@ Entity* MeshImporter::importAll(std::string name) {
 		// Assign the mesh to the object
 		entMesh->uploadToGL();
 		MeshRenderer* renderer = ent->addComponent<MeshRenderer>();
-		int matId = shapes[s].mesh.material_ids[0];
+		i32 matId = (i32) shapes[s].mesh.material_ids[0];
 		if (matId >= 0) {
 			renderer->setMaterial(convertedMaterials[matId]);
 		}
@@ -245,19 +245,19 @@ Mesh* MeshImporter::import(std::string name) {
 	}
 
 	// TODO move to an importer that generates multiple meshes/objects from a single file
-	unsigned int vCount = (unsigned int) attrib.vertices.size();
-	unsigned int iCount = 0;
+	u32 vCount = (u32) attrib.vertices.size();
+	u32 iCount = 0;
 	for (size_t s = 0; s < shapes.size(); s++) {
-		iCount += (unsigned int) shapes[s].mesh.indices.size();
+		iCount += (u32) shapes[s].mesh.indices.size();
 	}
 
 	Mesh* mesh = new Mesh(name, vCount, iCount);
-	mesh->setAttributesDefinition(3, new int[3]{3, 3, 2});
+	mesh->setAttributesDefinition(3, new u32[3]{3, 3, 2});
 
-	std::unordered_map<Vertex, uint32_t> vertices;
+	std::unordered_map<Vertex, u32> vertices;
 
-	unsigned int indicesIndex = 0;
-	unsigned int vertexIndex = 0;
+	u32 indicesIndex = 0;
+	u32 vertexIndex = 0;
 	for (size_t s = 0; s < shapes.size(); s++) {
 		for (size_t i = 0; i < shapes[s].mesh.indices.size(); i++) {
 			Vertex vert;
@@ -277,7 +277,7 @@ Mesh* MeshImporter::import(std::string name) {
 			};
 
 			if (vertices.count(vert) == 0) {
-				vertices[vert] = static_cast<uint32_t>(vertexIndex);
+				vertices[vert] = vertexIndex;
 				mesh->setAttributeElement(0, vertexIndex, vert.position);
 				mesh->setAttributeElement(1, vertexIndex, vert.normal);
 				mesh->setAttributeElement(2, vertexIndex, vert.uv);

@@ -21,29 +21,29 @@ void MaterialEditor::drawGui() {
 		ShaderProgram::reloadAll();
 	}
 
-	for (unsigned int shaderIndex = 0; shaderIndex < ShaderProgram::shaderCount; shaderIndex++) {
-		unsigned int count = 0;
+	for (u32 shaderIndex = 0; shaderIndex < ShaderProgram::shaderCount; shaderIndex++) {
+		u32 count = 0;
 		SpecializedShaderProgram** specializedPrograms = ShaderProgram::shaders[shaderIndex]->getAllSpecializedPrograms(count);
-		for (unsigned int specializedIndex = 0; specializedIndex < count; specializedIndex++) {
+		for (u32 specializedIndex = 0; specializedIndex < count; specializedIndex++) {
 			SpecializedShaderProgram* specializedProgram = specializedPrograms[specializedIndex];
 			if (specializedProgram->getRenderPass() == nullptr) continue;
-			unsigned int counted = 0;
-			for (unsigned int matIndex = 0; matIndex < specializedProgram->materials.capacity || counted < specializedProgram->materials.count; matIndex++) {
+			u32 counted = 0;
+			for (u32 matIndex = 0; matIndex < specializedProgram->materials.capacity || counted < specializedProgram->materials.count; matIndex++) {
 				if (specializedProgram->materials[matIndex] == nullptr) continue;
 				Material* material = specializedProgram->materials[matIndex];
 
 				if (ImGui::TreeNode(material->name.c_str())) {
 					ImGui::Text("Specialized Program: %s", (specializedProgram->parentShader->name + "/" + specializedProgram->getRenderPass()->name).c_str());
 					ImGui::TextUnformatted("Parameters:");
-					unsigned int textureFieldCount = 0;
+					u32 textureFieldCount = 0;
 					Material::TextureField* textureFields = material->getTextureFields(textureFieldCount);
-					for (uint texIndex = 0; texIndex < textureFieldCount; texIndex++) {
+					for (u32 texIndex = 0; texIndex < textureFieldCount; texIndex++) {
 						Material::TextureField& texField = textureFields[texIndex];
 						std::string texName = texField.texture->getName();
 						ImGui::Text("Texture: %s (unit=%i)", texName.c_str(), texField.textureUnit);
 					}
 					UniformLayout* uniformLayout = material->getUniformLayout();
-					for (uint memberIndex = 0; memberIndex < uniformLayout->memberCount; memberIndex++) {
+					for (u32 memberIndex = 0; memberIndex < uniformLayout->memberCount; memberIndex++) {
 						std::string memberName = uniformLayout->memberNames[memberIndex];
 						bool fieldChange = false;
 						switch (uniformLayout->members[memberIndex]) {

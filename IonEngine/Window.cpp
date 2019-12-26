@@ -10,7 +10,7 @@ using namespace IonEngine;
 
 
 
-void error_callback(int error, const char* description) {
+void error_callback(i32 error, const char* description) {
 	Debug::logError("GLFW", description);
 }
 
@@ -36,9 +36,9 @@ void Window::initializeGLFW() {
 	//glfwWindowHint(GLFW_SAMPLES, 4); // TODO Remove to have a multisampled framebuffer blited to the default singlesampled
 }
 
-void Window::resizeFrameCallback(GLFWwindow* window, int width, int height) {
+void Window::resizeFrameCallback(GLFWwindow* window, i32 width, i32 height) {
 	Engine::pipeline->resizeFrameBuffer(width, height);
-	for (unsigned int i = 0; i < windows.capacity; i++) {
+	for (u32 i = 0; i < windows.capacity; i++) {
 		if (windows[i] == nullptr || windows[i]->window != window) continue;
 		windows[i]->width = width;
 		windows[i]->height = height;

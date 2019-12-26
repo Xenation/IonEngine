@@ -31,13 +31,13 @@ namespace IonEngine {
 		Framebuffer* shadowAtlas;
 		Vec2i size;
 		Material* depthMaterial;
-		unsigned int worldToLightMatrixLocation = 0;
-		unsigned int localToWorldMatrixLocation = 0;
+		u32 worldToLightMatrixLocation = 0;
+		u32 localToWorldMatrixLocation = 0;
 		SpecializedShaderProgram* depthSpecShader;
 		SimpleSet<ShadowCaster*> directionalCasters;
 		SimpleSet<ShadowCaster*> spotCasters;
 
-		Vec4i getDirectionalViewport(unsigned int index);
-		Vec4i getSpotViewport(unsigned int index);
+		Vec4i getDirectionalViewport(u32 index);
+		Vec4i getSpotViewport(u32 index);
 	};
 }

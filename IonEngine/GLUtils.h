@@ -1,10 +1,9 @@
 #pragma once
 #include <string>
-#include "XTypes.h"
 #include "gl3w.h"
 
 namespace IonEngine {
-	enum GLSLType : unsigned int {
+	enum GLSLType : u32 {
 		GLSL_UNKNOWN = 0,
 		GLSL_IS_SCALAR		= 0b10000000'00000000'00000000'00000000,
 		GLSL_IS_VEC			= 0b01000000'00000000'00000000'00000000,
@@ -176,7 +175,7 @@ namespace IonEngine {
 		PACKED, // TODO Not yet supported
 	};
 
-	inline unsigned int glTypeSize(GLenum type) {
+	inline u32 glTypeSize(GLenum type) {
 		switch (type) {
 		case GL_BYTE:
 		case GL_UNSIGNED_BYTE:
@@ -214,8 +213,8 @@ namespace IonEngine {
 		return false;
 	}
 
-	inline unsigned int glGetUniformBufferAlignment(unsigned int currentOffset) {
-		static unsigned int uniformBufferAlignment = 0;
+	inline u32 glGetUniformBufferAlignment(u32 currentOffset) {
+		static u32 uniformBufferAlignment = 0;
 		if (uniformBufferAlignment == 0) {
 			int align;
 			glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &align);
@@ -229,8 +228,8 @@ namespace IonEngine {
 		}
 	}
 
-	inline unsigned int glGetStorageBlockAlignment(unsigned int currentOffset) {
-		static unsigned int storageBlockAlignment = 0;
+	inline u32 glGetStorageBlockAlignment(u32 currentOffset) {
+		static u32 storageBlockAlignment = 0;
 		if (storageBlockAlignment == 0) {
 			int align;
 			glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &align);
@@ -244,7 +243,7 @@ namespace IonEngine {
 		}
 	}
 
-	inline unsigned int glFormatBitSize(GLenum format) {
+	inline u32 glFormatBitSize(GLenum format) {
 		switch (format) {
 			// 128
 		case GL_RGBA32I:
@@ -341,16 +340,16 @@ namespace IonEngine {
 		}
 	}
 
-	inline unsigned int glFormatByteSize(GLenum format, unsigned int count) {
-		unsigned int bitSize = glFormatBitSize(format) * count;
-		unsigned int byteSize = bitSize / 8;
+	inline u32 glFormatByteSize(GLenum format, u32 count) {
+		u32 bitSize = glFormatBitSize(format) * count;
+		u32 byteSize = bitSize / 8;
 		if (bitSize % 8 != 0) {
 			byteSize++;
 		}
 		return byteSize;
 	}
 
-	inline constexpr unsigned int glFormatChannelCount(GLenum format) {
+	inline constexpr u32 glFormatChannelCount(GLenum format) {
 		switch (format) {
 			case GL_RED: return 1;
 			case GL_RG: return 2;
@@ -412,13 +411,13 @@ namespace IonEngine {
 		}
 	}
 
-	inline unsigned int glslstd140TypeSize(GLSLType type, unsigned int arrSize = 0) {
+	inline u32 glslstd140TypeSize(GLSLType type, u32 arrSize = 0) {
 		if (type == GLSL_UNKNOWN) {
 			//Debug::logError("GLUtils", "glslstd140TypeSize(): Unknown input type!");
 			return 0;
 		}
-		const unsigned int vec4Size = 16;
-		unsigned compSize = 0;
+		const u32 vec4Size = 16;
+		u32 compSize = 0;
 		if (arrSize == 0) {
 			if (type & (GLSL_IS_BOOL | GLSL_IS_FLOAT | GLSL_IS_INT | GLSL_IS_UINT)) {
 				compSize = 4;
@@ -434,7 +433,7 @@ namespace IonEngine {
 					return compSize * 4;
 				}
 			} else if (type & GLSL_IS_MAT) {
-				unsigned int colSize = 0;
+				u32 colSize = 0;
 				if (type & GLSL_COMP1_SIZE2) {
 					colSize = compSize * 2;
 				} else if (type & GLSL_COMP1_SIZE3) {
@@ -456,7 +455,7 @@ namespace IonEngine {
 				return 4;
 			}
 		} else {
-			unsigned int elemSize = glslstd140TypeSize(type);
+			u32 elemSize = glslstd140TypeSize(type);
 			if (elemSize % vec4Size != 0) {
 				elemSize += vec4Size - (elemSize % vec4Size);
 			}
@@ -467,9 +466,9 @@ namespace IonEngine {
 		return 0;
 	}
 
-	inline unsigned int glslTypeBaseAlignment(GLSLType type);
-	inline unsigned int glslTypeBaseAlignment(GLSLType type, unsigned int arrSize) {
-		const unsigned int vec4Align = glslTypeBaseAlignment(GLSL_VEC4);
+	inline u32 glslTypeBaseAlignment(GLSLType type);
+	inline u32 glslTypeBaseAlignment(GLSLType type, u32 arrSize) {
+		const u32 vec4Align = glslTypeBaseAlignment(GLSL_VEC4);
 		if (type & GLSL_IS_MAT) {
 			// Rule 6
 			if ((type & GLSL_IS_MAT2x2) == GLSL_IS_MAT2x2) {
@@ -529,7 +528,7 @@ namespace IonEngine {
 			}
 		} else {
 			// Rule 4
-			unsigned int typeAlign = glslTypeBaseAlignment(type);
+			u32 typeAlign = glslTypeBaseAlignment(type);
 			if (typeAlign % vec4Align != 0) {
 				typeAlign += vec4Align - typeAlign % vec4Align;
 			}
@@ -539,7 +538,7 @@ namespace IonEngine {
 		return GLSL_UNKNOWN;
 	}
 
-	inline unsigned int glslTypeBaseAlignment(GLSLType type) {
+	inline u32 glslTypeBaseAlignment(GLSLType type) {
 		if (type & GLSL_IS_SCALAR) { // Rule 1
 			if (type & GLSL_IS_DOUBLE) {
 				return 8;
@@ -622,8 +621,8 @@ namespace IonEngine {
 	inline GLSLType glslTypeFromString(std::string typeStr) {
 		// TODO more safety checks for wrong type strings?
 
-		uint type = GLSL_UNKNOWN;
-		uint shapeStart = 0;
+		u32 type = GLSL_UNKNOWN;
+		u32 shapeStart = 0;
 		if (typeStr.size() == 0) return GLSL_UNKNOWN;
 		switch (typeStr[0]) {
 		case 'a':
@@ -724,7 +723,7 @@ namespace IonEngine {
 		}
 
 		if (type & GLSL_IS_VEC) {
-			switch (typeStr[((unsigned long long) shapeStart) + 3]) {
+			switch (typeStr[((u64) shapeStart) + 3]) {
 			case '2':
 				type |= GLSL_COMP1_SIZE2;
 				break;
@@ -738,7 +737,7 @@ namespace IonEngine {
 				return GLSL_UNKNOWN;
 			}
 		} else if (type & GLSL_IS_MAT) {
-			switch (typeStr[((unsigned long long) shapeStart) + 3]) {
+			switch (typeStr[((u64) shapeStart) + 3]) {
 			case '2':
 				type |= GLSL_COMP1_SIZE2;
 				break;
@@ -751,7 +750,7 @@ namespace IonEngine {
 			default:
 				return GLSL_UNKNOWN;
 			}
-			switch (typeStr[((unsigned long long) shapeStart) + 5]) {
+			switch (typeStr[((u64) shapeStart) + 5]) {
 			case '2':
 				type |= GLSL_COMP2_SIZE2;
 				break;
@@ -765,7 +764,7 @@ namespace IonEngine {
 				return GLSL_UNKNOWN;
 			}
 		} else if (type & GLSL_IS_SAMPLER || type & GLSL_IS_IMAGE) {
-			uint nextTypeAttrStart = shapeStart + 7;
+			u32 nextTypeAttrStart = shapeStart + 7;
 			switch (typeStr[nextTypeAttrStart]) {
 			case '1':
 				nextTypeAttrStart += 2;
@@ -839,7 +838,7 @@ namespace IonEngine {
 		return UniformLayoutType::STD140;
 	}
 
-	inline unsigned int glslTypeSize(GLSLType type) {
+	inline u32 glslTypeSize(GLSLType type) {
 		switch (type) {
 		case GLSL_BOOL:
 		case GLSL_INT:

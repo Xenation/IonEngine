@@ -30,20 +30,20 @@ RenderPass::RenderPass(const char* name, Pipeline* pipeline) : name(name), pipel
 RenderPass::~RenderPass() {}
 
 
-void RenderPass::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+void RenderPass::render(Camera* camera, const SimpleSet<u32>& visibleRenderers) {
 	prepare();
-	unsigned int shadersRendered = 0;
-	for (unsigned int shaderIndex = 0; shaderIndex < programs.capacity && shadersRendered < programs.count; shaderIndex++) {
+	u32 shadersRendered = 0;
+	for (u32 shaderIndex = 0; shaderIndex < programs.capacity && shadersRendered < programs.count; shaderIndex++) {
 		SpecializedShaderProgram* shaderProgram = programs[shaderIndex];
 		if (shaderProgram == nullptr) continue;
 		shaderProgram->use();
-		unsigned int materialsRendered = 0;
-		for (unsigned int materialIndex = 0; materialIndex < shaderProgram->materials.capacity && materialsRendered < shaderProgram->materials.count; materialIndex++) {
+		u32 materialsRendered = 0;
+		for (u32 materialIndex = 0; materialIndex < shaderProgram->materials.capacity && materialsRendered < shaderProgram->materials.count; materialIndex++) {
 			Material* material = shaderProgram->materials[materialIndex];
 			if (material == nullptr) continue;
 			material->use();
-			unsigned int renderersRendered = 0;
-			for (unsigned int rendererIndex = 0; rendererIndex < material->renderers.capacity && rendererIndex < material->renderers.count; rendererIndex++) {
+			u32 renderersRendered = 0;
+			for (u32 rendererIndex = 0; rendererIndex < material->renderers.capacity && rendererIndex < material->renderers.count; rendererIndex++) {
 				if (!visibleRenderers.contains(material->renderers[rendererIndex]->getID())) {
 					continue; // TODO better culling
 				}
@@ -95,12 +95,12 @@ void RenderPassLightAssign::onShadersInitialized() {
 	assignShader->load();
 }
 
-void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+void RenderPassLightAssign::render(Camera* camera, const SimpleSet<u32>& visibleRenderers) {
 	// Fill light buffers
 	SimpleSet<Light*>& pointLights = pipeline->lightManager->getPointLights();
 	ShaderStorageBlock& pointLightsBlock = pointLightsBuffer->getStorageBlock(0);
-	((unsigned int*) pointLightsBlock.buffer)[0] = pointLights.count;
-	for (unsigned int i = 0; i < pointLights.count; i++) {
+	((u32*) pointLightsBlock.buffer)[0] = pointLights.count;
+	for (u32 i = 0; i < pointLights.count; i++) {
 		((Vec4f*) (pointLightsBlock.buffer + 16))[i * 2] = Vec4f(pointLights[i]->getPosition(), pointLights[i]->range);
 		((Vec4f*) (pointLightsBlock.buffer + 16))[i * 2 + 1] = pointLights[i]->color.vec;
 	}
@@ -108,8 +108,8 @@ void RenderPassLightAssign::render(Camera* camera, const SimpleSet<unsigned int>
 
 	SimpleSet<Light*>& spotLights = pipeline->lightManager->getSpotLights();
 	ShaderStorageBlock& spotLightsBlock = spotLightsBuffer->getStorageBlock(0);
-	((unsigned int*) spotLightsBlock.buffer)[0] = spotLights.count;
-	for (unsigned int i = 0; i < spotLights.count; i++) {
+	((u32*) spotLightsBlock.buffer)[0] = spotLights.count;
+	for (u32 i = 0; i < spotLights.count; i++) {
 		((Vec4f*) (spotLightsBlock.buffer + 16))[i * 3] = Vec4f(spotLights[i]->getPosition(), spotLights[i]->range);
 		((Vec4f*) (spotLightsBlock.buffer + 16))[i * 3 + 1] = spotLights[i]->color.vec;
 		Vec2f dir = encodeNormal(spotLights[i]->getDirection());
@@ -152,14 +152,14 @@ void RenderPassShadows::onShadersInitialized() {
 	pipeline->shadowAtlas->initializeShaders();
 }
 
-void RenderPassShadows::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+void RenderPassShadows::render(Camera* camera, const SimpleSet<u32>& visibleRenderers) {
 	pipeline->shadowAtlas->renderShadows(camera, renderers);
 }
 
 
 
 /* ==== OPAQUE ==== */
-RenderPassOpaque::RenderPassOpaque(const char* name, Pipeline* pipeline, unsigned int width, unsigned int height, unsigned int samples) : RenderPass(name, pipeline), deferredMaterial(deferredMaterial) {
+RenderPassOpaque::RenderPassOpaque(const char* name, Pipeline* pipeline, u32 width, u32 height, u32 samples) : RenderPass(name, pipeline), deferredMaterial(deferredMaterial) {
 	renderBuffer = new Framebuffer("RenderBuffer", width, height, samples);
 	renderBuffer->createAttachments(4, new Framebuffer::Attachment[4]{Framebuffer::Attachment(GL_COLOR_ATTACHMENT0, GL_RGBA, GL_RGBA8), Framebuffer::Attachment(GL_COLOR_ATTACHMENT1, GL_RGB, GL_RGB16), Framebuffer::Attachment(GL_COLOR_ATTACHMENT2, GL_RGBA, GL_RGBA8), Framebuffer::Attachment(GL_DEPTH_ATTACHMENT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT24)});
 	//renderBuffer->clearColor = Color(0.52f, 0.80f, 0.97f, 0.0); //135-206-250
@@ -173,7 +173,7 @@ RenderPassOpaque::~RenderPassOpaque() {
 void RenderPassOpaque::onShadersInitialized() {
 	ShaderProgram* deferredShader = ShaderProgram::find("lightpass");
 	deferredShader->load();
-	unsigned int count;
+	u32 count;
 	deferredSpecShader = deferredShader->getAllSpecializedPrograms(count)[0];
 	deferredMaterial = new Material("DeferredLight", deferredSpecShader);
 }
@@ -194,7 +194,7 @@ void RenderPassOpaque::finish() {
 	renderBuffer->blitTo(nullptr, deferredMaterial, true);
 }
 
-void RenderPassOpaque::onResize(unsigned int width, unsigned int height) {
+void RenderPassOpaque::onResize(u32 width, u32 height) {
 	renderBuffer->resize(width, height);
 }
 
@@ -209,7 +209,7 @@ void RenderPassOpaque::updateLightsData() {
 	SimpleSet<Light*>& spots = pipeline->lightManager->getSpotLights();
 
 	deferredMaterial->setField(0, directionals.count);
-	for (unsigned int i = 0; i < directionals.count; i++) {
+	for (u32 i = 0; i < directionals.count; i++) {
 		deferredMaterial->setField(1, i, directionals[i]->color);
 		deferredMaterial->setField(2, i, toVec4f(directionals[i]->getDirection()));
 		Vec4i indicesSlice = deferredMaterial->getUniformLayout()->getVec4i(10, i);
@@ -223,7 +223,7 @@ void RenderPassOpaque::updateLightsData() {
 		deferredMaterial->setField(10, i, indicesSlice);
 	}
 	deferredMaterial->setField(3, points.count);
-	for (unsigned int i = 0; i < points.count; i++) {
+	for (u32 i = 0; i < points.count; i++) {
 		deferredMaterial->setField(4, i, points[i]->color);
 		Vec3f pos = points[i]->getPosition();
 		deferredMaterial->setField(5, i, Vec4f(pos.x, pos.y, pos.z, points[i]->range));
@@ -238,7 +238,7 @@ void RenderPassOpaque::updateLightsData() {
 		deferredMaterial->setField(10, i, indicesSlice);
 	}
 	deferredMaterial->setField(6, spots.count);
-	for (unsigned int i = 0; i < spots.count; i++) {
+	for (u32 i = 0; i < spots.count; i++) {
 		deferredMaterial->setField(7, i, spots[i]->color);
 		Vec3f pos = spots[i]->getPosition();
 		deferredMaterial->setField(8, i, Vec4f(pos.x, pos.y, pos.z, spots[i]->range));
@@ -271,7 +271,7 @@ void RenderPassSkybox::onShadersInitialized() {
 
 	ShaderProgram* proceduralSkyShader = ShaderProgram::find("procedural_sky");
 	proceduralSkyShader->load();
-	unsigned int count;
+	u32 count;
 	proceduralSkySpecShader = proceduralSkyShader->getAllSpecializedPrograms(count)[0];
 
 	defaultSkybox = new Skybox();
@@ -281,7 +281,7 @@ void RenderPassSkybox::onShadersInitialized() {
 	defaultSkybox->getMaterial()->setField(3, 80.0f);
 }
 
-void RenderPassSkybox::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+void RenderPassSkybox::render(Camera* camera, const SimpleSet<u32>& visibleRenderers) {
 	glDepthFunc(GL_LEQUAL);
 	proceduralSkySpecShader->use();
 	defaultSkybox->getMaterial()->use();
@@ -314,7 +314,7 @@ RenderPassPostprocess::~RenderPassPostprocess() {
 	delete temporary2;
 }
 
-void RenderPassPostprocess::render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) {
+void RenderPassPostprocess::render(Camera* camera, const SimpleSet<u32>& visibleRenderers) {
 	glDisable(GL_DEPTH_TEST);
 
 	temporary1->bind();
@@ -326,13 +326,13 @@ void RenderPassPostprocess::render(Camera* camera, const SimpleSet<unsigned int>
 	Framebuffer* currentFramebuffer = temporary1;
 	Framebuffer* nextFramebuffer = temporary2;
 	renderBuffer->blitTo(currentFramebuffer);
-	unsigned int shadersRendered = 0;
-	for (unsigned int shaderIndex = 0; shaderIndex < programs.capacity && shadersRendered < programs.count; shaderIndex++) {
+	u32 shadersRendered = 0;
+	for (u32 shaderIndex = 0; shaderIndex < programs.capacity && shadersRendered < programs.count; shaderIndex++) {
 		SpecializedShaderProgram* shaderProgram = programs[shaderIndex];
 		if (shaderProgram == nullptr) continue;
 		shaderProgram->use();
-		unsigned int materialsRendered = 0;
-		for (unsigned int materialIndex = 0; materialIndex < shaderProgram->materials.capacity && materialsRendered < shaderProgram->materials.count; materialIndex++) {
+		u32 materialsRendered = 0;
+		for (u32 materialIndex = 0; materialIndex < shaderProgram->materials.capacity && materialsRendered < shaderProgram->materials.count; materialIndex++) {
 			Material* material = shaderProgram->materials[materialIndex];
 			if (material == nullptr) continue;
 			currentFramebuffer->blitTo(nextFramebuffer, material);
@@ -347,7 +347,7 @@ void RenderPassPostprocess::render(Camera* camera, const SimpleSet<unsigned int>
 	glEnable(GL_DEPTH_TEST);
 }
 
-void RenderPassPostprocess::onResize(uint width, uint height) {
+void RenderPassPostprocess::onResize(u32 width, u32 height) {
 	temporary1->resize(width, height);
 	temporary2->resize(width, height);
 }

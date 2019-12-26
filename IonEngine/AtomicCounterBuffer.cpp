@@ -5,7 +5,7 @@ using namespace IonEngine;
 
 
 
-AtomicCounterBuffer::AtomicCounterBuffer(std::string name, unsigned int binding, unsigned int size) : name(name), binding(binding), bufferSize(size) {}
+AtomicCounterBuffer::AtomicCounterBuffer(std::string name, u32 binding, u32 size) : name(name), binding(binding), bufferSize(size) {}
 
 AtomicCounterBuffer::~AtomicCounterBuffer() {}
 

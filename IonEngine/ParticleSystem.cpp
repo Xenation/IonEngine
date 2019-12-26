@@ -23,7 +23,7 @@ ParticleSystem::~ParticleSystem() {
 void ParticleSystem::startEmit() {
 	if (isEmitting) return;
 	isEmitting = true;
-	uint nMax = ceilToInt(emitRate * maxLifetime);
+	u32 nMax = ceilToInt(emitRate * maxLifetime);
 	emissionInterval = 1.0f / emitRate;
 	particles = SimpleSet<Particle>(nMax, 32);
 	if (nMax != maxParticles) {
@@ -33,7 +33,7 @@ void ParticleSystem::startEmit() {
 
 void ParticleSystem::onUpdate() {
 	// Kill expired Particles
-	for (uint i = 0; i < particles.count; i++) {
+	for (u32 i = 0; i < particles.count; i++) {
 		if (Time::time - particles[i].creationTime > particles[i].lifetime) {
 			particles.removeAt(i);
 			i--;
@@ -47,7 +47,7 @@ void ParticleSystem::onUpdate() {
 	}
 
 	// Particles state update
-	for (uint i = 0; i < particles.count; i++) {
+	for (u32 i = 0; i < particles.count; i++) {
 		// Apply gravity
 		particles[i].velocity += Vec3f::down * 9.81f * Time::deltaTime;
 		// Change position
@@ -94,14 +94,14 @@ void ParticleSystem::createParticle(const Vec3f& pos, const Vec3f& vel, float li
 	particles.add({pos, vel, Time::time, lifetime});
 }
 
-void ParticleSystem::resizeParticleData(unsigned int nCount) {
+void ParticleSystem::resizeParticleData(u32 nCount) {
 	if (mesh == nullptr) {
 		mesh = new Mesh("Particles_" + std::string(entity->name), nCount, nCount);
 		mesh->setTopology(GL_POINTS);
 		mesh->setUsageHint(GL_DYNAMIC_DRAW);
-		mesh->setAttributesDefinition(3, new int[3]{3, 3, 2});
-		unsigned int* indices = new unsigned int[nCount];
-		for (unsigned int i = 0; i < nCount; i++) {
+		mesh->setAttributesDefinition(3, new u32[3]{3, 3, 2});
+		u32* indices = new u32[nCount];
+		for (u32 i = 0; i < nCount; i++) {
 			indices[i] = i;
 		}
 		mesh->setIndices(indices);
@@ -113,7 +113,7 @@ void ParticleSystem::resizeParticleData(unsigned int nCount) {
 
 void ParticleSystem::updateMesh() {
 	if (mesh == nullptr) return;
-	for (unsigned int i = 0; i < particles.count; i++) {
+	for (u32 i = 0; i < particles.count; i++) {
 		mesh->setAttributeElement(0, i, particles[i].position);
 		mesh->setAttributeElement(1, i, particles[i].velocity);
 		mesh->setAttributeElement(2, i, Vec2f(particles[i].creationTime, particles[i].lifetime));

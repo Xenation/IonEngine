@@ -14,8 +14,8 @@ Material* Material::errorMaterial = nullptr;
 HollowSet<Material*> Material::materials(8, 8);
 
 Material* Material::find(std::string name) {
-	uint materialProcessed = 0;
-	for (uint i = 0; i < materials.capacity && materialProcessed < materials.count; i++) {
+	u32 materialProcessed = 0;
+	for (u32 i = 0; i < materials.capacity && materialProcessed < materials.count; i++) {
 		if (materials[i] == nullptr) continue;
 		if (materials[i]->name == name) {
 			return materials[i];
@@ -49,122 +49,122 @@ Material::~Material() {
 }
 
 
-void Material::setField(unsigned int index, bool value) {
+void Material::setField(u32 index, bool value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, int value) {
+void Material::setField(u32 index, i32 value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, unsigned int value) {
+void Material::setField(u32 index, u32 value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, float value) {
+void Material::setField(u32 index, float value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, double value) {
+void Material::setField(u32 index, double value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, Vec2f value) {
+void Material::setField(u32 index, Vec2f value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, Vec3f value) {
+void Material::setField(u32 index, Vec3f value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, Vec4f value) {
+void Material::setField(u32 index, Vec4f value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, Color value) {
+void Material::setField(u32 index, Color value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value.vec);
 }
-void Material::setField(unsigned int index, Matrix4x4f value) {
+void Material::setField(u32 index, Matrix4x4f value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, Vec2i value) {
+void Material::setField(u32 index, Vec2i value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, Vec3i value) {
+void Material::setField(u32 index, Vec3i value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, Vec4i value) {
+void Material::setField(u32 index, Vec4i value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, bool value) {
+void Material::setField(u32 index, u32 arrayIndex, bool value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, int value) {
+void Material::setField(u32 index, u32 arrayIndex, i32 value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, unsigned int value) {
+void Material::setField(u32 index, u32 arrayIndex, u32 value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, float value) {
+void Material::setField(u32 index, u32 arrayIndex, float value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, double value) {
+void Material::setField(u32 index, u32 arrayIndex, double value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, Vec2f value) {
+void Material::setField(u32 index, u32 arrayIndex, Vec2f value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, Vec3f value) {
+void Material::setField(u32 index, u32 arrayIndex, Vec3f value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, Vec4f value) {
+void Material::setField(u32 index, u32 arrayIndex, Vec4f value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, Color value) {
+void Material::setField(u32 index, u32 arrayIndex, Color value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value.vec, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, Matrix4x4f value) {
+void Material::setField(u32 index, u32 arrayIndex, Matrix4x4f value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, Vec2i value) {
+void Material::setField(u32 index, u32 arrayIndex, Vec2i value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, Vec3i value) {
+void Material::setField(u32 index, u32 arrayIndex, Vec3i value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
-void Material::setField(unsigned int index, unsigned int arrayIndex, Vec4i value) {
+void Material::setField(u32 index, u32 arrayIndex, Vec4i value) {
 	fieldsExpired = true;
 	uniformLayout->setMember(index, value, arrayIndex);
 }
 GLuint Material::getTextureLocation(std::string uniformName) {
 	return specializedProgram->getUniformLocation(uniformName);
 }
-void Material::setTextureByLocation(unsigned int location, Texture* texture) {
-	for (uint i = 0; i < textureFieldCount; i++) {
+void Material::setTextureByLocation(u32 location, Texture* texture) {
+	for (u32 i = 0; i < textureFieldCount; i++) {
 		if (textureFields[i].uniformLocation == location) {
 			textureFields[i].texture = texture;
 		}
 	}
 }
-void Material::setTextureByUnit(unsigned int unit, Texture* texture) {
-	for (uint i = 0; i < textureFieldCount; i++) {
+void Material::setTextureByUnit(u32 unit, Texture* texture) {
+	for (u32 i = 0; i < textureFieldCount; i++) {
 		if (textureFields[i].textureUnit == unit) {
 			textureFields[i].texture = texture;
 		}
@@ -183,7 +183,7 @@ void Material::use() {
 	}
 	uniformBuffer->bindLayout(0);
 	// Texture Uniform Samplers
-	for (uint i = 0; i < textureFieldCount; i++) {
+	for (u32 i = 0; i < textureFieldCount; i++) {
 		if (textureFields[i].texture == nullptr) continue;
 		glActiveTexture(GL_TEXTURE0 + textureFields[i].textureUnit);
 		textureFields[i].texture->bind();
@@ -206,7 +206,7 @@ void Material::setupFields() {
 void Material::initializeUniformBuffer() {
 	ShaderUniformBufferLayoutFieldInfo* uniformField = nullptr;
 	ShaderProgramMetaInfo* info = specializedProgram->parentShader->info;
-	for (uint i = 0; i < info->programFieldCount; i++) {
+	for (u32 i = 0; i < info->programFieldCount; i++) {
 		if (info->programFields[i]->fieldType == ShaderFieldType::UniformBufferLayout) {
 			ShaderUniformBufferLayoutFieldInfo* field = (ShaderUniformBufferLayoutFieldInfo*) info->programFields[i];
 			if (field->binding == 10) {
@@ -231,7 +231,7 @@ void Material::initializeTextureFields() {
 	// copy fields
 	textureFieldCount = texFields.count;
 	textureFields = new TextureField[textureFieldCount];
-	for (uint i = 0; i < textureFieldCount; i++) {
+	for (u32 i = 0; i < textureFieldCount; i++) {
 		textureFields[i] = texFields[i];
 	}
 }
@@ -241,9 +241,9 @@ void Material::reloadTextureFields() {
 	fetchTextureFields(texFields);
 
 	TextureField* nTextureFields = new TextureField[texFields.count];
-	for (uint i = 0; i < texFields.count; i++) {
+	for (u32 i = 0; i < texFields.count; i++) {
 		TextureField nField = texFields[i];
-		uint existingIndex;
+		u32 existingIndex;
 		for (existingIndex = 0; existingIndex < textureFieldCount; existingIndex++) {
 			if (textureFields[existingIndex].name == nField.name) break;
 		}
@@ -262,7 +262,7 @@ void Material::fetchTextureFields(SimpleList<TextureField>& texFields) {
 	ShaderProgramMetaInfo* info = specializedProgram->parentShader->info;
 
 	// pass for explicit texture units first
-	for (uint i = 0; i < info->programFieldCount; i++) {
+	for (u32 i = 0; i < info->programFieldCount; i++) {
 		if (info->programFields[i]->fieldType == ShaderFieldType::UniformLayout) {
 			ShaderUniformLayoutFieldInfo* layoutField = (ShaderUniformLayoutFieldInfo*) info->programFields[i];
 			if (layoutField->type & GLSL_IS_SAMPLER) {
@@ -272,15 +272,15 @@ void Material::fetchTextureFields(SimpleList<TextureField>& texFields) {
 	}
 
 	// pass for implicit texture units
-	for (uint fieldIndex = 0; fieldIndex < info->programFieldCount; fieldIndex++) {
+	for (u32 fieldIndex = 0; fieldIndex < info->programFieldCount; fieldIndex++) {
 		if (info->programFields[fieldIndex]->fieldType == ShaderFieldType::Uniform) {
 			ShaderNativeTypeFieldInfo* nativeField = (ShaderNativeTypeFieldInfo*) info->programFields[fieldIndex];
 			if (nativeField->type & GLSL_IS_SAMPLER) {
-				uint texUnit;
+				u32 texUnit;
 				GLint maxTexUnit;
 				glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTexUnit);
-				for (texUnit = 0; texUnit < (unsigned int) maxTexUnit; texUnit++) {
-					uint i;
+				for (texUnit = 0; texUnit < (u32) maxTexUnit; texUnit++) {
+					u32 i;
 					for (i = 0; i < texFields.count; i++) {
 						if (texFields[i].textureUnit == texUnit) break;
 					}
@@ -291,7 +291,7 @@ void Material::fetchTextureFields(SimpleList<TextureField>& texFields) {
 				if (texUnit != maxTexUnit) { // Free unit found
 					GLuint uniformLocation = specializedProgram->getUniformLocation(nativeField->name);
 					texFields.add({nativeField->name, uniformLocation, texUnit, nullptr});
-					specializedProgram->loadInt(uniformLocation, (int) texUnit);
+					specializedProgram->loadInt(uniformLocation, (i32) texUnit);
 				}
 			}
 		}

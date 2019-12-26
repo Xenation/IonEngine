@@ -20,9 +20,9 @@ void SceneEditor::drawGui() {
 	ImGui::PlotLines("", manager->getUpdateTimesPtr(), 300, 0, '\0', 0.0f, manager->getMaxUpdateTime());
 	ImGui::Text("Max Update Time: %.6fms", manager->getMaxUpdateTime() * 1000);
 	ImGui::Unindent();
-	unsigned int counted = 0;
+	u32 counted = 0;
 	HollowSet<Entity*>* entities = manager->getEntitiesSet();
-	for (unsigned int i = 0; i < entities->capacity && counted < entities->count; i++) {
+	for (u32 i = 0; i < entities->capacity && counted < entities->count; i++) {
 		if ((*entities)[i] == nullptr || (*entities)[i]->getParent() != nullptr) continue;
 		drawGui((*entities)[i]);
 		counted++;
@@ -32,7 +32,7 @@ void SceneEditor::drawGui() {
 void SceneEditor::drawGui(Entity* entity) {
 	std::string editIded("Edit##" + std::to_string(entity->id));
 
-	unsigned int childCount = entity->childCount();
+	u32 childCount = entity->childCount();
 	if (childCount != 0) {
 		std::string entityName = entity->name + std::string("##") + std::to_string(entity->id);
 		if (ImGui::TreeNode(entityName.c_str())) {
@@ -45,7 +45,7 @@ void SceneEditor::drawGui(Entity* entity) {
 					delete editor;
 				}
 			}
-			for (unsigned int i = 0; i < childCount; i++) {
+			for (u32 i = 0; i < childCount; i++) {
 				drawGui(entity->getChild(i));
 			}
 			ImGui::TreePop();

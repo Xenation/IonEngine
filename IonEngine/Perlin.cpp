@@ -7,9 +7,9 @@ using namespace IonEngine;
 
 
 double IonEngine::perlind(double x, double y, double z) {
-	int xi = floorToInt(x) & 255;
-	int yi = floorToInt(y) & 255;
-	int zi = floorToInt(z) & 255;
+	i32 xi = floorToInt(x) & 255;
+	i32 yi = floorToInt(y) & 255;
+	i32 zi = floorToInt(z) & 255;
 
 	x -= floorToInt(x);
 	y -= floorToInt(y);
@@ -19,12 +19,12 @@ double IonEngine::perlind(double x, double y, double z) {
 	double v = faded(y);
 	double w = faded(z);
 
-	int A = perlinPermutationDoubled[xi] + yi;
-	int AA = perlinPermutationDoubled[A] + zi;
-	int AB = perlinPermutationDoubled[A + 1] + zi;
-	int B = perlinPermutationDoubled[xi + 1] + yi;
-	int BA = perlinPermutationDoubled[B] + zi;
-	int BB = perlinPermutationDoubled[B + 1] + zi;
+	i32 A = perlinPermutationDoubled[xi] + yi;
+	i32 AA = perlinPermutationDoubled[A] + zi;
+	i32 AB = perlinPermutationDoubled[A + 1] + zi;
+	i32 B = perlinPermutationDoubled[xi + 1] + yi;
+	i32 BA = perlinPermutationDoubled[B] + zi;
+	i32 BB = perlinPermutationDoubled[B + 1] + zi;
 
 	return lerpd(
 		lerpd(
@@ -45,9 +45,9 @@ double IonEngine::perlind(double x, double y, double z) {
 }
 
 float IonEngine::perlinf(float x, float y, float z) {
-	int xi = floorToInt(x) & 255;
-	int yi = floorToInt(y) & 255;
-	int zi = floorToInt(z) & 255;
+	i32 xi = floorToInt(x) & 255;
+	i32 yi = floorToInt(y) & 255;
+	i32 zi = floorToInt(z) & 255;
 
 	x -= floorToInt(x);
 	y -= floorToInt(y);
@@ -57,12 +57,12 @@ float IonEngine::perlinf(float x, float y, float z) {
 	float v = fadef(y);
 	float w = fadef(z);
 
-	int A = perlinPermutationDoubled[xi] + yi;
-	int AA = perlinPermutationDoubled[A] + zi;
-	int AB = perlinPermutationDoubled[A + 1] + zi;
-	int B = perlinPermutationDoubled[xi + 1] + yi;
-	int BA = perlinPermutationDoubled[B] + zi;
-	int BB = perlinPermutationDoubled[B + 1] + zi;
+	i32 A = perlinPermutationDoubled[xi] + yi;
+	i32 AA = perlinPermutationDoubled[A] + zi;
+	i32 AB = perlinPermutationDoubled[A + 1] + zi;
+	i32 B = perlinPermutationDoubled[xi + 1] + yi;
+	i32 BA = perlinPermutationDoubled[B] + zi;
+	i32 BB = perlinPermutationDoubled[B + 1] + zi;
 
 	return lerpf(
 		lerpf(
@@ -82,11 +82,11 @@ float IonEngine::perlinf(float x, float y, float z) {
 		w);
 }
 
-float IonEngine::perlinFBM(float x, float y, float z, int octaves, float lacunarity, float gain) {
+float IonEngine::perlinFBM(float x, float y, float z, u32 octaves, float lacunarity, float gain) {
 	float noise = perlinf(x, y, z);
 	float amp = gain;
 	float freq = lacunarity;
-	for (int i = 1; i < octaves; i++) {
+	for (u32 i = 1; i < octaves; i++) {
 		noise += perlinf(x * freq, y * freq, z * freq) * amp;
 		amp *= gain;
 		freq *= lacunarity;

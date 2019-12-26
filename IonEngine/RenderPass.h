@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include "XMath.h"
-#include "XTypes.h"
 #include "HollowSet.h"
 #include "SimpleSet.h"
 
@@ -33,9 +32,9 @@ namespace IonEngine {
 		virtual void onShadersInitialized() {}
 		virtual void prepareFrame() {}
 		virtual void prepare() {}
-		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers);
+		virtual void render(Camera* camera, const SimpleSet<u32>& visibleRenderers);
 		virtual void finish() {}
-		virtual void onResize(uint width, uint height) {}
+		virtual void onResize(u32 width, u32 height) {}
 
 	protected:
 		Pipeline* pipeline;
@@ -47,7 +46,7 @@ namespace IonEngine {
 		~RenderPassLightAssign();
 
 		virtual void onShadersInitialized() override;
-		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
+		virtual void render(Camera* camera, const SimpleSet<u32>& visibleRenderers) override;
 
 	private:
 		ComputeShader* assignShader;
@@ -64,7 +63,7 @@ namespace IonEngine {
 		~RenderPassShadows();
 
 		virtual void onShadersInitialized() override;
-		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
+		virtual void render(Camera* camera, const SimpleSet<u32>& visibleRenderers) override;
 
 	private:
 		HollowSet<Renderer*>& renderers;
@@ -72,14 +71,14 @@ namespace IonEngine {
 
 	class RenderPassOpaque : public RenderPass {
 	public:
-		RenderPassOpaque(const char* name, Pipeline* pipeline, unsigned int width, unsigned int height, unsigned int samples);
+		RenderPassOpaque(const char* name, Pipeline* pipeline, u32 width, u32 height, u32 samples);
 		~RenderPassOpaque();
 
 		virtual void onShadersInitialized() override;
 		virtual void prepareFrame() override;
 		virtual void prepare() override;
 		virtual void finish() override;
-		virtual void onResize(unsigned int width, unsigned int height) override;
+		virtual void onResize(u32 width, u32 height) override;
 
 	private:
 		Material* deferredMaterial;
@@ -95,7 +94,7 @@ namespace IonEngine {
 		~RenderPassSkybox();
 
 		virtual void onShadersInitialized() override;
-		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
+		virtual void render(Camera* camera, const SimpleSet<u32>& visibleRenderers) override;
 
 		SpecializedShaderProgram* getProceduralSkyShader() { return proceduralSkySpecShader; }
 
@@ -118,8 +117,8 @@ namespace IonEngine {
 		RenderPassPostprocess(const char* name, Pipeline* pipeline, Framebuffer* renderBuffer);
 		~RenderPassPostprocess();
 
-		virtual void render(Camera* camera, const SimpleSet<unsigned int>& visibleRenderers) override;
-		virtual void onResize(uint width, uint height) override;
+		virtual void render(Camera* camera, const SimpleSet<u32>& visibleRenderers) override;
+		virtual void onResize(u32 width, u32 height) override;
 
 	private:
 		Framebuffer* renderBuffer;

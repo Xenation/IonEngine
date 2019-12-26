@@ -7,7 +7,7 @@ using namespace IonEngine;
 
 float Time::time = 0.f;
 float Time::deltaTime = 0.f;
-int Time::frameCount = 0;
+u32 Time::frameCount = 0;
 
 high_resolution_clock::time_point Time::startTime = high_resolution_clock::now();
 high_resolution_clock::time_point Time::currentTime = high_resolution_clock::now();
@@ -42,6 +42,6 @@ float Time::endTimeMesure() {
 	return dt;
 }
 
-int Time::getInstantFPS() {
-	return (int) (1.0f / deltaTime);
+u32 Time::getInstantFPS() {
+	return static_cast<u32>(1.0f / deltaTime);
 }

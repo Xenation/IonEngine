@@ -15,6 +15,6 @@ namespace IonEngine::Editor {
 		virtual void drawGui();
 
 	private:
-		unsigned int id = 0;
+		u32 id = 0;
 	};
 }

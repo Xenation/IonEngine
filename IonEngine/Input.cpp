@@ -26,11 +26,11 @@ Vec2f Input::mouseDelta = {INFINITY, INFINITY};
 
 
 void Input::PollEvents() {
-	for (unsigned int i = 0; i < KEY_STATES_SIZE; i++) {
+	for (u32 i = 0; i < KEY_STATES_SIZE; i++) {
 		keyDownStates[i] = false;
 		keyUpStates[i] = false;
 	}
-	for (unsigned int i = 0; i < MOUSE_STATES_SIZE; i++) {
+	for (u32 i = 0; i < MOUSE_STATES_SIZE; i++) {
 		mouseDownStates[i] = false;
 		mouseUpStates[i] = false;
 	}
@@ -58,23 +58,23 @@ bool Input::getKeyUp(KeyCode keyCode) {
 }
 
 bool Input::getMouseDown(MouseButton btn) {
-	return getMouseDown((int) btn);
+	return getMouseDown((i32) btn);
 }
-bool Input::getMouseDown(int btnCode) {
+bool Input::getMouseDown(i32 btnCode) {
 	return mouseDownStates[btnCode];
 }
 
 bool Input::getMousePressed(MouseButton btn) {
-	return getMousePressed((int) btn);
+	return getMousePressed((i32) btn);
 }
-bool Input::getMousePressed(int btnCode) {
+bool Input::getMousePressed(i32 btnCode) {
 	return mousePressedStates[btnCode];
 }
 
 bool Input::getMouseUp(MouseButton btn) {
-	return getMouseUp((int) btn);
+	return getMouseUp((i32) btn);
 }
-bool Input::getMouseUp(int btnCode) {
+bool Input::getMouseUp(i32 btnCode) {
 	return mouseUpStates[btnCode];
 }
 

@@ -23,7 +23,7 @@ namespace IonEngine {
 		struct TextureField {
 			std::string name;
 			GLuint uniformLocation;
-			uint textureUnit;
+			u32 textureUnit;
 			Texture* texture;
 		};
 
@@ -36,37 +36,37 @@ namespace IonEngine {
 		Material(std::string name, SpecializedShaderProgram* specializedProgram);
 		~Material();
 
-		void setField(unsigned int index, bool value);
-		void setField(unsigned int index, int value);
-		void setField(unsigned int index, unsigned int value);
-		void setField(unsigned int index, float value);
-		void setField(unsigned int index, double value);
-		void setField(unsigned int index, Vec2f value);
-		void setField(unsigned int index, Vec3f value);
-		void setField(unsigned int index, Vec4f value);
-		void setField(unsigned int index, Color value);
-		void setField(unsigned int index, Matrix4x4f value);
-		void setField(unsigned int index, Vec2i value);
-		void setField(unsigned int index, Vec3i value);
-		void setField(unsigned int index, Vec4i value);
-		void setField(unsigned int index, unsigned int arrayIndex, bool value);
-		void setField(unsigned int index, unsigned int arrayIndex, int value);
-		void setField(unsigned int index, unsigned int arrayIndex, unsigned int value);
-		void setField(unsigned int index, unsigned int arrayIndex, float value);
-		void setField(unsigned int index, unsigned int arrayIndex, double value);
-		void setField(unsigned int index, unsigned int arrayIndex, Vec2f value);
-		void setField(unsigned int index, unsigned int arrayIndex, Vec3f value);
-		void setField(unsigned int index, unsigned int arrayIndex, Vec4f value);
-		void setField(unsigned int index, unsigned int arrayIndex, Color value);
-		void setField(unsigned int index, unsigned int arrayIndex, Matrix4x4f value);
-		void setField(unsigned int index, unsigned int arrayIndex, Vec2i value);
-		void setField(unsigned int index, unsigned int arrayIndex, Vec3i value);
-		void setField(unsigned int index, unsigned int arrayIndex, Vec4i value);
+		void setField(u32 index, bool value);
+		void setField(u32 index, i32 value);
+		void setField(u32 index, u32 value);
+		void setField(u32 index, float value);
+		void setField(u32 index, double value);
+		void setField(u32 index, Vec2f value);
+		void setField(u32 index, Vec3f value);
+		void setField(u32 index, Vec4f value);
+		void setField(u32 index, Color value);
+		void setField(u32 index, Matrix4x4f value);
+		void setField(u32 index, Vec2i value);
+		void setField(u32 index, Vec3i value);
+		void setField(u32 index, Vec4i value);
+		void setField(u32 index, u32 arrayIndex, bool value);
+		void setField(u32 index, u32 arrayIndex, i32 value);
+		void setField(u32 index, u32 arrayIndex, u32 value);
+		void setField(u32 index, u32 arrayIndex, float value);
+		void setField(u32 index, u32 arrayIndex, double value);
+		void setField(u32 index, u32 arrayIndex, Vec2f value);
+		void setField(u32 index, u32 arrayIndex, Vec3f value);
+		void setField(u32 index, u32 arrayIndex, Vec4f value);
+		void setField(u32 index, u32 arrayIndex, Color value);
+		void setField(u32 index, u32 arrayIndex, Matrix4x4f value);
+		void setField(u32 index, u32 arrayIndex, Vec2i value);
+		void setField(u32 index, u32 arrayIndex, Vec3i value);
+		void setField(u32 index, u32 arrayIndex, Vec4i value);
 		GLuint getTextureLocation(std::string uniformName);
-		void setTextureByLocation(unsigned int location, Texture* texture);
-		void setTextureByUnit(unsigned int unit, Texture* texture);
+		void setTextureByLocation(u32 location, Texture* texture);
+		void setTextureByUnit(u32 unit, Texture* texture);
 
-		TextureField* getTextureFields(unsigned int& count) { count = textureFieldCount; return textureFields; }
+		TextureField* getTextureFields(u32& count) { count = textureFieldCount; return textureFields; }
 		UniformLayout* getUniformLayout() { return uniformLayout; }
 		void markFieldChanged() { fieldsExpired = true; }
 
@@ -80,9 +80,9 @@ namespace IonEngine {
 		UniformBuffer* uniformBuffer;
 		UniformLayout* uniformLayout;
 		TextureField* textureFields = nullptr;
-		uint textureFieldCount = 0;
-		unsigned int idInProgram = 0;
-		unsigned int idInMaterialStore = 0;
+		u32 textureFieldCount = 0;
+		u32 idInProgram = 0;
+		u32 idInMaterialStore = 0;
 		bool fieldsExpired = true;
 
 		void setupFields();

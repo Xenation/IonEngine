@@ -11,9 +11,6 @@
     <Filter Include="Source Files\Engine\Render">
       <UniqueIdentifier>{2fdfd41c-4f96-4dc7-853e-6e660fd9483a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\Render\Core">
-      <UniqueIdentifier>{db34ade5-3d46-414f-85a2-d0a41b3b759f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Engine\Entity">
       <UniqueIdentifier>{91fddb46-e802-4937-86e9-c22a57dd4839}</UniqueIdentifier>
     </Filter>
@@ -22,9 +19,6 @@
     </Filter>
     <Filter Include="Source Files\Engine\Utils">
       <UniqueIdentifier>{ec2c53cb-76f7-44ad-88a6-0684b21a7bb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\External">
-      <UniqueIdentifier>{78cd02f1-1885-42dd-878d-062f3e2bc1c9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Engine\Render\Shader">
       <UniqueIdentifier>{7f9d265d-fc81-40b9-b8e6-1df80d3a01a6}</UniqueIdentifier>
@@ -42,9 +36,6 @@
     <Filter Include="Header Files\Engine\Render">
       <UniqueIdentifier>{227327f5-c625-4261-a5c6-f04f804541dd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Engine\Render\Core">
-      <UniqueIdentifier>{e65c0470-014a-4374-8619-7d9424d7d02f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Engine\Entity">
       <UniqueIdentifier>{5900b9b1-f528-4da8-976d-9eeaa1997990}</UniqueIdentifier>
     </Filter>
@@ -53,9 +44,6 @@
     </Filter>
     <Filter Include="Header Files\Engine\Utils">
       <UniqueIdentifier>{36b7da28-2fb9-411c-8841-a3542d4d7d62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\External">
-      <UniqueIdentifier>{e08634af-6a24-4f73-9bb3-b665c7422d1b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Engine\Render\Shader">
       <UniqueIdentifier>{a34ebef1-1e23-4994-972e-cdf4d123bdd0}</UniqueIdentifier>
@@ -90,6 +78,15 @@
     </Filter>
     <Filter Include="Source Files\Engine\Editor\Windows">
       <UniqueIdentifier>{7d56cd03-9758-424a-ac72-d1bd7afa0df8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Engine\Math">
+      <UniqueIdentifier>{af5b4912-951a-4cbf-a11c-301252ac34a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\External">
+      <UniqueIdentifier>{deeb0666-7d49-4f5d-a295-dc0188c0e2e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\External">
+      <UniqueIdentifier>{a6dbe955-75a2-4b34-8da9-d1c32cf27601}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -141,29 +138,8 @@
     <ClCompile Include="XMath.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="ext\gl3w.c">
-      <Filter>Source Files\Engine\Render\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\imgui.cpp">
-      <Filter>Source Files\External</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\imgui_demo.cpp">
-      <Filter>Source Files\External</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\imgui_draw.cpp">
-      <Filter>Source Files\External</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\imgui_widgets.cpp">
-      <Filter>Source Files\External</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\imgui_impl_opengl3.cpp">
-      <Filter>Source Files\External</Filter>
-    </ClCompile>
-    <ClCompile Include="ext\imgui_impl_glfw.cpp">
-      <Filter>Source Files\External</Filter>
     </ClCompile>
     <ClCompile Include="UniformBuffer.cpp">
       <Filter>Source Files\Engine\Render</Filter>
@@ -306,6 +282,27 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Source Files\Engine\Render</Filter>
     </ClCompile>
+    <ClCompile Include="ext\gl3w.c">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\imgui.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\imgui_demo.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\imgui_draw.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\imgui_impl_glfw.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
+    <ClCompile Include="ext\imgui_widgets.cpp">
+      <Filter>Source Files\External</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Debug.h">
@@ -362,9 +359,6 @@
     <ClInclude Include="NoclipController.h">
       <Filter>Header Files\Engine\Entity\Components</Filter>
     </ClInclude>
-    <ClInclude Include="XMath.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Perlin.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -377,38 +371,8 @@
     <ClInclude Include="XMathHash.h">
       <Filter>Header Files\Engine\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ext\gl3w.h">
-      <Filter>Header Files\Engine\Render\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\glcorearb.h">
-      <Filter>Header Files\Engine\Render\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\imconfig.h">
-      <Filter>Header Files\External</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\imgui.h">
-      <Filter>Header Files\External</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\imgui_internal.h">
-      <Filter>Header Files\External</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\imstb_rectpack.h">
-      <Filter>Header Files\External</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\imstb_textedit.h">
-      <Filter>Header Files\External</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\imstb_truetype.h">
-      <Filter>Header Files\External</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\imgui_impl_opengl3.h">
-      <Filter>Header Files\External</Filter>
-    </ClInclude>
-    <ClInclude Include="ext\imgui_impl_glfw.h">
-      <Filter>Header Files\External</Filter>
     </ClInclude>
     <ClInclude Include="UniformBuffer.h">
       <Filter>Header Files\Engine\Render</Filter>
@@ -554,13 +518,58 @@
     <ClInclude Include="ComputeShader.h">
       <Filter>Header Files\Engine\Render\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="ext\tiny_obj_loader.h">
-      <Filter>Header Files\External</Filter>
-    </ClInclude>
     <ClInclude Include="Skybox.h">
       <Filter>Header Files\Engine\Render</Filter>
     </ClInclude>
+    <ClInclude Include="Shared.h">
+      <Filter>Header Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="XMath.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="VecTmpl.h">
+      <Filter>Header Files\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vec.h">
+      <Filter>Header Files\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="VecPlus.h">
+      <Filter>Header Files\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="IMath.h">
+      <Filter>Header Files\Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\gl3w.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\imconfig.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\imgui.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\imgui_impl_glfw.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\imgui_impl_opengl3.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\imgui_internal.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\imstb_rectpack.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\imstb_textedit.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\imstb_truetype.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
     <ClInclude Include="ext\stb_image.h">
+      <Filter>Header Files\External</Filter>
+    </ClInclude>
+    <ClInclude Include="ext\tiny_obj_loader.h">
       <Filter>Header Files\External</Filter>
     </ClInclude>
   </ItemGroup>

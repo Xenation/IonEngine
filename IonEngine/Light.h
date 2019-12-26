@@ -7,20 +7,20 @@ namespace IonEngine {
 	class Mesh;
 
 	struct LightType {
-		static constexpr unsigned int DirectionalId = 0;
+		static constexpr u32 DirectionalId = 0;
 		static const LightType*const Directional;
-		static constexpr unsigned int PointId = 1;
+		static constexpr u32 PointId = 1;
 		static const LightType*const Point;
-		static constexpr unsigned int SpotId = 2;
+		static constexpr u32 SpotId = 2;
 		static const LightType*const Spot;
 
-		const unsigned int id = 0;
+		const u32 id = 0;
 		Mesh*const cullingMesh = nullptr;
 
 	public:
-		LightType(unsigned int id, Mesh* mesh) : id(id), cullingMesh(mesh) {}
+		LightType(u32 id, Mesh* mesh) : id(id), cullingMesh(mesh) {}
 
-		static constexpr const LightType* fromId(unsigned int id) {
+		static constexpr const LightType* fromId(u32 id) {
 			switch (id) {
 			case LightType::DirectionalId:
 				return LightType::Directional;

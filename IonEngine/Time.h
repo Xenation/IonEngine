@@ -7,13 +7,13 @@ namespace IonEngine {
 	public:
 		static float time;
 		static float deltaTime;
-		static int frameCount;
+		static u32 frameCount;
 
 		static void computeFrameTimes();
 		static float getExactTime();
 		static void beginTimeMesure();
 		static float endTimeMesure();
-		static int getInstantFPS();
+		static u32 getInstantFPS();
 
 		Time() = delete;
 		Time(const Time&) = delete;

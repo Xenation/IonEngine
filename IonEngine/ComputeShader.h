@@ -24,6 +24,6 @@ namespace IonEngine {
 		bool loaded = false;
 
 		void loadProgram(bool silent = false);
-		void loadComputeShaderFromSourceArray(const char** src, unsigned int srcPiecesCount, bool silent = false);
+		void loadComputeShaderFromSourceArray(const char** src, u32 srcPiecesCount, bool silent = false);
 	};
 }

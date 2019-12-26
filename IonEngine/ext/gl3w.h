@@ -29,7 +29,6 @@
 #ifndef __gl3w_h_
 #define __gl3w_h_
 
-#define NOMINMAX // NOT GENERATED, ADDED: avoids min max name conflict
 #include "glcorearb.h"
 
 #ifndef __gl_h_

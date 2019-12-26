@@ -169,11 +169,11 @@ std::string ShaderPreprocessor::readRawSource(fsys::path filePath) {
 	}
 	
 	file.seekg(0, file.end);
-	uint sourceSize = (uint) file.tellg();
+	u32 sourceSize = (u32) file.tellg();
 	char* source = new char[sourceSize + 1];
 	file.seekg(0, file.beg);
 	file.read(source, sourceSize);
-	uint charCount = (uint) file.gcount();
+	u32 charCount = (u32) file.gcount();
 	source[charCount] = '\0';
 	file.close();
 
@@ -206,19 +206,19 @@ void ShaderPreprocessor::removeComments(ShaderFile* shaderFile) {
 	std::smatch commentsMatch;
 	std::string currentStr(shaderFile->rawSource);
 
-	SimpleList<uint> startIndices(8, 8);
-	SimpleList<uint> lengths(8, 8);
+	SimpleList<u32> startIndices(8, 8);
+	SimpleList<u32> lengths(8, 8);
 
-	uint positionOffset = 0;
+	u32 positionOffset = 0;
 	while (std::regex_search(currentStr, commentsMatch, commentsRegex)) {
-		positionOffset += (uint) commentsMatch.position(0);
+		positionOffset += (u32) commentsMatch.position(0);
 		startIndices.add(positionOffset);
-		lengths.add((uint) commentsMatch.length(0));
+		lengths.add((u32) commentsMatch.length(0));
 		currentStr = commentsMatch.suffix();
 	}
 
 	// Source erase
-	for (uint i = 0; i < startIndices.count; i++) {
+	for (u32 i = 0; i < startIndices.count; i++) {
 		shaderFile->rawSource.erase(startIndices[i], lengths[i]);
 	}
 }
@@ -235,7 +235,7 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 		std::string passesString = passesMatch[1].str();
 		std::smatch passMatch;
 		// count
-		uint passCount = 0;
+		u32 passCount = 0;
 		while (std::regex_search(passesString, passMatch, passRegex)) {
 			passCount++;
 			passesString = passMatch.suffix();
@@ -247,7 +247,7 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 		programInfo->passCount = passCount;
 		// store
 		passesString = std::string(passesMatch[1].str());
-		uint index = 0;
+		u32 index = 0;
 		while (std::regex_search(passesString, passMatch, passRegex)) {
 			programInfo->passNames[index] = passMatch[0].str();
 			index++;
@@ -272,35 +272,35 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 	SimpleList<ShaderFieldInfo*> fields(8, 8);
 
 	findRegexMatches(extractedSource, inLayoutRegex, inLayoutMatches);
-	for (uint i = 0; i < inLayoutMatches.count; i++) {
+	for (u32 i = 0; i < inLayoutMatches.count; i++) {
 		std::smatch& inLayoutMatch = inLayoutMatches[i];
 		fields.add(new ShaderInLayoutFieldInfo(ShaderFieldType::InLayout, inLayoutMatch[3], glslTypeFromString(inLayoutMatch[2]), std::stoi(inLayoutMatch[1])));
 	}
 	removeMatches(extractedSource, inLayoutMatches);
 
 	findRegexMatches(extractedSource, inRegex, inMatches);
-	for (uint i = 0; i < inMatches.count; i++) {
+	for (u32 i = 0; i < inMatches.count; i++) {
 		std::smatch& inMatch = inMatches[i];
 		fields.add(new ShaderNativeTypeFieldInfo(ShaderFieldType::In, inMatch[2], glslTypeFromString(inMatch[1])));
 	}
 	removeMatches(extractedSource, inMatches);
 
 	findRegexMatches(extractedSource, outRegex, outMatches);
-	for (uint i = 0; i < outMatches.count; i++) {
+	for (u32 i = 0; i < outMatches.count; i++) {
 		std::smatch& outMatch = outMatches[i];
 		fields.add(new ShaderNativeTypeFieldInfo(ShaderFieldType::Out, outMatch[2], glslTypeFromString(outMatch[1])));
 	}
 	removeMatches(extractedSource, outMatches);
 
 	findRegexMatches(extractedSource, uniformLayoutRegex, uniformLayoutMatches);
-	for (uint i = 0; i < uniformLayoutMatches.count; i++) {
+	for (u32 i = 0; i < uniformLayoutMatches.count; i++) {
 		std::smatch& uniformLayoutMatch = uniformLayoutMatches[i];
 		fields.add(new ShaderUniformLayoutFieldInfo(ShaderFieldType::UniformLayout, uniformLayoutMatch[3], glslTypeFromString(uniformLayoutMatch[2]), std::stoi(uniformLayoutMatch[1])));
 	}
 	removeMatches(extractedSource, uniformLayoutMatches);
 
 	findRegexMatches(extractedSource, uniformBufferLayoutRegex, uniformBufferLayoutMatches);
-	for (uint i = 0; i < uniformBufferLayoutMatches.count; i++) {
+	for (u32 i = 0; i < uniformBufferLayoutMatches.count; i++) {
 		std::smatch& uniformBufferLayoutMatch = uniformBufferLayoutMatches[i];
 		ShaderUniformBufferLayoutFieldInfo* uniformBufferLayoutInfo = new ShaderUniformBufferLayoutFieldInfo(ShaderFieldType::UniformBufferLayout, uniformBufferLayoutMatch[3], glslUniformLayoutTypeFromString(uniformBufferLayoutMatch[1]), std::stoi(uniformBufferLayoutMatch[2]));
 
@@ -315,7 +315,7 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 		}
 		uniformBufferLayoutInfo->subFields = new ShaderFieldInfo*[uniformBufferLayoutInfo->subFieldCount];
 		// Storing pass
-		uint subFieldIndex = 0;
+		u32 subFieldIndex = 0;
 		currentContents = contents;
 		while (std::regex_search(currentContents, uniformLayoutMemberMatch, nativeTypeRegex)) {
 			if (uniformLayoutMemberMatch[4].length() != 0) { // Is an array
@@ -330,7 +330,7 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 	removeMatches(extractedSource, uniformBufferLayoutMatches);
 
 	findRegexMatches(extractedSource, uniformRegex, uniformMatches);
-	for (uint i = 0; i < uniformMatches.count; i++) {
+	for (u32 i = 0; i < uniformMatches.count; i++) {
 		std::smatch& uniformMatch = uniformMatches[i];
 		fields.add(new ShaderNativeTypeFieldInfo(ShaderFieldType::Uniform, uniformMatch[2], glslTypeFromString(uniformMatch[1])));
 	}
@@ -338,7 +338,7 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 
 	shaderFile->info.shaderFieldCount = fields.count;
 	shaderFile->info.shaderFields = new ShaderFieldInfo*[shaderFile->info.shaderFieldCount];
-	for (uint i = 0; i < fields.count; i++) {
+	for (u32 i = 0; i < fields.count; i++) {
 		shaderFile->info.shaderFields[i] = fields[i];
 	}
 
@@ -347,15 +347,15 @@ void ShaderPreprocessor::extractMetaInfo(ShaderFile* shaderFile) {
 void ShaderPreprocessor::findRegexMatches(std::string& str, std::regex& reg, SimpleList<std::smatch>& matches) {
 	std::smatch match;
 
-	unsigned int positionOffset = 0;
+	u32 positionOffset = 0;
 
 	std::string::const_iterator start = str.cbegin();
 	std::string::const_iterator end = str.cend();
 
 	while (std::regex_search(start, end, match, reg)) {
 		matches.add(match);
-		unsigned int position = (unsigned int) match.position(0);
-		unsigned int length = (unsigned int) match.length(0);
+		u32 position = (u32) match.position(0);
+		u32 length = (u32) match.length(0);
 		start += position + length;
 	}
 }
@@ -371,17 +371,17 @@ void ShaderPreprocessor::mergeMetaInfo() {
 	// Merge in list
 	SimpleList<ShaderFieldInfo*> programFields(8, 16);
 	if (vs != nullptr) {
-		for (uint i = 0; i < vs->info.shaderFieldCount; i++) {
+		for (u32 i = 0; i < vs->info.shaderFieldCount; i++) {
 			ShaderFieldInfo* fieldInfo = vs->info.shaderFields[i];
 			if (fieldInfo->fieldType == ShaderFieldType::In || fieldInfo->fieldType == ShaderFieldType::Out) continue;
 			programFields.add(fieldInfo->copy());
 		}
 	}
 	if (tcs != nullptr) {
-		for (uint i = 0; i < tcs->info.shaderFieldCount; i++) {
+		for (u32 i = 0; i < tcs->info.shaderFieldCount; i++) {
 			ShaderFieldInfo* fieldInfo = tcs->info.shaderFields[i];
 			if (fieldInfo->fieldType == ShaderFieldType::In || fieldInfo->fieldType == ShaderFieldType::Out) continue;
-			uint pIndex = 0;
+			u32 pIndex = 0;
 			for (; pIndex < programFields.count; pIndex++) {
 				if (programFields[pIndex]->name == fieldInfo->name) break;
 			}
@@ -391,10 +391,10 @@ void ShaderPreprocessor::mergeMetaInfo() {
 		}
 	}
 	if (tes != nullptr) {
-		for (uint i = 0; i < tes->info.shaderFieldCount; i++) {
+		for (u32 i = 0; i < tes->info.shaderFieldCount; i++) {
 			ShaderFieldInfo* fieldInfo = tes->info.shaderFields[i];
 			if (fieldInfo->fieldType == ShaderFieldType::In || fieldInfo->fieldType == ShaderFieldType::Out) continue;
-			uint pIndex = 0;
+			u32 pIndex = 0;
 			for (; pIndex < programFields.count; pIndex++) {
 				if (programFields[pIndex]->name == fieldInfo->name) break;
 			}
@@ -404,10 +404,10 @@ void ShaderPreprocessor::mergeMetaInfo() {
 		}
 	}
 	if (gs != nullptr) {
-		for (uint i = 0; i < gs->info.shaderFieldCount; i++) {
+		for (u32 i = 0; i < gs->info.shaderFieldCount; i++) {
 			ShaderFieldInfo* fieldInfo = gs->info.shaderFields[i];
 			if (fieldInfo->fieldType == ShaderFieldType::In || fieldInfo->fieldType == ShaderFieldType::Out) continue;
-			uint pIndex = 0;
+			u32 pIndex = 0;
 			for (; pIndex < programFields.count; pIndex++) {
 				if (programFields[pIndex]->name == fieldInfo->name) break;
 			}
@@ -417,10 +417,10 @@ void ShaderPreprocessor::mergeMetaInfo() {
 		}
 	}
 	if (fs != nullptr) {
-		for (uint i = 0; i < fs->info.shaderFieldCount; i++) {
+		for (u32 i = 0; i < fs->info.shaderFieldCount; i++) {
 			ShaderFieldInfo* fieldInfo = fs->info.shaderFields[i];
 			if (fieldInfo->fieldType == ShaderFieldType::In || fieldInfo->fieldType == ShaderFieldType::Out) continue;
-			uint pIndex = 0;
+			u32 pIndex = 0;
 			for (; pIndex < programFields.count; pIndex++) {
 				if (programFields[pIndex]->name == fieldInfo->name) break;
 			}
@@ -433,7 +433,7 @@ void ShaderPreprocessor::mergeMetaInfo() {
 	// Copy to array
 	programInfo->programFieldCount = programFields.count;
 	programInfo->programFields = new ShaderFieldInfo*[programInfo->programFieldCount];
-	for (uint i = 0; i < programFields.count; i++) {
+	for (u32 i = 0; i < programFields.count; i++) {
 		programInfo->programFields[i] = programFields[i];
 	}
 }
@@ -450,9 +450,9 @@ void ShaderPreprocessor::generateSpecializedSources(ShaderFile* shaderFile, Spec
 		shaderFile->rawSource.copy(specializedSources[0].noVersionSource, shaderFile->rawSource.size());
 	} else {
 		specializedSources = new SpecializedShaderSource[programInfo->passCount];
-		for (uint passIndex = 0; passIndex < programInfo->passCount; passIndex++) {
+		for (u32 passIndex = 0; passIndex < programInfo->passCount; passIndex++) {
 			std::string passUpper = std::string(programInfo->passNames[passIndex]);
-			for (char& c : passUpper) { c = toupper((unsigned char) c); }
+			for (char& c : passUpper) { c = (char) toupper(c); }
 			std::string defines("\n#define PASS_" + passUpper + "\n");
 			specializedSources[passIndex].version = new char[shaderFile->version.size() + 1];
 			specializedSources[passIndex].version[shaderFile->version.size()] = '\0';

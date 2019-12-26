@@ -32,8 +32,8 @@ void StatsEditor::drawGui() {
 	}
 	if (viewBounds) {
 		HollowSet<Renderer*>* renderers = Engine::pipeline->getRenderersSet();
-		unsigned int counted = 0;
-		for (unsigned int i = 0; i < renderers->capacity && counted < renderers->count; i++) {
+		u32 counted = 0;
+		for (u32 i = 0; i < renderers->capacity && counted < renderers->count; i++) {
 			if ((*renderers)[i] == nullptr) continue;
 			VisualDebug::drawWireCube((*renderers)[i]->getWorldBounds().getCenter(), (*renderers)[i]->getWorldBounds().getSize(), Color::yellow);
 			counted++;

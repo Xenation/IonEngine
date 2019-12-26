@@ -33,7 +33,7 @@ ShadowAtlas::~ShadowAtlas() {
 void ShadowAtlas::initializeShaders() {
 	ShaderProgram* depthShader = ShaderProgram::find("depth");
 	depthShader->load();
-	unsigned int count;
+	u32 count;
 	depthSpecShader = depthShader->getAllSpecializedPrograms(count)[0];
 	depthMaterial = new Material("Depth", depthSpecShader);
 	worldToLightMatrixLocation = depthSpecShader->getUniformLocation("worldToLightMatrix");
@@ -52,7 +52,7 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 	depthSpecShader->use();
 	depthMaterial->use();
 	// Directional Casters
-	for (unsigned int ci = 0; ci < directionalCasters.count; ci++) {
+	for (u32 ci = 0; ci < directionalCasters.count; ci++) {
 		#ifdef _DEBUG
 		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei) directionalCasters[ci]->light->entity->name.length(), directionalCasters[ci]->light->entity->name.c_str());
 		#endif
@@ -63,8 +63,8 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 		glViewport(viewport.x, viewport.y, viewport.z, viewport.w);
 		depthSpecShader->loadMatrix4x4f(worldToLightMatrixLocation, directionalCasters[ci]->updateWorldToLightMatrix(camera));
 		// Render scene depth
-		unsigned int counted = 0;
-		for (unsigned int i = 0; i < renderers.capacity && counted < renderers.count; i++) {
+		u32 counted = 0;
+		for (u32 i = 0; i < renderers.capacity && counted < renderers.count; i++) {
 			if (renderers[i] == nullptr) continue;
 			depthSpecShader->loadMatrix4x4f(localToWorldMatrixLocation, renderers[i]->entity->transform->getLocalToWorldMatrix());
 			renderers[i]->renderNoUniform();
@@ -75,7 +75,7 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 		#endif
 	}
 	// Spot Casters
-	for (unsigned int ci = 0; ci < spotCasters.count; ci++) {
+	for (u32 ci = 0; ci < spotCasters.count; ci++) {
 		#ifdef _DEBUG
 		glPushDebugGroup(GL_DEBUG_SOURCE_APPLICATION, 0, (GLsizei) spotCasters[ci]->light->entity->name.length(), spotCasters[ci]->light->entity->name.c_str());
 		#endif
@@ -86,8 +86,8 @@ void ShadowAtlas::renderShadows(Camera* camera, HollowSet<Renderer*>& renderers)
 		glViewport(viewport.x, viewport.y, viewport.z, viewport.w);
 		depthSpecShader->loadMatrix4x4f(worldToLightMatrixLocation, spotCasters[ci]->updateWorldToLightMatrix(camera));
 		// Render scene depth
-		unsigned int counted = 0;
-		for (unsigned int i = 0; i < renderers.capacity && counted < renderers.count; i++) {
+		u32 counted = 0;
+		for (u32 i = 0; i < renderers.capacity && counted < renderers.count; i++) {
 			if (renderers[i] == nullptr) continue;
 			depthSpecShader->loadMatrix4x4f(localToWorldMatrixLocation, renderers[i]->entity->transform->getLocalToWorldMatrix());
 			renderers[i]->renderNoUniform();
@@ -135,10 +135,10 @@ Texture* ShadowAtlas::getTexture() {
 	return shadowAtlas->getTexture(0);
 }
 
-Vec4i ShadowAtlas::getDirectionalViewport(unsigned int index) {
+Vec4i ShadowAtlas::getDirectionalViewport(u32 index) {
 	return Vec4i(index * 2048, 2048, 2048, 2048);
 }
 
-Vec4i ShadowAtlas::getSpotViewport(unsigned int index) {
+Vec4i ShadowAtlas::getSpotViewport(u32 index) {
 	return Vec4i(index * 512, 1536 - (index / 8) * 512, 512, 512);
 }

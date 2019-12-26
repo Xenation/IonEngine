@@ -7,7 +7,7 @@
 struct GLFWwindow;
 
 namespace IonEngine {
-	enum KeyCode : int {
+	enum KeyCode : i32 {
 		UNKNOWN = -1,
 		SPACE = 32,
 		APOSTROPHE = 39,
@@ -132,7 +132,7 @@ namespace IonEngine {
 		LAST = MENU
 	};
 
-	enum class MouseButton : int {
+	enum class MouseButton : i32 {
 		BTN0 = 0,
 		BTN1 = 1,
 		BTN2 = 2,
@@ -171,11 +171,11 @@ namespace IonEngine {
 		static bool getKeyPressed(KeyCode keyCode);
 		static bool getKeyUp(KeyCode keyCode);
 		static bool getMouseDown(MouseButton mouseBtn);
-		static bool getMouseDown(int mouseBtn);
+		static bool getMouseDown(i32 mouseBtn);
 		static bool getMousePressed(MouseButton mouseBtn);
-		static bool getMousePressed(int mouseBtn);
+		static bool getMousePressed(i32 mouseBtn);
 		static bool getMouseUp(MouseButton mouseBtn);
-		static bool getMouseUp(int mouseBtn);
+		static bool getMouseUp(i32 mouseBtn);
 
 		static const char* getKeyCodeString(KeyCode keyCode);
 

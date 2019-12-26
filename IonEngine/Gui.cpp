@@ -37,11 +37,11 @@ Gui::~Gui() {
 }
 
 
-unsigned int Gui::registerEditorWindow(EditorWindow* editor) {
+u32 Gui::registerEditorWindow(EditorWindow* editor) {
 	return editorWindows.add(editor);
 }
 
-void Gui::unregisterEditorWindow(unsigned int id) {
+void Gui::unregisterEditorWindow(u32 id) {
 	editorWindows.remove(id);
 }
 
@@ -108,8 +108,8 @@ void Gui::onUpdate() {
 		}
 		ImGui::EndMainMenuBar();
 
-		unsigned int counted = 0;
-		for (unsigned int i = 0; i < editorWindows.capacity && counted < editorWindows.count; i++) {
+		u32 counted = 0;
+		for (u32 i = 0; i < editorWindows.capacity && counted < editorWindows.count; i++) {
 			if (editorWindows[i] == nullptr) continue;
 			editorWindows[i]->render();
 			counted++;

@@ -59,7 +59,7 @@ void MeshRenderer::recalculateWorldBounds() {
 	corners[7] = transf.multPoint(Vec3f(meshBounds.max.x, meshBounds.max.y, meshBounds.min.z));
 
 	worldBounds = Boxf(Vec3f::positiveInfinity, Vec3f::negativeInfinity);
-	for (int i = 0; i < 8; i++) {
+	for (u32 i = 0; i < 8; i++) {
 		if (corners[i].x < worldBounds.min.x) {
 			worldBounds.min.x = corners[i].x;
 		}

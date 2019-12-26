@@ -21,6 +21,6 @@ namespace IonEngine::Editor {
 	private:
 		static HollowSet<EntityEditor*> activeEditors;
 
-		unsigned int id;
+		u32 id;
 	};
 }

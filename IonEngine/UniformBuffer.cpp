@@ -6,14 +6,14 @@ using namespace IonEngine;
 
 
 
-UniformLayout::UniformLayout(unsigned int binding, ShaderUniformBufferLayoutFieldInfo* bufferField)
+UniformLayout::UniformLayout(u32 binding, ShaderUniformBufferLayoutFieldInfo* bufferField)
 	: UniformLayout(binding, bufferField->layoutType, bufferField->subFieldCount, bufferField->getMembersTypes()) {
 	memberNames = new std::string[bufferField->subFieldCount];
-	for (uint i = 0; i < bufferField->subFieldCount; i++) {
+	for (u32 i = 0; i < bufferField->subFieldCount; i++) {
 		memberNames[i] = bufferField->subFields[i]->name;
 	}
-	memberArraySizes = new unsigned int[bufferField->subFieldCount];
-	for (unsigned int i = 0; i < bufferField->subFieldCount; i++) {
+	memberArraySizes = new u32[bufferField->subFieldCount];
+	for (u32 i = 0; i < bufferField->subFieldCount; i++) {
 		if (bufferField->subFields[i]->fieldType == ShaderFieldType::NativeTypeArray) {
 			memberArraySizes[i] = ((ShaderNativeTypeArrayFieldInfo*) bufferField->subFields[i])->arraySize;
 		} else {
@@ -22,14 +22,14 @@ UniformLayout::UniformLayout(unsigned int binding, ShaderUniformBufferLayoutFiel
 	}
 }
 
-UniformLayout::UniformLayout(unsigned int binding, unsigned int memberCount, GLSLType* members)
+UniformLayout::UniformLayout(u32 binding, u32 memberCount, GLSLType* members)
 	: UniformLayout(binding, UniformLayoutType::STD140, memberCount, members) {
 
 }
 
-UniformLayout::UniformLayout(unsigned int binding, UniformLayoutType type, unsigned int memberCount, GLSLType* members)
+UniformLayout::UniformLayout(u32 binding, UniformLayoutType type, u32 memberCount, GLSLType* members)
 	: binding(binding), type(type), memberCount(memberCount), members(members) {
-	membersOffsets = new unsigned int[memberCount];
+	membersOffsets = new u32[memberCount];
 }
 
 UniformLayout::~UniformLayout() {
@@ -43,108 +43,108 @@ UniformLayout::~UniformLayout() {
 	}
 }
 
-void UniformLayout::setMember(unsigned int index, bool value) {
+void UniformLayout::setMember(u32 index, bool value) {
 	unsigned char bytes[4]{value, 0, 0, 0}; // Required because booleans are 4bytes in glsl
 	setMember(index, bytes, 4);
 }
-void UniformLayout::setMember(unsigned int index, int value) {
-	setMember(index, (unsigned char*) &value, 4);
+void UniformLayout::setMember(u32 index, i32 value) {
+	setMember(index, (u8*) &value, 4);
 }
-void UniformLayout::setMember(unsigned int index, unsigned int value) {
-	setMember(index, (unsigned char*) &value, 4);
+void UniformLayout::setMember(u32 index, u32 value) {
+	setMember(index, (u8*) &value, 4);
 }
-void UniformLayout::setMember(unsigned int index, float value) {
-	setMember(index, (unsigned char*) &value, 4);
+void UniformLayout::setMember(u32 index, float value) {
+	setMember(index, (u8*) &value, 4);
 }
-void UniformLayout::setMember(unsigned int index, double value) {
-	setMember(index, (unsigned char*) &value, 8);
+void UniformLayout::setMember(u32 index, double value) {
+	setMember(index, (u8*) &value, 8);
 }
-void UniformLayout::setMember(unsigned int index, Vec2f value) {
-	setMember(index, (unsigned char*) &value, 8);
+void UniformLayout::setMember(u32 index, Vec2f value) {
+	setMember(index, (u8*) &value, 8);
 }
-void UniformLayout::setMember(unsigned int index, Vec3f value) {
-	setMember(index, (unsigned char*) &value, 12);
+void UniformLayout::setMember(u32 index, Vec3f value) {
+	setMember(index, (u8*) &value, 12);
 }
-void UniformLayout::setMember(unsigned int index, Vec4f value) {
-	setMember(index, (unsigned char*) &value, 16);
+void UniformLayout::setMember(u32 index, Vec4f value) {
+	setMember(index, (u8*) &value, 16);
 }
-void UniformLayout::setMember(unsigned int index, Vec2i value) {
-	setMember(index, (unsigned char*) &value, 8);
+void UniformLayout::setMember(u32 index, Vec2i value) {
+	setMember(index, (u8*) &value, 8);
 }
-void UniformLayout::setMember(unsigned int index, Vec3i value) {
-	setMember(index, (unsigned char*) &value, 12);
+void UniformLayout::setMember(u32 index, Vec3i value) {
+	setMember(index, (u8*) &value, 12);
 }
-void UniformLayout::setMember(unsigned int index, Vec4i value) {
-	setMember(index, (unsigned char*) &value, 16);
+void UniformLayout::setMember(u32 index, Vec4i value) {
+	setMember(index, (u8*) &value, 16);
 }
-void UniformLayout::setMember(unsigned int index, Matrix4x4f value) {
-	setMember(index, (unsigned char*) &value, 64);
+void UniformLayout::setMember(u32 index, Matrix4x4f value) {
+	setMember(index, (u8*) &value, 64);
 }
-void UniformLayout::setMember(unsigned int index, bool value, unsigned int arrayIndex) {
-	unsigned char bytes[4]{value, 0, 0, 0}; // Required because booleans are 4bytes in glsl
+void UniformLayout::setMember(u32 index, bool value, u32 arrayIndex) {
+	u8 bytes[4]{value, 0, 0, 0}; // Required because booleans are 4bytes in glsl
 	setMember(index, arrayIndex, bytes, 4);
 }
-void UniformLayout::setMember(unsigned int index, int value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 4);
+void UniformLayout::setMember(u32 index, i32 value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 4);
 }
-void UniformLayout::setMember(unsigned int index, unsigned int value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 4);
+void UniformLayout::setMember(u32 index, u32 value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 4);
 }
-void UniformLayout::setMember(unsigned int index, float value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 4);
+void UniformLayout::setMember(u32 index, float value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 4);
 }
-void UniformLayout::setMember(unsigned int index, double value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 8);
+void UniformLayout::setMember(u32 index, double value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 8);
 }
-void UniformLayout::setMember(unsigned int index, Vec2f value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 8);
+void UniformLayout::setMember(u32 index, Vec2f value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 8);
 }
-void UniformLayout::setMember(unsigned int index, Vec3f value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 12);
+void UniformLayout::setMember(u32 index, Vec3f value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 12);
 }
-void UniformLayout::setMember(unsigned int index, Vec4f value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 16);
+void UniformLayout::setMember(u32 index, Vec4f value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 16);
 }
-void UniformLayout::setMember(unsigned int index, Vec2i value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 8);
+void UniformLayout::setMember(u32 index, Vec2i value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 8);
 }
-void UniformLayout::setMember(unsigned int index, Vec3i value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 12);
+void UniformLayout::setMember(u32 index, Vec3i value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 12);
 }
-void UniformLayout::setMember(unsigned int index, Vec4i value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 16);
+void UniformLayout::setMember(u32 index, Vec4i value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 16);
 }
-void UniformLayout::setMember(unsigned int index, Matrix4x4f value, unsigned int arrayIndex) {
-	setMember(index, arrayIndex, (unsigned char*) &value, 64);
+void UniformLayout::setMember(u32 index, Matrix4x4f value, u32 arrayIndex) {
+	setMember(index, arrayIndex, (u8*) &value, 64);
 }
 
-void UniformLayout::setMember(unsigned int index, unsigned char* bytes, unsigned int byteSize) {
-	for (unsigned int i = 0; i < byteSize; i++) {
+void UniformLayout::setMember(u32 index, u8* bytes, u32 byteSize) {
+	for (u32 i = 0; i < byteSize; i++) {
 		buffer[membersOffsets[index] + i] = bytes[i];
 	}
 }
 
-void UniformLayout::setMember(unsigned int index, unsigned int arrayIndex, unsigned char* bytes, unsigned int byteSize) {
+void UniformLayout::setMember(u32 index, u32 arrayIndex, u8* bytes, u32 byteSize) {
 	// TODO not flexible, expects a std140 layout
-	unsigned int stride = byteSize;
+	u32 stride = byteSize;
 	if (stride % 16 != 0) {
 		stride += 16 - stride % 16;
 	}
-	for (unsigned int i = 0; i < byteSize; i++) {
+	for (u32 i = 0; i < byteSize; i++) {
 		buffer[membersOffsets[index] + stride * arrayIndex + i] = bytes[i];
 	}
 }
 
 void UniformLayout::copyFrom(UniformLayout& layout) {
-	for (unsigned int i = 0; i < memberCount; i++) {
+	for (u32 i = 0; i < memberCount; i++) {
 		int toCopy = layout.indexOf(memberNames[i]);
 		if (toCopy != -1) {
 			// TODO perform type conversions when necessary (int to float, ...)
 			setMember(toCopy, layout.getBytes(toCopy), glslTypeSize(layout.members[toCopy]));
 		} else {
 			// Init at zero
-			unsigned int size = glslTypeSize(members[i]);
-			for (unsigned int bi = 0; bi < membersOffsets[i] + size; bi++) {
+			u32 size = glslTypeSize(members[i]);
+			for (u32 bi = 0; bi < membersOffsets[i] + size; bi++) {
 				buffer[bi] = 0;
 			}
 		}
@@ -152,7 +152,7 @@ void UniformLayout::copyFrom(UniformLayout& layout) {
 }
 
 int UniformLayout::indexOf(std::string memberName) const {
-	for (unsigned int i = 0; i < memberCount; i++) {
+	for (u32 i = 0; i < memberCount; i++) {
 		if (memberName == memberNames[i]) {
 			return i;
 		}
@@ -160,31 +160,31 @@ int UniformLayout::indexOf(std::string memberName) const {
 	return -1;
 }
 
-unsigned char* UniformLayout::getBytes(unsigned int index) const {
+u8* UniformLayout::getBytes(u32 index) const {
 	return &buffer[membersOffsets[index]];
 }
 
-unsigned char* UniformLayout::getBytes(unsigned int index, unsigned int arrayIndex) const {
+u8* UniformLayout::getBytes(u32 index, u32 arrayIndex) const {
 	return &buffer[membersOffsets[index] + memberArraySizes[index] * 16]; // TODO unsafe, expects array elem stride to be 16 (vec4) but might be bigger
 }
 
 void UniformLayout::computeLayoutOffsets() {
-	unsigned int currentOffset = 0;
+	u32 currentOffset = 0;
 	switch (type) {
 	case UniformLayoutType::STD140:
-		for (unsigned int i = 0; i < memberCount; i++) {
-			unsigned int baseAlignment;
+		for (u32 i = 0; i < memberCount; i++) {
+			u32 baseAlignment;
 			if (memberArraySizes != nullptr && memberArraySizes[i] != 0) {
 				baseAlignment = glslTypeBaseAlignment(members[i], memberArraySizes[i]);
 			} else {
 				baseAlignment = glslTypeBaseAlignment(members[i]);
 			}
-			unsigned int unaligment = currentOffset % baseAlignment;
+			u32 unaligment = currentOffset % baseAlignment;
 			if (unaligment > 0) {
 				currentOffset += baseAlignment - unaligment;
 			}
 			membersOffsets[i] = currentOffset;
-			unsigned int memberSize = glslstd140TypeSize(members[i], (memberArraySizes != nullptr) ? memberArraySizes[i] : 0);
+			u32 memberSize = glslstd140TypeSize(members[i], (memberArraySizes != nullptr) ? memberArraySizes[i] : 0);
 			currentOffset += memberSize;
 		}
 		size = currentOffset;
@@ -212,26 +212,26 @@ UniformBuffer::~UniformBuffer() {
 }
 
 
-void UniformBuffer::setLayouts(unsigned int layoutCount, UniformLayout* layouts) {
-	unsigned int currentOffset = 0;
-	for (unsigned int i = 0; i < layoutCount; i++) {
+void UniformBuffer::setLayouts(u32 layoutCount, UniformLayout* layouts) {
+	u32 currentOffset = 0;
+	for (u32 i = 0; i < layoutCount; i++) {
 		layouts[i].offset = currentOffset;
 		layouts[i].computeLayoutOffsets();
 		currentOffset += layouts[i].size;
 		currentOffset = glGetUniformBufferAlignment(currentOffset);
 	}
 
-	unsigned int nBufferSize = layouts[layoutCount - 1].offset + layouts[layoutCount - 1].size;
-	unsigned char* nBuffer = nullptr;
+	u32 nBufferSize = layouts[layoutCount - 1].offset + layouts[layoutCount - 1].size;
+	u8* nBuffer = nullptr;
 	bool resized = false;
 	if (nBufferSize != bufferSize) {
-		nBuffer = new unsigned char[nBufferSize];
+		nBuffer = new u8[nBufferSize];
 		resized = true;
 	} else {
 		nBuffer = buffer;
 	}
 
-	for (unsigned int i = 0; i < layoutCount; i++) {
+	for (u32 i = 0; i < layoutCount; i++) {
 		layouts[i].buffer = nBuffer + layouts[i].offset;
 		UniformLayout* existingLayout = findLayout(layouts[i].binding);
 		if (existingLayout != nullptr) {
@@ -254,30 +254,30 @@ void UniformBuffer::setLayouts(unsigned int layoutCount, UniformLayout* layouts)
 	}
 }
 
-UniformLayout& UniformBuffer::getLayout(unsigned int index) {
+UniformLayout& UniformBuffer::getLayout(u32 index) {
 	return layouts[index];
 }
 
 UniformLayout* UniformBuffer::findLayout(GLuint binding) {
-	for (unsigned int i = 0; i < layoutCount; i++) {
+	for (u32 i = 0; i < layoutCount; i++) {
 		if (layouts[i].binding == binding) return &layouts[i];
 	}
 	return nullptr;
 }
 
-void UniformBuffer::updateLayout(unsigned int index) { // TODO make a version of this function to update a single member of a layout
+void UniformBuffer::updateLayout(u32 index) { // TODO make a version of this function to update a single member of a layout
 	if (!loadedToGL) {
 		Debug::logError("UniformBuffer", "Trying to update a layout from a buffer not yet uploaded!");
 		return;
 	}
-	unsigned int offset = layouts[index].offset;
-	unsigned int size = layouts[index].size;
+	u32 offset = layouts[index].offset;
+	u32 size = layouts[index].size;
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	glBufferSubData(GL_UNIFORM_BUFFER, offset, size, layouts[index].buffer);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void UniformBuffer::bindLayout(unsigned int index) {
+void UniformBuffer::bindLayout(u32 index) {
 	if (!loadedToGL) {
 		Debug::logError("UniformBuffer", "Trying to bind a layout from a buffer not yet uploaded!");
 		return;
@@ -295,7 +295,7 @@ void UniformBuffer::uploadToGL() {
 	glBufferData(GL_UNIFORM_BUFFER, bufferSize, buffer, GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-	for (unsigned int i = 0; i < layoutCount; i++) {
+	for (u32 i = 0; i < layoutCount; i++) {
 		glBindBufferRange(GL_UNIFORM_BUFFER, layouts[i].binding, ubo, layouts[i].offset, layouts[i].size);
 	}
 

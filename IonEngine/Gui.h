@@ -17,8 +17,8 @@ namespace IonEngine::Editor {
 		Gui(Window* window);
 		~Gui();
 
-		unsigned int registerEditorWindow(EditorWindow* editor);
-		void unregisterEditorWindow(unsigned int id);
+		u32 registerEditorWindow(EditorWindow* editor);
+		void unregisterEditorWindow(u32 id);
 
 		void initialize();
 		void update();

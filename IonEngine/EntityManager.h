@@ -16,7 +16,7 @@ namespace IonEngine {
 
 		HollowSet<Entity*>* getEntitiesSet() { return &entities; }
 		float* getUpdateTimesPtr() { return updateTimes; }
-		unsigned int getUpdateTimesCount() { return 300; }
+		u32 getUpdateTimesCount() { return 300; }
 		float getMaxUpdateTime() { return maxUpdateTime; }
 
 	private:

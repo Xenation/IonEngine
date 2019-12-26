@@ -10,12 +10,12 @@ namespace IonEngine {
 		static Random* i;
 
 		/// <value>The seed of this Random Number Generator</value>
-		const int seed;
+		const u32 seed;
 
 		/// <summary>
 		/// Creates a Random Number Generator with the given seed
 		/// </summary>
-		Random(unsigned int seed);
+		Random(u32 seed);
 		/// <summary>
 		/// Creates a Random Number Generator with the given seed
 		/// </summary>
@@ -33,7 +33,7 @@ namespace IonEngine {
 		/// <summary>
 		/// Returns a random int between min (included) and max (excluded)
 		/// </summary>
-		int range(int min, int max);
+		int range(i32 min, i32 max);
 		/// <summary>
 		/// Returns a random 2D point inside a circle of the given radius
 		/// </summary>
