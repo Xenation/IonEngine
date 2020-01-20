@@ -638,5 +638,17 @@
     <ClInclude Include="Core\Allocation\AllocUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Collections\BulkDenseSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\BulkSparseSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\CappedDenseSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\CappedSparseSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

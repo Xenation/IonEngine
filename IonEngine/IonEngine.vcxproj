@@ -345,8 +345,12 @@
     <ClInclude Include="ConsoleWindow.h" />
     <ClInclude Include="ConvexMeshCollider.h" />
     <ClInclude Include="Core\Allocation\AllocUtils.h" />
+    <ClInclude Include="Core\Collections\BulkDenseSet.h" />
     <ClInclude Include="Core\Collections\BulkHollowSet.h" />
     <ClInclude Include="Core\Collections\BulkSet.h" />
+    <ClInclude Include="Core\Collections\BulkSparseSet.h" />
+    <ClInclude Include="Core\Collections\CappedDenseSet.h" />
+    <ClInclude Include="Core\Collections\CappedSparseSet.h" />
     <ClInclude Include="Core\Collections\CollectionParams.h" />
     <ClInclude Include="Core\Collections\SimpleList.h" />
     <ClInclude Include="Core\Debug.h" />
