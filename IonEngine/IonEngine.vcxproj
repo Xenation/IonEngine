@@ -151,6 +151,14 @@
     <ClCompile Include="ext\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Core\Collections\BulkList.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\CappedList.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Core\Collections\VirtualBuffer.h">
       <SubType>
       </SubType>
