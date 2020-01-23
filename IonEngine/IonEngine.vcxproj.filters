@@ -8,24 +8,6 @@
     <Filter Include="Source Files\Engine">
       <UniqueIdentifier>{ccd53e4c-eb55-49a0-8c2b-f34f7b73dff1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Engine\Render">
-      <UniqueIdentifier>{2fdfd41c-4f96-4dc7-853e-6e660fd9483a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Entity">
-      <UniqueIdentifier>{91fddb46-e802-4937-86e9-c22a57dd4839}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Entity\Components">
-      <UniqueIdentifier>{105b76ab-31d7-4c8e-8dad-96bdfc0999e0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Utils">
-      <UniqueIdentifier>{ec2c53cb-76f7-44ad-88a6-0684b21a7bb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Render\Shader">
-      <UniqueIdentifier>{7f9d265d-fc81-40b9-b8e6-1df80d3a01a6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Physics">
-      <UniqueIdentifier>{f79de6d6-d1dc-4266-bd07-b6c0bb80f57a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
@@ -33,54 +15,8 @@
     <Filter Include="Header Files\Engine">
       <UniqueIdentifier>{cf612ee8-bf38-4324-bbbe-c25c4340ab1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Engine\Render">
-      <UniqueIdentifier>{227327f5-c625-4261-a5c6-f04f804541dd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Entity">
-      <UniqueIdentifier>{5900b9b1-f528-4da8-976d-9eeaa1997990}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Entity\Components">
-      <UniqueIdentifier>{bc7fb3a2-7630-4577-b555-149498967beb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Engine\Utils">
       <UniqueIdentifier>{36b7da28-2fb9-411c-8841-a3542d4d7d62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Render\Shader">
-      <UniqueIdentifier>{a34ebef1-1e23-4994-972e-cdf4d123bdd0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Physics">
-      <UniqueIdentifier>{34f566a4-62f5-4adf-9033-1b8efa6aba1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms;glsl</Extensions>
-    </Filter>
-    <Filter Include="Header Files\Engine\Render\Lighting">
-      <UniqueIdentifier>{7dd27bda-c65d-439f-a0a5-a303daeb7f17}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Render\Lighting">
-      <UniqueIdentifier>{8faf4969-719d-48b2-8583-f1068355ec11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Editor">
-      <UniqueIdentifier>{a013750a-c41d-4815-840e-2c421b865610}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Editor">
-      <UniqueIdentifier>{f1094010-0b94-41b1-857d-3494a8499bf1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Editor\Components">
-      <UniqueIdentifier>{cd18309f-d1fa-4a18-8c0d-a63c27e5edb4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Editor\Components">
-      <UniqueIdentifier>{7c134825-1196-48a2-8778-1348bd55b464}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Editor\Windows">
-      <UniqueIdentifier>{346acadc-40a1-420a-9f43-99eec32d098f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Engine\Editor\Windows">
-      <UniqueIdentifier>{7d56cd03-9758-424a-ac72-d1bd7afa0df8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Math">
-      <UniqueIdentifier>{af5b4912-951a-4cbf-a11c-301252ac34a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\External">
       <UniqueIdentifier>{deeb0666-7d49-4f5d-a295-dc0188c0e2e6}</UniqueIdentifier>
@@ -94,200 +30,12 @@
     <Filter Include="Source Files\Engine\Core">
       <UniqueIdentifier>{2d6c3e88-de9b-4b45-a3f8-e3dedf13a393}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms;glsl</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityManager.cpp">
-      <Filter>Source Files\Engine\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\Engine\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Component.cpp">
-      <Filter>Source Files\Engine\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="Transform.cpp">
-      <Filter>Source Files\Engine\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files\Engine\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshRenderer.cpp">
-      <Filter>Source Files\Engine\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files\Engine\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Time.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Source Files\Engine\Entity</Filter>
-    </ClCompile>
-    <ClCompile Include="NoclipController.cpp">
-      <Filter>Source Files\Engine\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="XMath.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="UniformBuffer.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderPass.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="Gui.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>Source Files\Engine\Render\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderMetaInfo.cpp">
-      <Filter>Source Files\Engine\Render\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="SpecializedShaderProgram.cpp">
-      <Filter>Source Files\Engine\Render\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderProgram.cpp">
-      <Filter>Source Files\Engine\Render\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Framebuffer.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderPreprocessor.cpp">
-      <Filter>Source Files\Engine\Render\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="ParticleSystem.cpp">
-      <Filter>Source Files\Engine\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Rigidbody.cpp">
-      <Filter>Source Files\Engine\Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsWorld.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Collider.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="BoxCollider.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="SphereCollider.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshCollider.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="ConvexMeshCollider.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="ConcaveMeshCollider.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="BulletMesh.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Perlin.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="CompoundCollider.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="VisualDebug.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="PhysicsDebugger.cpp">
-      <Filter>Source Files\Engine\Physics</Filter>
-    </ClCompile>
-    <ClCompile Include="Random.cpp">
-      <Filter>Source Files\Engine\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="Light.cpp">
-      <Filter>Source Files\Engine\Render\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="LightManager.cpp">
-      <Filter>Source Files\Engine\Render\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshImporter.cpp">
-      <Filter>Source Files\Engine\Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseComponentInspector.cpp">
-      <Filter>Source Files\Engine\Editor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="TransformInspector.cpp">
-      <Filter>Source Files\Engine\Editor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshRendererInspector.cpp">
-      <Filter>Source Files\Engine\Editor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="EditorWindow.cpp">
-      <Filter>Source Files\Engine\Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityEditor.cpp">
-      <Filter>Source Files\Engine\Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="MaterialEditor.cpp">
-      <Filter>Source Files\Engine\Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="SceneEditor.cpp">
-      <Filter>Source Files\Engine\Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="StatsEditor.cpp">
-      <Filter>Source Files\Engine\Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="ConsoleWindow.cpp">
-      <Filter>Source Files\Engine\Editor\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="CameraInspector.cpp">
-      <Filter>Source Files\Engine\Editor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="NoclipControllerInspector.cpp">
-      <Filter>Source Files\Engine\Editor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="LightInspector.cpp">
-      <Filter>Source Files\Engine\Editor\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowCaster.cpp">
-      <Filter>Source Files\Engine\Render\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="ShadowAtlas.cpp">
-      <Filter>Source Files\Engine\Render\Lighting</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderStorageBuffer.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="AtomicCounterBuffer.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
-    <ClCompile Include="ComputeShader.cpp">
-      <Filter>Source Files\Engine\Render\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Skybox.cpp">
-      <Filter>Source Files\Engine\Render</Filter>
-    </ClCompile>
     <ClCompile Include="ext\gl3w.c">
       <Filter>Source Files\External</Filter>
     </ClCompile>
@@ -326,240 +74,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Debug.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Pipeline.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files\Engine\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityManager.h">
-      <Filter>Header Files\Engine\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Component.h">
-      <Filter>Header Files\Engine\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Header Files\Engine\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Header Files\Engine\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshRenderer.h">
-      <Filter>Header Files\Engine\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="HollowSet.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleList.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files\Engine\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Time.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Header Files\Engine\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="NoclipController.h">
-      <Filter>Header Files\Engine\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Perlin.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="GLUtils.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="ZOrder.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="XMathHash.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="UniformBuffer.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderPass.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Gui.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>Header Files\Engine\Render\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="XTypes.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderMetaInfo.h">
-      <Filter>Header Files\Engine\Render\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="SpecializedShaderProgram.h">
-      <Filter>Header Files\Engine\Render\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderProgram.h">
-      <Filter>Header Files\Engine\Render\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Framebuffer.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderPreprocessor.h">
-      <Filter>Header Files\Engine\Render\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="ParticleSystem.h">
-      <Filter>Header Files\Engine\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Rigidbody.h">
-      <Filter>Header Files\Engine\Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsWorld.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="BoxCollider.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="SphereCollider.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshCollider.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="ConvexMeshCollider.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="ConcaveMeshCollider.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="BulletMesh.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="CompoundCollider.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="VisualDebug.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="PhysicsDebugger.h">
-      <Filter>Header Files\Engine\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Random.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>Header Files\Engine\Render\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="LightManager.h">
-      <Filter>Header Files\Engine\Render\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshImporter.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="StringUtils.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleSet.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseComponentInspector.h">
-      <Filter>Header Files\Engine\Editor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformInspector.h">
-      <Filter>Header Files\Engine\Editor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshRendererInspector.h">
-      <Filter>Header Files\Engine\Editor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ComponentInspector.h">
-      <Filter>Header Files\Engine\Editor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="EditorWindow.h">
-      <Filter>Header Files\Engine\Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityEditor.h">
-      <Filter>Header Files\Engine\Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="MaterialEditor.h">
-      <Filter>Header Files\Engine\Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="SceneEditor.h">
-      <Filter>Header Files\Engine\Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="StatsEditor.h">
-      <Filter>Header Files\Engine\Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="ConsoleWindow.h">
-      <Filter>Header Files\Engine\Editor\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="CameraInspector.h">
-      <Filter>Header Files\Engine\Editor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="NoclipControllerInspector.h">
-      <Filter>Header Files\Engine\Editor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="LightInspector.h">
-      <Filter>Header Files\Engine\Editor\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowCaster.h">
-      <Filter>Header Files\Engine\Render\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="ShadowAtlas.h">
-      <Filter>Header Files\Engine\Render\Lighting</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderStorageBuffer.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="AtomicCounterBuffer.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="ComputeShader.h">
-      <Filter>Header Files\Engine\Render\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Skybox.h">
-      <Filter>Header Files\Engine\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Shared.h">
-      <Filter>Header Files\Engine\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="XMath.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="VecTmpl.h">
-      <Filter>Header Files\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec.h">
-      <Filter>Header Files\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="VecPlus.h">
-      <Filter>Header Files\Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="IMath.h">
-      <Filter>Header Files\Engine\Math</Filter>
-    </ClInclude>
     <ClInclude Include="ext\gl3w.h">
       <Filter>Header Files\External</Filter>
     </ClInclude>
@@ -623,16 +137,7 @@
     <ClInclude Include="Core\Utils\Strings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Collections\BulkHollowSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Collections\BulkSet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Collections\CollectionParams.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Collections\SimpleList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Allocation\AllocUtils.h">
@@ -648,6 +153,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Collections\CappedSparseSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shared.h">
+      <Filter>Header Files\Engine\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\VirtualBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

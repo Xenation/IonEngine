@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../Core/IonMath.h"
+#include "Core/IonMath.h"
 
 struct GLFWwindow;
 

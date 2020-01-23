@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 #include <typeinfo>
-#include "Collections/SimpleList.h"
+#include "Collections/CappedDenseSet.h"
 
 namespace IonEngine {
 	class Module;
@@ -9,7 +9,7 @@ namespace IonEngine {
 
 	class ModuleManager {
 	public:
-		ModuleManager(EngineCore* engine) : engine(engine), modules(8, 8) {}
+		ModuleManager(EngineCore* engine) : engine(engine) {}
 		~ModuleManager();
 		ModuleManager(const ModuleManager&) = delete;
 		void operator=(const ModuleManager&) = delete;
@@ -32,10 +32,10 @@ namespace IonEngine {
 
 		template<typename T, typename std::enable_if<std::is_base_of<Module, T>::value>::type* = nullptr>
 		void removeModule() {
-			for (u32 i = 0; i < modules.count; i++) {
-				if (typeid(*modules[i]) == typeid(T)) {
-					modules.removeAt(i);
-					delete modules[i];
+			for (Module*& mod : modules) {
+				if (typeid(*mod) == typeid(T)) {
+					modules.remove(&mod);
+					delete mod;
 					return;
 				}
 			}
@@ -43,15 +43,15 @@ namespace IonEngine {
 
 		template<typename T, typename std::enable_if<std::is_base_of<Module, T>::value>::type* = nullptr>
 		T* getModule() {
-			for (u32 i = 0; i < modules.count; i++) {
-				if (typeid(*modules[i]) == typeid(T)) return (T*) modules[i];
+			for (Module* mod : modules) {
+				if (typeid(*mod) == typeid(T)) return (T*) mod;
 			}
 			return nullptr;
 		}
 
 	private:
 		EngineCore*const engine;
-		SimpleList<Module*> modules;
+		CappedDenseSet<Module*, 32> modules;
 	};
 
 	class EngineCore {

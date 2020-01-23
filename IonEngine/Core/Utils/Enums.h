@@ -94,7 +94,7 @@ constexpr auto __generateValuesArray(const char* vaArgs) {
 				entry++;
 			}
 		} else if (numberStart == -2 && (isBase10Digit(vaArgs[i]) || vaArgs[i] == '+' || vaArgs[i] == '-')) { // New number start found
-			numberStart = i;
+			numberStart = static_cast<i32>(i);
 		} else if (numberStart == -3 && vaArgs[i] == ',') { // New entry reached
 			numberStart = -1;
 			entry++;
@@ -134,7 +134,7 @@ constexpr auto __generateNamesArray(const char* vaArgs) {
 				wordStart = -2;
 			}
 		} else if (wordStart == -1 && vaArgs[i] != ' ') { // New word start found
-			wordStart = i;
+			wordStart = static_cast<i32>(i);
 		} else if (wordStart == -2 && vaArgs[i] == ',') { // New entry start found
 			wordStart = -1;
 			entry++;
@@ -160,7 +160,7 @@ constexpr auto __generateNameHashesArray(const char* vaArgs) {
 	size_t i = 0;
 	while (vaArgs[i] != '\0') { // TODO handle tabs
 		if (wordStart >= 0 && (vaArgs[i] == ' ' || vaArgs[i] == '=' || vaArgs[i] == ',')) { // End of word found
-			hashes[entry] = crc64(vaArgs + wordStart, i - wordStart);
+			hashes[entry] = crc64(vaArgs + wordStart, static_cast<u32>(i) - static_cast<u32>(wordStart));
 			if (vaArgs[i] == ',') {
 				wordStart = -1;
 				entry++;
@@ -168,7 +168,7 @@ constexpr auto __generateNameHashesArray(const char* vaArgs) {
 				wordStart = -2;
 			}
 		} else if (wordStart == -1 && vaArgs[i] != ' ') { // New word start found
-			wordStart = i;
+			wordStart = static_cast<i32>(i);
 		} else if (wordStart == -2 && vaArgs[i] == ',') { // New entry start found
 			wordStart = -1;
 			entry++;
@@ -177,7 +177,7 @@ constexpr auto __generateNameHashesArray(const char* vaArgs) {
 	}
 
 	if (wordStart >= 0) { // Finishes with name character
-		hashes[entry] = crc64(vaArgs + wordStart, i - wordStart);
+		hashes[entry] = crc64(vaArgs + wordStart, static_cast<u32>(i) - static_cast<u32>(wordStart));
 	}
 
 	return hashes;

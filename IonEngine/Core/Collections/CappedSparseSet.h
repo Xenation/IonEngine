@@ -37,6 +37,9 @@ namespace IonEngine {
 		CappedSparseSet() : count(0), usedRange(1) {
 			slots[0].nextHole = 0;
 		}
+		~CappedSparseSet() {
+
+		}
 		CappedSparseSet(const CappedSparseSet&) = delete;
 		void operator=(const CappedSparseSet&) = delete;
 
@@ -119,6 +122,8 @@ namespace IonEngine {
 		union ItemSlot {
 			T item;
 			u32 nextHole;
+			ItemSlot() {}
+			~ItemSlot() {}
 		};
 		static constexpr size_t itemSize = sizeof(ItemSlot);
 		static constexpr u32 bitFieldSize = (N / 32) + ((N % 32 != 0) ? 1 : 0);

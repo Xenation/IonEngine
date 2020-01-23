@@ -1,3 +1,3 @@
 #pragma once
 
-#define BULK_VIRT_ALLOC_SIZE 1'000'000'000ull
+static constexpr size_t BULK_VIRT_ALLOC_SIZE = 1'000'000'000ull;

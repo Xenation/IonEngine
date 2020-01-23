@@ -19,12 +19,6 @@
     <Filter Include="Resource Files\shaders\test">
       <UniqueIdentifier>{7244f9b8-4996-4f55-83be-91ebbc4ef32d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Scenes">
-      <UniqueIdentifier>{959ce7a3-aef8-4b18-a9b7-ea1cb5bc85e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Scenes">
-      <UniqueIdentifier>{659ca7fd-d3b1-4cca-8e77-f6f7ab98b082}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource Files\shaders\postprocess_test">
       <UniqueIdentifier>{3edc77e7-2d63-4d91-819b-13587b0566a9}</UniqueIdentifier>
     </Filter>
@@ -51,26 +45,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestScene.cpp">
-      <Filter>Source Files\Scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="TestGame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestRotator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="TestScene.h">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
-    <ClInclude Include="TestGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestRotator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\particle_basic\fs.glsl">

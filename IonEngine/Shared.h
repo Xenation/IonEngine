@@ -4,7 +4,9 @@
 #define NOMINMAX
 
 #include "Core/Utils/IonTypes.h"
+#ifdef __cplusplus
 #include "Core/Utils/Strings.h"
 #include "Core/Utils/Enums.h"
 #include "Core/Allocation/AllocUtils.h"
 #include "Core/Debug.h"
+#endif

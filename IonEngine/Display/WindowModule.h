@@ -1,12 +1,12 @@
 ﻿#pragma once
-#include "../Core/Module.h"
-#include "../Core/IonMath.h"
+#include "Core/Module.h"
+#include "Core/IonMath.h"
 
 namespace IonEngine {
 	class Window;
 	enum class WindowState : u32;
-	template<typename T>
-	class BulkHollowSet;
+	template<typename T, u32 N>
+	class CappedSparseSet;
 
 	class WindowModule : Module {
 	public:
@@ -19,6 +19,6 @@ namespace IonEngine {
 		void poolEvents();
 
 	private:
-		BulkHollowSet<Window>* windows;
+		CappedSparseSet<Window, 16>* windows;
 	};
 }

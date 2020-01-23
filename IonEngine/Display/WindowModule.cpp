@@ -1,6 +1,6 @@
 ﻿#include "WindowModule.h"
 #include "Window.h"
-#include "../Core/Collections/BulkHollowSet.h"
+#include "Core/Collections/CappedSparseSet.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -23,7 +23,7 @@ WindowModule::WindowModule(EngineCore* engine) : Module(engine) {
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API); // TODO set conditionally
 
-	windows = new BulkHollowSet<Window>();
+	windows = new CappedSparseSet<Window, 16>();
 }
 
 WindowModule::~WindowModule() {

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "../Core/Module.h"
+#include "Core/Module.h"
 
 namespace IonEngine {
 	class RenderingModule : Module {

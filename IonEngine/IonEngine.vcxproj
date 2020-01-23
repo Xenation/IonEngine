@@ -1,21 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Development|Win32">
-      <Configuration>Development</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Development|x64">
       <Configuration>Development</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -33,25 +21,6 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -76,15 +45,6 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -95,70 +55,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)Bin\$(ProjectName)\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'">
-    <OutDir>$(SolutionDir)Bin\$(ProjectName)\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Bin\$(ProjectName)\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)Obj\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
-    <OutDir>$(SolutionDir)Bin\$(ProjectName)\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Bin\$(ProjectName)\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
+    <OutDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)Obj\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IntDir>$(SolutionDir)Obj\$(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Bin\$(ProjectName)\$(Configuration)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Obj\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\$(ProjectName)\</OutDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <PreprocessorDefinitions>_MBCS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>win32/glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <PreprocessorDefinitions>_MBCS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
-      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-    </ClCompile>
-    <Link>
-      <AdditionalDependencies>win32/glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -168,7 +76,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PreprocessorDefinitions>_MBCS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
@@ -187,35 +95,12 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_MBCS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <AdditionalDependencies>win64/glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <PostBuildEvent>
-      <Command>
-      </Command>
-    </PostBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <PreprocessorDefinitions>_MBCS;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
-      <DebugInformationFormat>None</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>win32/glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -231,7 +116,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_MBCS;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
       <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
@@ -246,23 +131,9 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AtomicCounterBuffer.cpp" />
-    <ClCompile Include="BaseComponentInspector.cpp" />
-    <ClCompile Include="BoxCollider.cpp" />
-    <ClCompile Include="BulletMesh.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraInspector.cpp" />
-    <ClCompile Include="Collider.cpp" />
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="CompoundCollider.cpp" />
-    <ClCompile Include="ComputeShader.cpp" />
-    <ClCompile Include="ConcaveMeshCollider.cpp" />
-    <ClCompile Include="ConsoleWindow.cpp" />
-    <ClCompile Include="ConvexMeshCollider.cpp" />
     <ClCompile Include="Core\Debug.cpp" />
     <ClCompile Include="Core\EngineCore.cpp" />
     <ClCompile Include="Core\IonMath.cpp" />
-    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Display\Window.cpp">
       <SubType>
       </SubType>
@@ -271,11 +142,6 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="EditorWindow.cpp" />
-    <ClCompile Include="Engine.cpp" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="EntityEditor.cpp" />
-    <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="ext\gl3w.c" />
     <ClCompile Include="ext\imgui.cpp" />
     <ClCompile Include="ext\imgui_demo.cpp" />
@@ -283,76 +149,18 @@
     <ClCompile Include="ext\imgui_impl_glfw.cpp" />
     <ClCompile Include="ext\imgui_impl_opengl3.cpp" />
     <ClCompile Include="ext\imgui_widgets.cpp" />
-    <ClCompile Include="Framebuffer.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Gui.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="Light.cpp" />
-    <ClCompile Include="LightInspector.cpp" />
-    <ClCompile Include="LightManager.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="MaterialEditor.cpp" />
-    <ClCompile Include="MeshCollider.cpp" />
-    <ClCompile Include="MeshImporter.cpp" />
-    <ClCompile Include="MeshRendererInspector.cpp" />
-    <ClCompile Include="NoclipControllerInspector.cpp" />
-    <ClCompile Include="ParticleSystem.cpp" />
-    <ClCompile Include="PhysicsDebugger.cpp" />
-    <ClCompile Include="PhysicsWorld.cpp" />
-    <ClCompile Include="Perlin.cpp" />
-    <ClCompile Include="Random.cpp" />
-    <ClCompile Include="RenderPass.cpp" />
-    <ClCompile Include="Rigidbody.cpp" />
-    <ClCompile Include="SceneEditor.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="ShaderMetaInfo.cpp" />
-    <ClCompile Include="ShaderPreprocessor.cpp" />
-    <ClCompile Include="ShaderStorageBuffer.cpp" />
-    <ClCompile Include="ShadowAtlas.cpp" />
-    <ClCompile Include="ShadowCaster.cpp" />
-    <ClCompile Include="Skybox.cpp" />
-    <ClCompile Include="SpecializedShaderProgram.cpp" />
-    <ClCompile Include="SphereCollider.cpp" />
-    <ClCompile Include="StatsEditor.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TransformInspector.cpp" />
-    <ClCompile Include="UniformBuffer.cpp" />
-    <ClCompile Include="VisualDebug.cpp" />
-    <ClCompile Include="XMath.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="MeshRenderer.cpp" />
-    <ClCompile Include="NoclipController.cpp" />
-    <ClCompile Include="Pipeline.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Time.cpp" />
-    <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AtomicCounterBuffer.h" />
-    <ClInclude Include="BaseComponentInspector.h" />
-    <ClInclude Include="BoxCollider.h" />
-    <ClInclude Include="BulletMesh.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="CameraInspector.h" />
-    <ClInclude Include="Collider.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="ComponentInspector.h" />
-    <ClInclude Include="CompoundCollider.h" />
-    <ClInclude Include="ComputeShader.h" />
-    <ClInclude Include="ConcaveMeshCollider.h" />
-    <ClInclude Include="ConsoleWindow.h" />
-    <ClInclude Include="ConvexMeshCollider.h" />
+    <ClInclude Include="Core\Collections\VirtualBuffer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Core\Allocation\AllocUtils.h" />
     <ClInclude Include="Core\Collections\BulkDenseSet.h" />
-    <ClInclude Include="Core\Collections\BulkHollowSet.h" />
-    <ClInclude Include="Core\Collections\BulkSet.h" />
     <ClInclude Include="Core\Collections\BulkSparseSet.h" />
     <ClInclude Include="Core\Collections\CappedDenseSet.h" />
     <ClInclude Include="Core\Collections\CappedSparseSet.h" />
     <ClInclude Include="Core\Collections\CollectionParams.h" />
-    <ClInclude Include="Core\Collections\SimpleList.h" />
     <ClInclude Include="Core\Debug.h" />
     <ClInclude Include="Core\EngineCore.h" />
     <ClInclude Include="Core\IonMath.h" />
@@ -363,7 +171,6 @@
     <ClInclude Include="Core\Utils\Enums.h" />
     <ClInclude Include="Core\Utils\IonTypes.h" />
     <ClInclude Include="Core\Utils\Strings.h" />
-    <ClInclude Include="Debug.h" />
     <ClInclude Include="Display\Window.h">
       <SubType>
       </SubType>
@@ -372,11 +179,6 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="EditorWindow.h" />
-    <ClInclude Include="Engine.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="EntityEditor.h" />
-    <ClInclude Include="EntityManager.h" />
     <ClInclude Include="ext\gl3w.h" />
     <ClInclude Include="ext\imconfig.h" />
     <ClInclude Include="ext\imgui.h" />
@@ -388,68 +190,11 @@
     <ClInclude Include="ext\imstb_truetype.h" />
     <ClInclude Include="ext\stb_image.h" />
     <ClInclude Include="ext\tiny_obj_loader.h" />
-    <ClInclude Include="Framebuffer.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GLUtils.h" />
-    <ClInclude Include="Gui.h" />
-    <ClInclude Include="HollowSet.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="Light.h" />
-    <ClInclude Include="LightInspector.h" />
-    <ClInclude Include="LightManager.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="MaterialEditor.h" />
-    <ClInclude Include="IMath.h" />
-    <ClInclude Include="MeshCollider.h" />
-    <ClInclude Include="MeshImporter.h" />
-    <ClInclude Include="MeshRendererInspector.h" />
-    <ClInclude Include="NoclipControllerInspector.h" />
-    <ClInclude Include="ParticleSystem.h" />
-    <ClInclude Include="Perlin.h" />
-    <ClInclude Include="PhysicsDebugger.h" />
-    <ClInclude Include="PhysicsWorld.h" />
-    <ClInclude Include="Random.h" />
     <ClInclude Include="Rendering\RenderingModule.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="RenderPass.h" />
-    <ClInclude Include="Rigidbody.h" />
-    <ClInclude Include="SceneEditor.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="ShaderMetaInfo.h" />
-    <ClInclude Include="ShaderPreprocessor.h" />
-    <ClInclude Include="ShaderStorageBuffer.h" />
-    <ClInclude Include="ShadowAtlas.h" />
-    <ClInclude Include="ShadowCaster.h" />
     <ClInclude Include="Shared.h" />
-    <ClInclude Include="SimpleSet.h" />
-    <ClInclude Include="Skybox.h" />
-    <ClInclude Include="SpecializedShaderProgram.h" />
-    <ClInclude Include="SphereCollider.h" />
-    <ClInclude Include="StatsEditor.h" />
-    <ClInclude Include="StringUtils.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TransformInspector.h" />
-    <ClInclude Include="UniformBuffer.h" />
-    <ClInclude Include="Vec.h" />
-    <ClInclude Include="VecPlus.h" />
-    <ClInclude Include="VecTmpl.h" />
-    <ClInclude Include="VisualDebug.h" />
-    <ClInclude Include="XMath.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="MeshRenderer.h" />
-    <ClInclude Include="NoclipController.h" />
-    <ClInclude Include="Pipeline.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SimpleList.h" />
-    <ClInclude Include="Time.h" />
-    <ClInclude Include="Transform.h" />
-    <ClInclude Include="Window.h" />
-    <ClInclude Include="XMathHash.h" />
-    <ClInclude Include="XTypes.h" />
-    <ClInclude Include="ZOrder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
