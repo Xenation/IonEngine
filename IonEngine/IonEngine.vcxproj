@@ -133,7 +133,10 @@
   <ItemGroup>
     <ClCompile Include="Core\Debug.cpp" />
     <ClCompile Include="Core\EngineCore.cpp" />
-    <ClCompile Include="Core\IonMath.cpp" />
+    <ClCompile Include="Core\MathImpl.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Display\Window.cpp">
       <SubType>
       </SubType>
@@ -171,7 +174,18 @@
     <ClInclude Include="Core\Collections\CollectionParams.h" />
     <ClInclude Include="Core\Debug.h" />
     <ClInclude Include="Core\EngineCore.h" />
-    <ClInclude Include="Core\IonMath.h" />
+    <ClInclude Include="Core\MathAdv.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Core\MathUtils.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Core\MathVec.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Core\Module.h">
       <SubType>
       </SubType>

@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Core/Module.h"
-#include "Core/IonMath.h"
+#include "Core/MathVec.h"
 
 namespace IonEngine {
 	class Window;
