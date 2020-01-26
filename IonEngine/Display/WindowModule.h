@@ -8,10 +8,10 @@ namespace IonEngine {
 	template<typename T, u32 N>
 	class CappedSparseSet;
 
-	class WindowModule : Module {
+	class WindowModule : public Module {
 	public:
 		WindowModule(EngineCore* engine);
-		~WindowModule();
+		virtual ~WindowModule();
 
 		Window* createWindow(const char* title);
 		Window* createWindow(const char* title, WindowState state);

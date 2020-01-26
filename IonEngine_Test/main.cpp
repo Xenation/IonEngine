@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Core/EngineCore.h>
+#include <Core/Module.h>
 #include <Core/Collections/BulkSparseSet.h>
 
 using namespace IonEngine;
@@ -12,26 +13,33 @@ struct TestSt {
 	u32 d;
 };
 
+class ModuleA : public Module {
+public:
+	ModuleA(EngineCore* core) : Module(core) {
+		Debug::logInfo("ModuleA Init");
+	}
+	virtual ~ModuleA() {
+		Debug::logInfo("ModuleA Destroy");
+	}
+};
+
+class ModuleB : public Module {
+public:
+	ModuleB(EngineCore* core) : Module(core) {
+		Debug::logInfo("ModuleB Init");
+	}
+	virtual ~ModuleB() {
+		Debug::logInfo("ModuleB Destroy");
+	}
+};
+
 int main(int argc, char** args) {
 
-	BulkSparseSet<TestSt> testCol;
-	for (u32 i = 0; i < 3000; i++) {
-		TestSt* st = testCol.allocate();
-		st->a = static_cast<u8>(i);
-	}
+	EngineCore* core = new EngineCore();
+	core->moduleManager.addModule<ModuleA>();
+	core->moduleManager.addModule<ModuleB>();
 
-	for (TestSt& st : testCol) {
-		st.b++;
-	}
-
-	for (u32 i = 0; i < 3000; i += 2) {
-		testCol.removeAt(i);
-	}
-
-	for (u32 i = 0; i < 1500; i++) {
-		TestSt* st = testCol.allocate();
-		st->b = 2;
-	}
+	delete core;
 
 	return 0;
 }

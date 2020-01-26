@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 #include <typeinfo>
-#include "Collections/CappedDenseSet.h"
+#include "Collections/CappedList.h"
 
 namespace IonEngine {
 	class Module;
@@ -26,7 +26,7 @@ namespace IonEngine {
 				// TODO Log Error
 				return nullptr;
 			}
-			modules.add((Module*) mod);
+			modules.add(reinterpret_cast<Module*>(mod));
 			return mod;
 		}
 
@@ -44,14 +44,14 @@ namespace IonEngine {
 		template<typename T, typename std::enable_if<std::is_base_of<Module, T>::value>::type* = nullptr>
 		T* getModule() {
 			for (Module* mod : modules) {
-				if (typeid(*mod) == typeid(T)) return (T*) mod;
+				if (typeid(*mod) == typeid(T)) return reinterpret_cast<T*>(mod);
 			}
 			return nullptr;
 		}
 
 	private:
 		EngineCore*const engine;
-		CappedDenseSet<Module*, 32> modules;
+		CappedList<Module*, 32> modules;
 	};
 
 	class EngineCore {

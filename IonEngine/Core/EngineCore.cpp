@@ -6,7 +6,8 @@ using namespace IonEngine;
 
 
 ModuleManager::~ModuleManager() {
-	for (Module* mod : modules) {
-		delete mod;
+	// Delete the modules in reverse order of creation
+	for (i32 i = static_cast<i32>(modules.getCount()) - 1; i >= 0; i--) {
+		delete modules[i];
 	}
 }

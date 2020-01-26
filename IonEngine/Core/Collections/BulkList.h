@@ -83,7 +83,7 @@ namespace IonEngine {
 				slotsBuffer.setUsedRange(bufferRange);
 			}
 			for (u32 iIndex = count - 1; iIndex > index; iIndex--) {
-				memcpy_s(reinterpret_cast<void* const>(slots + rIndex), itemSize, reinterpret_cast<const void* const>(slots + rIndex - 1), itemSize);
+				memcpy_s(reinterpret_cast<void* const>(slots + iIndex), itemSize, reinterpret_cast<const void* const>(slots + iIndex - 1), itemSize);
 			}
 		}
 
@@ -114,6 +114,15 @@ namespace IonEngine {
 				size_t bufferRange = count * itemSize;
 				slotsBuffer.setUsedRange(bufferRange);
 			}
+		}
+
+		/* Access */
+		//
+		inline T& operator[](u32 index) {
+			return slots[index];
+		}
+		inline T& operator[](i32 index) {
+			return slots[index];
 		}
 
 		/* Iteration */
