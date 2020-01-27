@@ -13,13 +13,6 @@ namespace IonEngine {
 
 	class Window {
 	public:
-		/*enum class State : u32 {
-			WINDOWED,
-			WINDOWED_MAXIMIZED,
-			FULLSCREEN_WINDOW,
-			FULLSCREEN_EXCLUSIVE,
-		};*/
-
 		/* ==== CONSTRUCTORS ==== */
 		Window(const Window&) = delete;
 		void operator=(const Window&) = delete;

@@ -2,7 +2,7 @@
 #include "Core/Module.h"
 
 namespace IonEngine {
-	class RenderingModule : Module {
+	class RenderModule : Module {
 	public:
 
 	};

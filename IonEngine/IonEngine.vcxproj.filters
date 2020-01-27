@@ -72,6 +72,15 @@
     <ClCompile Include="Core\MathImpl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Time\Time.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Time\UpdateModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Time\UpdateTimeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ext\gl3w.h">
@@ -111,9 +120,6 @@
       <Filter>Header Files\Engine\Core</Filter>
     </ClInclude>
     <ClInclude Include="Core\Module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering\RenderingModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Display\WindowModule.h">
@@ -171,6 +177,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\MathAdv.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Time\Time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Time\UpdateModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Time\UpdateTimeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\RenderModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

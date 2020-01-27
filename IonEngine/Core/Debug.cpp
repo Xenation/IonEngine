@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <Windows.h>
+#include <cstdlib>
 using namespace IonEngine;
 
 
@@ -98,6 +99,8 @@ void Debug::fail(Category category, const char* format, ...) {
 	vLog(ERR, category, format, argList);
 
 	va_end(argList);
+
+	exit(EXIT_FAILURE);
 }
 
 void Debug::fail(const char* format, ...) {
@@ -107,4 +110,6 @@ void Debug::fail(const char* format, ...) {
 	vLog(ERR, NONE, format, argList);
 
 	va_end(argList);
+
+	exit(EXIT_FAILURE);
 }

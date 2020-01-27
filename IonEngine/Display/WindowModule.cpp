@@ -27,22 +27,29 @@ WindowModule::WindowModule(EngineCore* engine) : Module(engine) {
 }
 
 WindowModule::~WindowModule() {
-	// TODO iterate through the entire set to manually delete all windows
+	for (Window& window : *windows) {
+		window.~Window();
+	}
 	delete windows;
 	glfwTerminate();
 }
 
 
 Window* WindowModule::createWindow(const char* title) {
-	return windows->add(Window(title));
+	return new (windows->allocate()) Window(title);
 }
 
 Window* WindowModule::createWindow(const char* title, WindowState state) {
-	return windows->add(Window(title, state));
+	return new (windows->allocate()) Window(title, state);
 }
 
 Window* WindowModule::createWindow(const char* title, Vec2i pos, Vec2i size, WindowState state) {
-	return windows->add(Window(title, pos, size, state));
+	return new (windows->allocate()) Window(title, pos, size, state);
+}
+
+void WindowModule::destroyWindow(Window* window) {
+	window->~Window();
+	windows->remove(window);
 }
 
 void WindowModule::poolEvents() {

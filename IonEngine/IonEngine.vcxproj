@@ -152,6 +152,9 @@
     <ClCompile Include="ext\imgui_impl_glfw.cpp" />
     <ClCompile Include="ext\imgui_impl_opengl3.cpp" />
     <ClCompile Include="ext\imgui_widgets.cpp" />
+    <ClCompile Include="Core\Time\Time.cpp" />
+    <ClCompile Include="Core\Time\UpdateModule.cpp" />
+    <ClCompile Include="Core\Time\UpdateTimeline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Collections\BulkList.h">
@@ -212,11 +215,14 @@
     <ClInclude Include="ext\imstb_truetype.h" />
     <ClInclude Include="ext\stb_image.h" />
     <ClInclude Include="ext\tiny_obj_loader.h" />
-    <ClInclude Include="Rendering\RenderingModule.h">
+    <ClInclude Include="Render\RenderModule.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Shared.h" />
+    <ClInclude Include="Core\Time\Time.h" />
+    <ClInclude Include="Core\Time\UpdateModule.h" />
+    <ClInclude Include="Core\Time\UpdateTimeline.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -16,6 +16,7 @@ namespace IonEngine {
 		Window* createWindow(const char* title);
 		Window* createWindow(const char* title, WindowState state);
 		Window* createWindow(const char* title, Vec2i pos, Vec2i size, WindowState state);
+		void destroyWindow(Window* window);
 		void poolEvents();
 
 	private:

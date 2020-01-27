@@ -48,9 +48,9 @@ const Vec2f Vec2f::right = {1, 0};
 const Vec2f Vec2f::left = {-1, 0};
 const Vec2f Vec2f::up = {0, 1};
 const Vec2f Vec2f::down = {0, -1};
-const Vec2f Vec2f::positiveInfinity = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity};
-const Vec2f Vec2f::negativeInfinity = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity};
-const Vec2f Vec2f::nan = {IonEngine::Math::nan, IonEngine::Math::nan};
+const Vec2f Vec2f::positiveInfinity = {IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity};
+const Vec2f Vec2f::negativeInfinity = {IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity};
+const Vec2f Vec2f::nan = {IonEngine::Math::f32c::nan, IonEngine::Math::f32c::nan};
 // Vec3f
 const Vec3f Vec3f::zero = {0, 0, 0};
 const Vec3f Vec3f::one = {1, 1, 1};
@@ -60,9 +60,9 @@ const Vec3f Vec3f::up = {0, 1, 0};
 const Vec3f Vec3f::down = {0, -1, 0};
 const Vec3f Vec3f::forward = {0, 0, 1};
 const Vec3f Vec3f::backward = {0, 0, -1};
-const Vec3f Vec3f::positiveInfinity = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity};
-const Vec3f Vec3f::negativeInfinity = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity};
-const Vec3f Vec3f::nan = {IonEngine::Math::nan, IonEngine::Math::nan, IonEngine::Math::nan};
+const Vec3f Vec3f::positiveInfinity = {IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity};
+const Vec3f Vec3f::negativeInfinity = {IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity};
+const Vec3f Vec3f::nan = {IonEngine::Math::f32c::nan, IonEngine::Math::f32c::nan, IonEngine::Math::f32c::nan};
 // Vec4f
 const Vec4f Vec4f::zero = {0, 0, 0, 0};
 const Vec4f Vec4f::zeroPoint = {0, 0, 0, 1};
@@ -74,13 +74,13 @@ const Vec4f Vec4f::up = {0, 1, 0, 0};
 const Vec4f Vec4f::down = {0, -1, 0, 0};
 const Vec4f Vec4f::forward = {0, 0, 1, 0};
 const Vec4f Vec4f::backward = {0, 0, -1, 0};
-const Vec4f Vec4f::positiveInfinity = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity};
-const Vec4f Vec4f::negativeInfinity = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity};
-const Vec4f Vec4f::positiveInfinityPoint = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, 1};
-const Vec4f Vec4f::negativeInfinityPoint = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, 1};
-const Vec4f Vec4f::positiveInfinityDir = {IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, IonEngine::Math::positiveInfinity, 0};
-const Vec4f Vec4f::negativeInfinityDir = {IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, IonEngine::Math::negativeInfinity, 0};
-const Vec4f Vec4f::nan = {IonEngine::Math::nan, IonEngine::Math::nan, IonEngine::Math::nan, IonEngine::Math::nan};
+const Vec4f Vec4f::positiveInfinity = {IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity};
+const Vec4f Vec4f::negativeInfinity = {IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity};
+const Vec4f Vec4f::positiveInfinityPoint = {IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity, 1};
+const Vec4f Vec4f::negativeInfinityPoint = {IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity, 1};
+const Vec4f Vec4f::positiveInfinityDir = {IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity, IonEngine::Math::f32c::positiveInfinity, 0};
+const Vec4f Vec4f::negativeInfinityDir = {IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity, IonEngine::Math::f32c::negativeInfinity, 0};
+const Vec4f Vec4f::nan = {IonEngine::Math::f32c::nan, IonEngine::Math::f32c::nan, IonEngine::Math::f32c::nan, IonEngine::Math::f32c::nan};
 // Rotor3f
 const Rotor3f Rotor3f::identity = {1, {0, 0, 0}};
 // Matrix4x4f

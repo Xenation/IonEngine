@@ -395,7 +395,7 @@ namespace IonEngine {
 				return translationRotation(translationVec, rotor) * scale(scaleVec);
 			}
 			static Matrix4x4f perspectiveProjection(float degFov, float aspect, float nearPlane, float farPlane) {
-				float fov = degFov * deg2rad;
+				float fov = degFov * f32c::deg2rad;
 				float zRange = farPlane - nearPlane;
 
 				float xScale = 1.0f / tanf(fov * 0.5f);
@@ -429,12 +429,12 @@ namespace IonEngine {
 						t.y = std::atan2(m02, m22);
 						t.z = std::atan2(m10, m11);
 					} else {
-						t.x = half_pi;
+						t.x = f32c::half_pi;
 						t.y = -std::atan2(-m01, m00);
 						t.z = 0.0f;
 					}
 				} else {
-					t.x = -half_pi;
+					t.x = -f32c::half_pi;
 					t.y = std::atan2(-m01, m00);
 					t.z = 0.0f;
 				}
