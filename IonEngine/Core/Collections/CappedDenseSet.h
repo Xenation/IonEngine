@@ -80,6 +80,15 @@ namespace IonEngine {
 			count = 0;
 		}
 
+		/* Access */
+		//
+		inline T& operator[](u32 index) {
+			return slots[index];
+		}
+		inline T& operator[](i32 index) {
+			return slots[index];
+		}
+
 		/* Iteration */
 		// The begining of the set
 		Iterator begin() const {

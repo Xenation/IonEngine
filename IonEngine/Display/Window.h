@@ -39,6 +39,7 @@ namespace IonEngine {
 
 		/* ==== CONSTRUCTORS ==== */
 		friend class WindowModule;
+		friend class Presenter;
 		Window(const char* title) : Window(title, WindowState::WINDOWED_MAXIMIZED) {}
 		Window(const char* title, WindowState state) : Window(title, Vec2i::min, Vec2i(0, 0), state) {}
 		Window(const char* title, Vec2i pos, Vec2i size, WindowState state);

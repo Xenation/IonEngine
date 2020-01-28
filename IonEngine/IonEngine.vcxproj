@@ -155,6 +155,14 @@
     <ClCompile Include="Core\Time\Time.cpp" />
     <ClCompile Include="Core\Time\UpdateModule.cpp" />
     <ClCompile Include="Core\Time\UpdateTimeline.cpp" />
+    <ClCompile Include="Render\Vulkan\Presenter.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Render\Vulkan\RenderContext.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Collections\BulkList.h">
@@ -162,6 +170,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Core\Collections\CappedList.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\CappedStringSet.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -215,7 +227,15 @@
     <ClInclude Include="ext\imstb_truetype.h" />
     <ClInclude Include="ext\stb_image.h" />
     <ClInclude Include="ext\tiny_obj_loader.h" />
+    <ClInclude Include="Render\Vulkan\Presenter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Render\RenderModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\Vulkan\RenderContext.h">
       <SubType>
       </SubType>
     </ClInclude>
