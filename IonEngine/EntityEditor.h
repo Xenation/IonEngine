@@ -12,7 +12,7 @@ namespace IonEngine::Editor {
 		Entity* entity;
 
 		EntityEditor(Entity* entity);
-		~EntityEditor();
+		virtual ~EntityEditor();
 
 		void drawGui() override;
 

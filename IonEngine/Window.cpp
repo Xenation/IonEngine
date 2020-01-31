@@ -32,7 +32,7 @@ void Window::initializeGLFW() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+	//glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 	//glfwWindowHint(GLFW_SAMPLES, 4); // TODO Remove to have a multisampled framebuffer blited to the default singlesampled
 }
 
@@ -48,7 +48,7 @@ void Window::resizeFrameCallback(GLFWwindow* window, int width, int height) {
 
 Window::Window(const char* title) {
 	initializeGLFW();
-	window = glfwCreateWindow(640, 480, title, NULL, NULL);
+	window = glfwCreateWindow(1280, 720, title, NULL, NULL);
 	if (!window) {
 		Debug::fail("Failed to create window!");
 	} else {

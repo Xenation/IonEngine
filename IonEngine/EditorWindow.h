@@ -9,7 +9,7 @@ namespace IonEngine::Editor {
 		std::string title;
 
 		EditorWindow(std::string title, bool closingHides = false);
-		~EditorWindow();
+		virtual ~EditorWindow();
 
 		void render();
 		virtual void drawGui();

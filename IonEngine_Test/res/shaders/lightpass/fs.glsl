@@ -294,10 +294,10 @@ void main() {
 			sColor += shadeDirectionalLight(surfData, worldPos, normal, i);
 		}
 
-		//uint counted = 0;
+		uint counted = 0;
 		uint clusterLightCount = clusters[clusterIndex];
 		for (uint i = clusterIndex + 1; i < clusterIndex + clusterLightCount + 1; i++) {
-			//counted++;
+			counted++;
 			
 			uint lightType = (clusters[i] >> 28) & 0x0000000f;
 			uint lightId = clusters[i] & 0x0fffffff;
@@ -311,6 +311,7 @@ void main() {
 
 		//fragColor = vec4(float(counted) / 2, max(float(counted) - 2, 0), 0, 1);
 		//return;
+		//sColor += vec3(counted / 3.0f, 0.0f, 0.0f);
 
 		fColor += sColor;// + vec3(float(counted) / 2, max(float(counted) - 2, 0), 0);
 	}
