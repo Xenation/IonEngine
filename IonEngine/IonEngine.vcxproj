@@ -227,6 +227,18 @@
     <ClInclude Include="ext\imstb_truetype.h" />
     <ClInclude Include="ext\stb_image.h" />
     <ClInclude Include="ext\tiny_obj_loader.h" />
+    <ClInclude Include="Render\Descriptors.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\Resource.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\Vulkan\Buffer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Render\Vulkan\Presenter.h">
       <SubType>
       </SubType>
@@ -236,6 +248,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Render\Vulkan\RenderContext.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\Vulkan\Image.h">
       <SubType>
       </SubType>
     </ClInclude>

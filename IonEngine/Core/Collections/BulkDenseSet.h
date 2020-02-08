@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CollectionParams.h"
+#include "VirtualBuffer.h"
 
 namespace IonEngine {
 	// A Set with the following specs:
@@ -33,14 +34,9 @@ namespace IonEngine {
 
 		/* ==== CONSTRUCTORS ==== */
 		// Creates a new BulkDenseSet, no allocation yet (virtual address space is reserved)
-		BulkDenseSet() : count(0), pageCount(0) {
-			virtAddr = reserveVirtualAddress(BULK_VIRT_ALLOC_SIZE);
-		}
+		BulkDenseSet() : count(0), pageCount(0), slotsBuffer(BULK_VIRT_ALLOC_SIZE) {}
 		// Destroys the set by clearing and freeing any allocated memory (virtual address space is released)
-		~BulkDenseSet() {
-			clear(true);
-			releaseVirtualAddress(virtAddr);
-		}
+		~BulkDenseSet() {}
 		BulkDenseSet(const BulkDenseSet&) = delete;
 		void operator=(const BulkDenseSet&) = delete;
 
@@ -63,11 +59,11 @@ namespace IonEngine {
 
 		// Allocates a slot in the set to host an item
 		T* allocate() {
+			size_t bufferRange = slotsBuffer.getUsedRange();
 			count++;
-			u32 nPageCount = getRequiredPageCount();
-			while (pageCount < nPageCount) {
-				allocPage(pageCount);
-				pageCount++;
+			if (count * itemSize > bufferRange) {
+				bufferRange = count * itemSize;
+				slotsBuffer.setUsedRange(bufferRange);
 			}
 			return slots + count - 1;
 		}
@@ -89,8 +85,19 @@ namespace IonEngine {
 		void clear(bool freeMemory = false) {
 			count = 0;
 			if (freeMemory) {
-				virtFree(virtAddr, pageCount * virtPageSize);
-				pageCount = 0;
+				size_t bufferRange = count * itemSize;
+				slotsBuffer.setUsedRange(bufferRange);
+			}
+		}
+
+		// Manually specify the size of the set
+		// if freeMemory is true the unused memory will be freed, otherwise nothing is freed
+		void resize(u32 size, bool freeMemory = false) {
+			size_t bufferRange = slotsBuffer.getUsedRange();
+			count = size;
+			if (count * itemSize > bufferRange || freeMemory) {
+				bufferRange = count * itemSize;
+				slotsBuffer.setUsedRange(bufferRange);
 			}
 		}
 
@@ -102,6 +109,10 @@ namespace IonEngine {
 		inline T& operator[](i32 index) {
 			return slots[index];
 		}
+		inline T& operator[](size_t index) {
+			return slots[index];
+		}
+		inline T* data() { return slots; }
 
 		/* Iteration */
 		// The begining of the set
@@ -114,26 +125,13 @@ namespace IonEngine {
 		}
 
 	private:
+		static constexpr size_t itemSize = sizeof(T);
+
 		union {
-			void* virtAddr;
-			u8* virtByteAddr;
+			VirtualBuffer slotsBuffer;
 			T* slots;
 		};
 		u32 count;
 		u32 pageCount;
-		static constexpr size_t itemSize = sizeof(T);
-
-		inline u32 getRequiredPageCount() {
-			size_t effectiveSize = count * itemSize;
-			return static_cast<u32>(effectiveSize / virtPageSize) + ((effectiveSize % virtPageSize != 0) ? 1 : 0);
-		}
-
-		inline void allocPage(u32 pageOffset) {
-			virtAlloc(reinterpret_cast<void*>(virtByteAddr + virtPageSize * pageOffset), virtPageSize);
-		}
-
-		inline void freePage(u32 pageOffset) {
-			virtFree(reinterpret_cast<void*>(virtByteAddr + virtPageSize * pageOffset));
-		}
 	};
 }

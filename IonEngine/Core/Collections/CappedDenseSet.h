@@ -32,8 +32,9 @@ namespace IonEngine {
 		/* ==== CONSTRUCTORS ==== */
 		// Creates a new CappedDenseSet
 		CappedDenseSet() : count(0) {}
-		CappedDenseSet(const CappedDenseSet&) = delete;
-		void operator=(const CappedDenseSet&) = delete;
+		CappedDenseSet(std::initializer_list<const T> list) {
+			addAll(list.begin(), list.size());
+		}
 
 		/* ==== METHODS ==== */
 		/* Properties */
@@ -53,6 +54,12 @@ namespace IonEngine {
 			memcpy_s(reinterpret_cast<void*const>(nItem), itemSize, reinterpret_cast<const void*const>(&item), itemSize);
 			//*nItem = static_cast<typename T&&>(item);
 			return nItem;
+		}
+
+		void addAll(const T* arr, u32 count) {
+			for (int i = 0; i < count; i++) {
+				add(arr[i]);
+			}
 		}
 
 		// Allocates a slot in the set to host an item
@@ -80,6 +87,14 @@ namespace IonEngine {
 			count = 0;
 		}
 
+		// Manually specify the size of the set
+		void resize(u32 size) {
+			count = size;
+			if (count > N) {
+				count = N;
+			}
+		}
+
 		/* Access */
 		//
 		inline T& operator[](u32 index) {
@@ -88,6 +103,10 @@ namespace IonEngine {
 		inline T& operator[](i32 index) {
 			return slots[index];
 		}
+		inline T& operator[](size_t index) {
+			return slots[index];
+		}
+		inline T* data() { return slots; }
 
 		/* Iteration */
 		// The begining of the set

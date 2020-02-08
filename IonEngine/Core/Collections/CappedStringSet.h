@@ -10,8 +10,6 @@ namespace IonEngine {
 		CappedStringSet(std::initializer_list<const char*> list) {
 			addAll(list.begin(), list.size());
 		}
-		CappedStringSet(const CappedStringSet&) = delete;
-		void operator=(const CappedStringSet&) = delete;
 
 		/* ==== METHODS ==== */
 		/* Properties */

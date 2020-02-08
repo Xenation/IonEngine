@@ -7,6 +7,13 @@ namespace IonEngine {
 	class Module;
 	class EngineCore;
 
+	struct AppDescription {
+		const char* name;
+		u16 versionMajor;
+		u16 versionMinor;
+		u16 versionPatch;
+	};
+
 	class ModuleManager {
 	public:
 		ModuleManager(EngineCore* engine) : engine(engine) {}
@@ -56,9 +63,15 @@ namespace IonEngine {
 
 	class EngineCore {
 	public:
+		static constexpr u16 versionMajor = 0;
+		static constexpr u16 versionMinor = 1;
+		static constexpr u16 versionPatch = 0;
+
+		AppDescription appDescription;
 		ModuleManager moduleManager;
 
-		EngineCore() : moduleManager(this) {}
+		EngineCore() : moduleManager(this), appDescription({"Unknown App", 0, 0, 0}) {}
+		EngineCore(AppDescription appDesc) : moduleManager(this), appDescription(appDesc) {}
 		EngineCore(const EngineCore&) = delete;
 		void operator=(const EngineCore&) = delete;
 	};

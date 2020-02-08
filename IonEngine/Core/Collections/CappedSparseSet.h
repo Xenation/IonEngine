@@ -40,8 +40,6 @@ namespace IonEngine {
 		~CappedSparseSet() {
 
 		}
-		CappedSparseSet(const CappedSparseSet&) = delete;
-		void operator=(const CappedSparseSet&) = delete;
 
 		/* ==== METHODS ==== */
 		/* Properties */

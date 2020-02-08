@@ -137,6 +137,11 @@ namespace IonEngine {
 			return (i < min) ? min : ((i > max) ? max : i);
 		}
 
+		template<typename T>
+		inline int clamp(T i, T min, T max) {
+			return (i < min) ? min : ((i > max) ? max : i);
+		}
+
 		inline void swapToMinMax(int& min, int& max) {
 			if (max < min) {
 				int tmp = min;

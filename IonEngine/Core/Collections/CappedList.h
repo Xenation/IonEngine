@@ -32,8 +32,9 @@ namespace IonEngine {
 		/* ==== CONSTRUCTORS ==== */
 		//
 		CappedList() : count(0) {}
-		CappedList(const CappedList&) = delete;
-		void operator=(const CappedList&) = delete;
+		CappedList(std::initializer_list<const T> list) {
+			addAll(list.begin(), list.size());
+		}
 
 		/* ==== METHODS ==== */
 		/* Properties */
@@ -52,6 +53,12 @@ namespace IonEngine {
 			T* nItem = allocate();
 			memcpy_s(reinterpret_cast<void* const>(nItem), itemSize, reinterpret_cast<const void* const>(&item), itemSize);
 			return nItem;
+		}
+
+		void addAll(const T* arr, u32 count) {
+			for (int i = 0; i < count; i++) {
+				add(arr[i]);
+			}
 		}
 
 		// Inserts the given item at the given index (offsets items above) by copying
@@ -95,6 +102,14 @@ namespace IonEngine {
 			count = 0;
 		}
 
+		// Manually specify the size of the set
+		inline void resize(u32 size) {
+			count = size;
+			if (count > N) {
+				count = N;
+			}
+		}
+
 		/* Access */
 		//
 		inline T& operator[](u32 index) {
@@ -103,6 +118,10 @@ namespace IonEngine {
 		inline T& operator[](i32 index) {
 			return slots[index];
 		}
+		inline T& operator[](size_t index) {
+			return slots[index];
+		}
+		inline T* data() { return slots; }
 
 		/* Iteration */
 		//
