@@ -1,4 +1,5 @@
-﻿#include "RenderContext.h"
+﻿#if ION_VULKAN
+#include "RenderContext.h"
 
 #include <vector>
 #include <string>
@@ -563,3 +564,5 @@ void RenderContext::createGraphicsPipeline() {
 	vkDestroyShaderModule(device, fragShaderModule, nullptr);
 	vkDestroyShaderModule(device, vertShaderModule, nullptr);
 }
+
+#endif

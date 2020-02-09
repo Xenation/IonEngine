@@ -75,7 +75,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <PreprocessorDefinitions>_MBCS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;ION_DX11;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
     </ClCompile>
@@ -94,7 +94,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <PreprocessorDefinitions>_MBCS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;ION_DX11;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -115,7 +115,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <PreprocessorDefinitions>_MBCS;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;ION_DX11;_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
       <DebugInformationFormat>None</DebugInformationFormat>
@@ -155,6 +155,14 @@
     <ClCompile Include="Core\Time\Time.cpp" />
     <ClCompile Include="Core\Time\UpdateModule.cpp" />
     <ClCompile Include="Core\Time\UpdateTimeline.cpp" />
+    <ClCompile Include="Render\DX11\RenderContext.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Render\RenderModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Render\Vulkan\Presenter.cpp">
       <SubType>
       </SubType>
@@ -228,6 +236,10 @@
     <ClInclude Include="ext\stb_image.h" />
     <ClInclude Include="ext\tiny_obj_loader.h" />
     <ClInclude Include="Render\Descriptors.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\DX11\RenderContext.h">
       <SubType>
       </SubType>
     </ClInclude>

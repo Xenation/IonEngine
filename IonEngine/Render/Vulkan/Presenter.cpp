@@ -1,4 +1,5 @@
-﻿#include "Presenter.h"
+﻿#if ION_VULKAN
+#include "Presenter.h"
 
 #include "Display/Window.h"
 #include "RenderContext.h"
@@ -112,3 +113,5 @@ VkImageView Presenter::createImageView(LogicalDevice* device, VkImage image, VkF
 
 	return imageView;
 }
+
+#endif

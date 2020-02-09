@@ -2,6 +2,9 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#include <GLFW/glfw3native.h>
 using namespace IonEngine;
 
 
@@ -208,6 +211,10 @@ void Window::positionCallback(GLFWwindow* windowHandle, int posx, int posy) {
 
 bool Window::shouldClose() {
 	return glfwWindowShouldClose(windowHandle) != 0;
+}
+
+void Window::getWin32Handle(void*& hnd) {
+	*reinterpret_cast<HWND*>(hnd) = glfwGetWin32Window(windowHandle);
 }
 
 bool Window::nextTMP(u32 idx) {

@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <initializer_list>
 
 namespace IonEngine {
 	// A List with the following specs:
