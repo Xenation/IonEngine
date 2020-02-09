@@ -4,6 +4,9 @@
 namespace IonEngine {
 	class RenderContext;
 	class Window;
+	class Camera;
+	class Mesh;
+	class Shader;
 
 	class RenderModule : public Module {
 	public:
@@ -12,8 +15,12 @@ namespace IonEngine {
 
 		void initialize(Window* window);
 		void render();
+		void shutdown();
 
 	private:
 		RenderContext* context;
+		Camera* camera;
+		Mesh* mesh;
+		Shader* shader;
 	};
 }

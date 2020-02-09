@@ -78,6 +78,8 @@
       <PreprocessorDefinitions>_MBCS;ION_DX11;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
+      <ShowIncludes>false</ShowIncludes>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalDependencies>win64/glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -98,6 +100,8 @@
       <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ShowIncludes>false</ShowIncludes>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <AdditionalDependencies>win64/glfw3.lib;opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -119,6 +123,8 @@
       <AdditionalIncludeDirectories>$(ProjectDir);ext;$(SolutionDir)External\Include;$(SolutionDir)External\$(Platform)\Include;$(VULKAN_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(SolutionDir)IonEngine\Shared.h</ForcedIncludeFiles>
       <DebugInformationFormat>None</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+      <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -155,7 +161,19 @@
     <ClCompile Include="Core\Time\Time.cpp" />
     <ClCompile Include="Core\Time\UpdateModule.cpp" />
     <ClCompile Include="Core\Time\UpdateTimeline.cpp" />
+    <ClCompile Include="Render\DX11\Camera.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Render\DX11\Mesh.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Render\DX11\RenderContext.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Render\DX11\Shader.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -239,7 +257,27 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Render\DX11\Buffer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\DX11\Camera.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\DX11\Image.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\DX11\Mesh.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Render\DX11\RenderContext.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Render\DX11\Shader.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -264,6 +302,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Render\Vulkan\Image.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Resource\Mesh.h">
       <SubType>
       </SubType>
     </ClInclude>

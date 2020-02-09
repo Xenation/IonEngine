@@ -274,7 +274,7 @@ bool RenderContext::initialize(int width, int height, bool vsync, HWND hwnd, boo
 	deviceContext->RSSetViewports(1, &viewport);
 
 	// Setup the projection matrix
-	fov = 3.141592654f / 4.0f;
+	fov = 3.141592654f / 2.0f;
 	aspect = (float) width / (float) height;
 	// Create the projection matrix
 	projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspect, near, far);

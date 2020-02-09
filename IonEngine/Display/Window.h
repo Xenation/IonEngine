@@ -31,7 +31,9 @@ namespace IonEngine {
 		void setState(WindowState nState, Vec2i size, Vec2i pos);
 		bool shouldClose();
 
+#if ION_DX11
 		void getWin32Handle(void*& hnd); // TODO replace by more elegant solution
+#endif
 		bool nextTMP(u32 idx); // TODO FOR TEST ONLY, TO REMOVE
 
 	private:

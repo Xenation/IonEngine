@@ -96,4 +96,8 @@
       <Filter>Resource Files\shaders\standard</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="res\shaders\Color.vs.hlsl" />
+    <FxCompile Include="res\shaders\Color.ps.hlsl" />
+  </ItemGroup>
 </Project>

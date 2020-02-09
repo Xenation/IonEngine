@@ -2,9 +2,11 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#if ION_DX11
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_EXPOSE_NATIVE_WGL
 #include <GLFW/glfw3native.h>
+#endif
 using namespace IonEngine;
 
 
@@ -213,9 +215,11 @@ bool Window::shouldClose() {
 	return glfwWindowShouldClose(windowHandle) != 0;
 }
 
+#if ION_DX11
 void Window::getWin32Handle(void*& hnd) {
 	*reinterpret_cast<HWND*>(hnd) = glfwGetWin32Window(windowHandle);
 }
+#endif
 
 bool Window::nextTMP(u32 idx) {
 	return kPressed[idx];
