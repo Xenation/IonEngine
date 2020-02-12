@@ -6,7 +6,7 @@ namespace IonEngine {
 	ION_ENUM(Dimension, u32,
 		e1D,
 		e2D,
-		e3D
+		e3D,
 	);
 
 	ION_ENUM(ImageFormat, u32,
@@ -55,10 +55,25 @@ namespace IonEngine {
 		R32G32B32A32_UINT,
 	);
 
+	ION_ENUM(ResourceUsage, u32,
+		DEFAULT,	// GPU read/write
+		IMMUTABLE,	// CPU Init only, GPU read only
+		DYNAMIC,	// CPU write only, GPU read only
+		STAGING,	// GPU to CPU copy
+	);
+
+	ION_ENUM(BindFlags, u32,
+		NONE = 0,
+		VERTEX_BUFFER = 0b0000'0001,
+		INDEX_BUFFER = 0b0000'0010,
+	);
+
 
 	struct BufferDescriptor {
+		ResourceUsage usage;
 		u32 size;
 		u32 stride;
+		BindFlags bindFlags;
 	};
 
 	struct ImageDescriptor {

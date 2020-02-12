@@ -7,11 +7,13 @@
 #undef near
 #undef far
 #include "Core/MathVec.h"
+#include "Render/Descriptors.h"
 
 namespace IonEngine {
 	using namespace DirectX;
 
 	class EngineCore;
+	class Buffer;
 
 	class RenderContext {
 	public:
@@ -34,6 +36,9 @@ namespace IonEngine {
 		void getOrthoMatrix(XMMATRIX&);
 
 		void getVideoCardInfo(char*, int&);
+
+		Buffer* createBuffer(const BufferDescriptor desc, const void* data = nullptr);
+		void destroyBuffer(Buffer*& buffer);
 
 	private:
 		EngineCore* engine;

@@ -4,6 +4,8 @@
 #include <DirectXMath.h>
 
 namespace IonEngine {
+	class Buffer;
+
 	using namespace DirectX;
 
 	class Mesh {
@@ -31,8 +33,10 @@ namespace IonEngine {
 		void renderBuffers(ID3D11DeviceContext* deviceContext);
 
 	private:
-		ID3D11Buffer* vertexBuffer;
-		ID3D11Buffer* indexBuffer;
+		Buffer* vertexBuffer;
+		Buffer* indexBuffer;
+		//ID3D11Buffer* vertexBuffer;
+		//ID3D11Buffer* indexBuffer;
 		i32 vertexCount;
 		i32 indexCount;
 	};
