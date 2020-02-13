@@ -202,6 +202,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="World\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Collections\BulkList.h">
@@ -216,6 +217,7 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Core\Collections\CappedSparseArray.h" />
     <ClInclude Include="Core\Collections\VirtualBuffer.h">
       <SubType>
       </SubType>
@@ -330,6 +332,7 @@
     <ClInclude Include="Core\Time\Time.h" />
     <ClInclude Include="Core\Time\UpdateModule.h" />
     <ClInclude Include="Core\Time\UpdateTimeline.h" />
+    <ClInclude Include="World\Scene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
