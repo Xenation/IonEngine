@@ -88,6 +88,9 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <ClCompile>
@@ -110,6 +113,9 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -135,6 +141,9 @@
       <Command>
       </Command>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Core\Debug.cpp" />
@@ -166,10 +175,6 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Render\DX11\Camera.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Render\DX11\Mesh.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -274,10 +279,6 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="Render\DX11\Image.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Render\DX11\Mesh.h">
       <SubType>
       </SubType>
     </ClInclude>

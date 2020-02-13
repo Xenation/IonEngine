@@ -5,7 +5,7 @@
 #else
 #include "DX11/RenderContext.h"
 #include "DX11/Camera.h"
-#include "DX11/Mesh.h"
+#include "Resource/Mesh.h"
 #include "DX11/Shader.h"
 #endif
 #include "Display/Window.h"
@@ -35,8 +35,18 @@ void RenderModule::initialize(Window* window) {
 
 	camera = new Camera();
 	camera->setPosition(Vec3f::backward * 10.0f);
+
 	mesh = new Mesh();
-	mesh->initialize(context->getDevice());
+	mesh->allocate(3, 3);
+	mesh->setVertex(0, {Vec3f(0.0f, 1.0f, 0.0f), Color::red}); // TODO Continue HERE
+	mesh->setVertex(0, {Vec3f(1.0f, 0.0f, 0.0f), Color::red});
+	mesh->setVertex(0, {Vec3f(-1.0f, 0.0f, 0.0f), Color::red});
+	mesh->setIndex(0, 0);
+	mesh->setIndex(1, 1);
+	mesh->setIndex(2, 2);
+	mesh->setRenderContext(context);
+	mesh->upload();
+
 	shader = new Shader();
 	shader->initialize(context->getDevice(), win32Handle);
 }
@@ -50,7 +60,7 @@ void RenderModule::render() {
 	camera->getViewMatrix(viewMatrix);
 	context->getProjectionMatrix(projectionMatrix);
 
-	mesh->render(context->getDeviceContext());
+	mesh->render();
 
 	bool success = shader->render(context->getDeviceContext(), mesh->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
 	if (!success) {
@@ -68,7 +78,6 @@ void RenderModule::shutdown() {
 	}
 
 	if (mesh != nullptr) {
-		mesh->shutdown();
 		delete mesh;
 		mesh = nullptr;
 	}

@@ -12,6 +12,8 @@ namespace IonEngine {
 		Buffer(const Buffer&) = delete;
 		void operator=(const Buffer&) = delete;
 
+		inline ID3D11Buffer* getAPIResource() { return buffer; }
+
 	private:
 		ID3D11Buffer* buffer;
 		D3D11_BUFFER_DESC apiDesc;

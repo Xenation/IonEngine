@@ -25,20 +25,22 @@ namespace IonEngine {
 		void setVertex(u32 index, const Vertex& vertex);
 		void setIndex(u32 index, u32 indexValue);
 
-		void upload(RenderContext* context);
-		void render(RenderContext* context);
-		void destroy(RenderContext* context);
+		void setRenderContext(RenderContext* context);
+		void upload();
+		void render();
+		void destroy();
 
 	private:
 		static constexpr u8 CPU_ALLOCATED = 0b0001;
 		static constexpr u8 GPU_ALLOCATED = 0b0010;
 
-		u8 state;
-		Vertex* vertices;
-		u32* indices;
-		Buffer* vertexBuffer;
-		Buffer* indexBuffer;
-		u32 vertexCount;
-		u32 indexCount;
+		u8 state = 0;
+		Vertex* vertices = nullptr;
+		u32* indices = nullptr;
+		Buffer* vertexBuffer = nullptr;
+		Buffer* indexBuffer = nullptr;
+		u32 vertexCount = 0;
+		u32 indexCount = 0;
+		RenderContext* context = nullptr;
 	};
 }

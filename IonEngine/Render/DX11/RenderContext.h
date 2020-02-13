@@ -1,13 +1,21 @@
 ﻿#pragma once
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "d3dcompiler.lib")
-#include <d3d11.h>
+//#pragma comment(lib, "d3d11.lib")
+//#pragma comment(lib, "dxgi.lib")
+//#pragma comment(lib, "d3dcompiler.lib")
 #include <DirectXMath.h> // TODO replace with custom math
 #undef near
 #undef far
 #include "Core/MathVec.h"
 #include "Render/Descriptors.h"
+
+struct IDXGISwapChain;
+struct ID3D11Device;
+struct ID3D11DeviceContext;
+struct ID3D11RenderTargetView;
+struct ID3D11Texture2D;
+struct ID3D11DepthStencilState;
+struct ID3D11DepthStencilView;
+struct ID3D11RasterizerState;
 
 namespace IonEngine {
 	using namespace DirectX;

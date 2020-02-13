@@ -43,7 +43,11 @@ void Mesh::setIndex(u32 index, u32 indexValue) {
 	indices[index] = indexValue;
 }
 
-void Mesh::upload(RenderContext* context) {
+void Mesh::setRenderContext(RenderContext* context) {
+	this->context = context;
+}
+
+void Mesh::upload() {
 	BufferDescriptor vertexDesc = {};
 	vertexDesc.usage = ResourceUsage::DEFAULT;
 	vertexDesc.size = sizeof(Vertex) * vertexCount;
@@ -57,13 +61,28 @@ void Mesh::upload(RenderContext* context) {
 	indexDesc.stride = sizeof(u32);
 	indexDesc.bindFlags = BindFlags::INDEX_BUFFER;
 	indexBuffer = context->createBuffer(indexDesc, indices);
+
+	state |= GPU_ALLOCATED;
 }
 
-void Mesh::destroy(RenderContext* context) {
+void Mesh::destroy() {
 	context->destroyBuffer(vertexBuffer);
 	context->destroyBuffer(indexBuffer);
+
+	state &= ~GPU_ALLOCATED;
 }
 
-void Mesh::render(RenderContext* context) {
+void Mesh::render() {
+#if ION_DX11
+	u32 stride = sizeof(Vertex);
+	u32 offset = 0;
 	
+	ID3D11DeviceContext* apiDeviceContext = context->getDeviceContext();
+	ID3D11Buffer* apiVertexBuffer = vertexBuffer->getAPIResource();
+	ID3D11Buffer* apiIndexBuffer = indexBuffer->getAPIResource();
+
+	apiDeviceContext->IASetVertexBuffers(0, 1, &apiVertexBuffer, &stride, &offset);
+	apiDeviceContext->IASetIndexBuffer(apiIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	apiDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+#endif
 }

@@ -1,6 +1,7 @@
 ﻿#if ION_DX11
 #include "RenderContext.h"
 
+#include <d3d11.h>
 using namespace IonEngine;
 
 
@@ -283,7 +284,7 @@ bool RenderContext::initialize(int width, int height, bool vsync, HWND hwnd, boo
 	worldMatrix = XMMatrixIdentity();
 
 	// create an ortho proj matrix for 2D rendering
-	orthoMatrix = XMMatrixOrthographicLH(width, height, near, far);
+	orthoMatrix = XMMatrixOrthographicLH((float) width, (float) height, near, far);
 
 
 	return true;
