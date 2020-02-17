@@ -1,4 +1,5 @@
-﻿#include "Mesh.h"
+﻿#include <d3d11.h>
+#include "Mesh.h"
 
 #include "Render/Descriptors.h"
 #include "Render/Resource.h"
@@ -22,6 +23,8 @@ Mesh::~Mesh() {
 
 
 void Mesh::allocate(u32 vCount, u32 iCount) {
+	vertexCount = vCount;
+	indexCount = iCount;
 	vertices = new Vertex[vertexCount];
 	indices = new u32[indexCount];
 	state |= CPU_ALLOCATED;
@@ -84,5 +87,7 @@ void Mesh::render() {
 	apiDeviceContext->IASetVertexBuffers(0, 1, &apiVertexBuffer, &stride, &offset);
 	apiDeviceContext->IASetIndexBuffer(apiIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	apiDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	apiDeviceContext->DrawIndexed(indexCount, 0, 0);
 #endif
 }

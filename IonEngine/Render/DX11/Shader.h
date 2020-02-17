@@ -1,17 +1,14 @@
 ﻿#pragma once
 #include <d3d11.h>
-#include <DirectXMath.h>
-#include <fstream>
+#include "Core/MathAdv.h"
 
 namespace IonEngine {
-	using namespace DirectX;
-
 	class Shader {
 	private:
 		struct MatrixBuffer {
-			XMMATRIX world;
-			XMMATRIX view;
-			XMMATRIX projection;
+			Matrix4x4f world;
+			Matrix4x4f view;
+			Matrix4x4f projection;
 		};
 
 	public:
@@ -22,15 +19,15 @@ namespace IonEngine {
 
 		bool initialize(ID3D11Device* device, HWND hwnd);
 		void shutdown();
-		bool render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+		bool use(ID3D11DeviceContext* deviceContext, Matrix4x4f worldMatrix, Matrix4x4f viewMatrix, Matrix4x4f projectionMatrix);
 
 	private:
 		bool initializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename);
 		void shutdownShader();
-		void outputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const WCHAR* shaderFilename);
+		void outputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFilename);
 
-		bool setShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
-		void renderShader(ID3D11DeviceContext* deviceContext, int indexCount);
+		bool setShaderParameters(ID3D11DeviceContext* deviceContext, Matrix4x4f worldMatrix, Matrix4x4f viewMatrix, Matrix4x4f projectionMatrix);
+		void useShader(ID3D11DeviceContext* deviceContext);
 
 	private:
 		ID3D11VertexShader* vertexShader;

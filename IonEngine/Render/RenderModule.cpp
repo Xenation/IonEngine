@@ -3,6 +3,7 @@
 #if ION_VULKAN
 #include "Vulkan/RenderContext.h"
 #else
+#include <d3d11.h>
 #include "DX11/RenderContext.h"
 #include "DX11/Camera.h"
 #include "Resource/Mesh.h"
@@ -38,9 +39,9 @@ void RenderModule::initialize(Window* window) {
 
 	mesh = new Mesh();
 	mesh->allocate(3, 3);
-	mesh->setVertex(0, {Vec3f(0.0f, 1.0f, 0.0f), Color::red}); // TODO Continue HERE
-	mesh->setVertex(0, {Vec3f(1.0f, 0.0f, 0.0f), Color::red});
-	mesh->setVertex(0, {Vec3f(-1.0f, 0.0f, 0.0f), Color::red});
+	mesh->setVertex(0, {Vec3f(0.0f, 1.0f, 0.0f), Color::red});
+	mesh->setVertex(1, {Vec3f(1.0f, 0.0f, 0.0f), Color::red});
+	mesh->setVertex(2, {Vec3f(-1.0f, 0.0f, 0.0f), Color::red});
 	mesh->setIndex(0, 0);
 	mesh->setIndex(1, 1);
 	mesh->setIndex(2, 2);
@@ -54,18 +55,18 @@ void RenderModule::initialize(Window* window) {
 void RenderModule::render() {
 	context->beginFrame(Color::clear);
 	
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	Matrix4x4f worldMatrix, viewMatrix, projectionMatrix;
 	camera->render();
 	context->getWorldMatrix(worldMatrix);
 	camera->getViewMatrix(viewMatrix);
 	context->getProjectionMatrix(projectionMatrix);
 
-	mesh->render();
-
-	bool success = shader->render(context->getDeviceContext(), mesh->getIndexCount(), worldMatrix, viewMatrix, projectionMatrix);
+	bool success = shader->use(context->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
 	if (!success) {
-		Debug::fail(Debug::RENDER, "Failed to render!");
+		Debug::fail(Debug::RENDER, "Failed to use shader!");
 	}
+
+	mesh->render();
 
 	context->endFrame();
 }

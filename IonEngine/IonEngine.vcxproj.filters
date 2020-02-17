@@ -269,5 +269,11 @@
     <ClInclude Include="Core\Collections\CappedSparseArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Collections\BulkSparseDataSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\BulkSparseArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

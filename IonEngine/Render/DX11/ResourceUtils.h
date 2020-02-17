@@ -8,8 +8,7 @@ namespace IonEngine {
 		case BindFlags::VERTEX_BUFFER: return D3D11_BIND_VERTEX_BUFFER;
 		case BindFlags::INDEX_BUFFER: return D3D11_BIND_INDEX_BUFFER;
 		case BindFlags::NONE:
-		default:
-			break;
+		default: return 0;
 		}
 	}
 
@@ -19,6 +18,7 @@ namespace IonEngine {
 		case ResourceUsage::IMMUTABLE: return D3D11_USAGE_IMMUTABLE;
 		case ResourceUsage::DYNAMIC: return D3D11_USAGE_DYNAMIC;
 		case ResourceUsage::STAGING: return D3D11_USAGE_STAGING;
+		default: return D3D11_USAGE_DEFAULT;
 		}
 	}
 }

@@ -34,7 +34,7 @@ namespace IonEngine {
 
 		/* ==== CONSTRUCTORS ==== */
 		//
-		BulkList() : count(0), bufferCount(0), slotsBuffer(BULK_VIRT_ALLOC_SIZE) {}
+		BulkList() : count(0), bufferCount(0), slotsBuffer(ION_BULK_VIRT_ALLOC_SIZE) {}
 		BulkList(const BulkList&) = delete;
 		void operator=(const BulkList&) = delete;
 

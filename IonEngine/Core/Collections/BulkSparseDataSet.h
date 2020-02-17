@@ -3,23 +3,22 @@
 #include "VirtualBuffer.h"
 
 namespace IonEngine {
-	// A Set with the following specs:
+	// A Data (no known type) Set with the following specs:
 	// - dynamic allocation size
 	// - guaranties locality
 	// - does NOT guaranty contiguity
-	// (designed for large sizes)
-	template<typename T>
-	class BulkSparseSet {
+	// (designed for large amounts of elements of type not known at compile time)
+	class BulkSparseDataSet {
 	public:
 		struct Iterator {
-			Iterator(const BulkSparseSet<T>* set, u32 pos) : set(set), pos(pos) {}
+			Iterator(const BulkSparseDataSet* set, u32 pos) : set(set), pos(pos) {}
 
 			bool operator!=(const Iterator& o) const {
 				return pos != o.pos;
 			}
 
-			T& operator*() const {
-				return const_cast<BulkSparseSet<T>*>(set)->slots[pos].item;
+			u8* operator*() const {
+				return const_cast<BulkSparseDataSet*>(set)->data + pos * set->itemSize;
 			}
 
 			const Iterator& operator++() {
@@ -31,21 +30,21 @@ namespace IonEngine {
 			}
 
 		private:
-			const BulkSparseSet<T>* set;
+			const BulkSparseDataSet* set;
 			u32 pos;
 		};
 
 		/* ==== CONSTRUCTORS ==== */
 		// Creates a new BulkSparseSet
-		BulkSparseSet() : count(0), usedRange(1), slotsBuffer(ION_BULK_VIRT_ALLOC_SIZE), holeFieldBuffer(getRequiredHoleFieldSize(ION_BULK_VIRT_ALLOC_SIZE)) {
-			slotsBuffer.setUsedRange(usedRange * itemSize);
+		BulkSparseDataSet(size_t itemSize) : count(0), usedRange(1), itemSize(itemSize), slotSize((itemSize < 4) ? 4 : itemSize), slotsBuffer(ION_BULK_VIRT_ALLOC_SIZE), holeFieldBuffer(getRequiredHoleFieldSize(ION_BULK_VIRT_ALLOC_SIZE)) {
+			slotsBuffer.setUsedRange(usedRange * slotSize);
 			holeFieldBuffer.setUsedRange(getRequiredHoleFieldSize(usedRange) * 4);
 		}
-		~BulkSparseSet() {
+		~BulkSparseDataSet() {
 			// The buffer destructors will handle freeing
 		}
-		BulkSparseSet(const BulkSparseSet&) = delete;
-		void operator=(const BulkSparseSet&) = delete;
+		BulkSparseDataSet(const BulkSparseDataSet&) = delete;
+		void operator=(const BulkSparseDataSet&) = delete;
 
 		/* ==== METHODS ==== */
 		/* Properties */
@@ -54,53 +53,54 @@ namespace IonEngine {
 		// Returns true if there are no items in the set
 		inline bool isEmpty() const { return count == 0; }
 
-		/* Modification */
-		// Adds the given item by copying its data to the set
-		// !!!Beware that it means no constructor is called but problems
-		// mights arise when the given item is destroyed!!! (prefer using `allocate()` with placement new)
-		T* add(const T& item) {
-			T* nItem = allocate();
-			memcpy_s(reinterpret_cast<void* const>(nItem), sizeof(T), reinterpret_cast<const void* const>(&item), sizeof(T));
-			return nItem;
+		/* Access */
+		//
+		template<typename T>
+		T* at(u32 index) {
+			return reinterpret_cast<T*>(data + index * itemSize);
+		}
+		template<>
+		u8* at(u32 index) {
+			return data + index * itemSize;
 		}
 
+		/* Modification */
 		// Allocates a slot in the set to host an item
-		T* allocate() {
-			u32 index = slots[0].nextHole;
-			slots[0].nextHole = slots[index].nextHole;
+		u8* allocate() {
+			u32 index = *at<u32>(0);
+			*at<u32>(0) = *at<u32>(index);
 
 			count++;
 			if (index != 0) { // Free slot found
 				fieldSetItem(index - 1);
-				return &(slots[index].item);
+				return at<u8>(index);
 			}
 
 			// Get from the end
 			size_t bufferRange = slotsBuffer.getUsedRange();
 			usedRange++;
 			if (usedRange * itemSize > bufferRange) {
-				bufferRange = usedRange * itemSize;
+				bufferRange = usedRange * slotSize;
 				slotsBuffer.setUsedRange(bufferRange);
 				holeFieldBuffer.setUsedRange(getRequiredHoleFieldSize(usedRange) * 4);
 			}
 			fieldSetItem(usedRange - 2);
-			return &(slots[usedRange - 1].item);
+			return at<u8>(usedRange - 1);
 		}
 
 		// Removes the item at the given index (no destructor will be called)
 		void removeAt(u32 index) {
-			slots[index + 1].nextHole = slots[0].nextHole;
-			slots[0].nextHole = index + 1;
+			*at<u32>(index + 1) = *at<u32>(0);
+			*at<u32>(0) = index + 1;
 			count--;
 			fieldSetHole(index);
 		}
 
 		// Remove the given item (the pointer must point to an item in the set, no destructor will be called)
-		void remove(T* item) {
-			ItemSlot* slot = reinterpret_cast<ItemSlot*>(item);
-			u32 absIndex = static_cast<u32>(slot - slots);
-			slot->nextHole = slots[0].nextHole;
-			slots[0].nextHole = absIndex;
+		void remove(u8* item) {
+			u32 absIndex = static_cast<u32>(item - data) / itemSize;
+			*reinterpret_cast<u32*>(item) = *at<u32>(0);
+			*at<u32>(0) = absIndex;
 			count--;
 			fieldSetHole(absIndex - 1);
 		}
@@ -109,9 +109,9 @@ namespace IonEngine {
 		void clear(bool freeMemory = false) {
 			usedRange = 1;
 			count = 0;
-			slots[0].nextHole = 0;
+			*at<u32>(0) = 0;
 			if (freeMemory) {
-				size_t bufferRange = usedRange * itemSize;
+				size_t bufferRange = usedRange * slotSize;
 				slotsBuffer.setUsedRange(bufferRange);
 				holeFieldBuffer.setUsedRange(getRequiredHoleFieldSize(usedRange) * 4);
 			}
@@ -132,16 +132,10 @@ namespace IonEngine {
 		}
 
 	private:
-		union ItemSlot {
-			T item;
-			u32 nextHole;
-		};
-		static constexpr size_t itemSize = sizeof(ItemSlot);
-
 		// item at index 0 is the freelist head
 		union {
 			VirtualBuffer slotsBuffer;
-			ItemSlot* slots;
+			u8* data;
 		};
 		// bit field, 0 means hole, 1 means item
 		union {
@@ -150,6 +144,10 @@ namespace IonEngine {
 		};
 		u32 count;
 		u32 usedRange;
+
+		const size_t itemSize;
+		const size_t slotSize;
+		
 
 		inline static u32 getRequiredHoleFieldSize(u32 range) {
 			return ((range - 1) / 32) + (((range - 1) % 32 != 0) ? 1 : 0);

@@ -1,5 +1,7 @@
 ﻿#include "Camera.h"
 
+#include <DirectXMath.h>
+using namespace DirectX;
 using namespace IonEngine;
 
 
@@ -22,12 +24,12 @@ void Camera::setRotation(Vec3f rot) {
 	this->rot = rot;
 }
 
-XMFLOAT3 Camera::getPosition() {
-	return XMFLOAT3(pos.x, pos.y, pos.z);
+Vec3f Camera::getPosition() {
+	return Vec3f(pos.x, pos.y, pos.z);
 }
 
-XMFLOAT3 Camera::getRotation() {
-	return XMFLOAT3(rot.x, rot.y, rot.z);
+Vec3f Camera::getRotation() {
+	return Vec3f(rot.x, rot.y, rot.z);
 }
 
 void Camera::render() {
@@ -65,9 +67,12 @@ void Camera::render() {
 	lookAtVec = XMVectorAdd(positionVec, lookAtVec);
 
 	// Create the view matrix from the three updated vectors
-	viewMatrix = XMMatrixLookAtLH(positionVec, lookAtVec, upVec);
+	XMMATRIX xmViewMatrix = XMMatrixLookAtLH(positionVec, lookAtVec, upVec);
+	memcpy_s(reinterpret_cast<void* const>(viewMatrix.data), sizeof(Matrix4x4f), reinterpret_cast<const void* const>(xmViewMatrix.r), sizeof(XMMATRIX));
+	viewMatrix.transpose();
+
 }
 
-void Camera::getViewMatrix(XMMATRIX& viewMatrix) {
+void Camera::getViewMatrix(Matrix4x4f& viewMatrix) {
 	viewMatrix = this->viewMatrix;
 }

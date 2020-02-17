@@ -89,7 +89,8 @@
       </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Lib;$(SolutionDir)External\$(Platform)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
@@ -114,7 +115,8 @@
       </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Lib;$(SolutionDir)External\$(Platform)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,7 +144,8 @@
       </Command>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;d3d11.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)External\Lib;$(SolutionDir)External\$(Platform)\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -206,6 +209,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Collections\BulkList.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\BulkSparseArray.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Core\Collections\BulkSparseDataSet.h">
       <SubType>
       </SubType>
     </ClInclude>

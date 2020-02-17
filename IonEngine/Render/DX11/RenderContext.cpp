@@ -1,7 +1,11 @@
 ﻿#if ION_DX11
+#include <d3d11.h>
 #include "RenderContext.h"
 
-#include <d3d11.h>
+#include <DirectXMath.h> // TODO replace with custom math
+#undef near
+#undef far
+using namespace DirectX;
 using namespace IonEngine;
 
 
@@ -278,13 +282,19 @@ bool RenderContext::initialize(int width, int height, bool vsync, HWND hwnd, boo
 	fov = 3.141592654f / 2.0f;
 	aspect = (float) width / (float) height;
 	// Create the projection matrix
-	projectionMatrix = XMMatrixPerspectiveFovLH(fov, aspect, near, far);
+	XMMATRIX xmProjectionMatrix = XMMatrixPerspectiveFovLH(fov, aspect, near, far);
+	memcpy_s(reinterpret_cast<void* const>(projectionMatrix.data), sizeof(Matrix4x4f), reinterpret_cast<const void* const>(xmProjectionMatrix.r), sizeof(XMMATRIX));
+	projectionMatrix.transpose();
 
 	// Initialize the world matrix to the identity
-	worldMatrix = XMMatrixIdentity();
+	XMMATRIX xmWorldMatrix = XMMatrixIdentity();
+	memcpy_s(reinterpret_cast<void* const>(worldMatrix.data), sizeof(Matrix4x4f), reinterpret_cast<const void* const>(xmWorldMatrix.r), sizeof(XMMATRIX));
+	worldMatrix.transpose();
 
 	// create an ortho proj matrix for 2D rendering
-	orthoMatrix = XMMatrixOrthographicLH((float) width, (float) height, near, far);
+	XMMATRIX xmOrthoMatrix = XMMatrixOrthographicLH((float) width, (float) height, near, far);
+	memcpy_s(reinterpret_cast<void* const>(orthoMatrix.data), sizeof(Matrix4x4f), reinterpret_cast<const void* const>(xmOrthoMatrix.r), sizeof(XMMATRIX));
+	orthoMatrix.transpose();
 
 
 	return true;
@@ -357,15 +367,15 @@ ID3D11DeviceContext* RenderContext::getDeviceContext() {
 	return deviceContext;
 }
 
-void RenderContext::getProjectionMatrix(XMMATRIX& projectionMatrix) {
+void RenderContext::getProjectionMatrix(Matrix4x4f& projectionMatrix) {
 	projectionMatrix = this->projectionMatrix;
 }
 
-void RenderContext::getWorldMatrix(XMMATRIX& worldMatrix) {
+void RenderContext::getWorldMatrix(Matrix4x4f& worldMatrix) {
 	worldMatrix = this->worldMatrix;
 }
 
-void RenderContext::getOrthoMatrix(XMMATRIX& orthoMatrix) {
+void RenderContext::getOrthoMatrix(Matrix4x4f& orthoMatrix) {
 	orthoMatrix = this->orthoMatrix;
 }
 

@@ -1,6 +1,10 @@
 ﻿#include "Shader.h"
 
+#include <initguid.h>
 #include <d3dcompiler.h>
+#include <DirectXMath.h>
+#include <fstream>
+using namespace DirectX;
 using namespace IonEngine;
 
 
@@ -29,28 +33,33 @@ void Shader::shutdown() {
 	shutdownShader();
 }
 
-bool Shader::render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix) {
+bool Shader::use(ID3D11DeviceContext* deviceContext, Matrix4x4f worldMatrix, Matrix4x4f viewMatrix, Matrix4x4f projectionMatrix) {
 	bool success = setShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
 	if (!success) {
 		return false;
 	}
 
-	renderShader(deviceContext, indexCount);
+	useShader(deviceContext);
 
 	return true;
 }
 
 bool Shader::initializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFilename, const WCHAR* psFilename) {
 	HRESULT result;
-	ID3D10Blob* errorMessage = nullptr;
-	ID3D10Blob* vertexShaderBuffer = nullptr;
-	ID3D10Blob* pixelShaderBuffer = nullptr;
+	ID3DBlob* errorMessage = nullptr;
+	ID3DBlob* vertexShaderBuffer = nullptr;
+	ID3DBlob* pixelShaderBuffer = nullptr;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
 	u32 numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 
+	u32 flags = D3DCOMPILE_ENABLE_STRICTNESS;
+#if _DEBUG
+	flags |= D3DCOMPILE_DEBUG;
+#endif
+
 	// Compile the vertex shader code
-	result = D3DCompileFromFile(vsFilename, nullptr, nullptr, "main", "vs_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &vertexShaderBuffer, &errorMessage);
+	result = D3DCompileFromFile(vsFilename, nullptr, nullptr, "main", "vs_5_0", flags, 0, &vertexShaderBuffer, &errorMessage);
 	if (FAILED(result)) {
 		// If the shader failed to compile it should have writen something to the error message
 		if (errorMessage != nullptr) {
@@ -62,7 +71,7 @@ bool Shader::initializeShader(ID3D11Device* device, HWND hwnd, const WCHAR* vsFi
 	}
 
 	// Compile the pixel shader code
-	result = D3DCompileFromFile(psFilename, nullptr, nullptr, "main", "ps_5_0", D3D10_SHADER_ENABLE_STRICTNESS, 0, &pixelShaderBuffer, &errorMessage);
+	result = D3DCompileFromFile(psFilename, nullptr, nullptr, "main", "ps_5_0", flags, 0, &pixelShaderBuffer, &errorMessage);
 	if (FAILED(result)) {
 		// If the shader failed to compile it should have writen something to the error message
 		if (errorMessage != nullptr) {
@@ -155,7 +164,7 @@ void Shader::shutdownShader() {
 	}
 }
 
-void Shader::outputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const WCHAR* shaderFilename) {
+void Shader::outputShaderErrorMessage(ID3DBlob* errorMessage, HWND hwnd, const WCHAR* shaderFilename) {
 	char* compileErrors;
 	u64 bufferSize, i;
 	std::ofstream fout;
@@ -182,16 +191,16 @@ void Shader::outputShaderErrorMessage(ID3D10Blob* errorMessage, HWND hwnd, const
 	MessageBoxW(hwnd, L"Error compiling shader. Check shader-error.txt for message.", shaderFilename, MB_OK);
 }
 
-bool Shader::setShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix) {
+bool Shader::setShaderParameters(ID3D11DeviceContext* deviceContext, Matrix4x4f worldMatrix, Matrix4x4f viewMatrix, Matrix4x4f projectionMatrix) {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBuffer* dataPtr;
 	u32 bufferNumber;
 
 	// Transpose the matrices
-	worldMatrix = XMMatrixTranspose(worldMatrix);
-	viewMatrix = XMMatrixTranspose(viewMatrix);
-	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+	//worldMatrix = XMMatrixTranspose(worldMatrix);
+	//viewMatrix = XMMatrixTranspose(viewMatrix);
+	//projectionMatrix = XMMatrixTranspose(projectionMatrix);
 
 	// Lock the constant buffer so it can be written to
 	result = deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -215,14 +224,11 @@ bool Shader::setShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX wo
 	return true;
 }
 
-void Shader::renderShader(ID3D11DeviceContext* deviceContext, int indexCount) {
+void Shader::useShader(ID3D11DeviceContext* deviceContext) {
 	// Set the vertex input layout
 	deviceContext->IASetInputLayout(layout);
 
-	// Set the vertex and pixel shaders that will be used to render this triangle
+	// Set the vertex and pixel shaders that will be used to render
 	deviceContext->VSSetShader(vertexShader, nullptr, 0);
 	deviceContext->PSSetShader(pixelShader, nullptr, 0);
-
-	// Render the test triangle
-	deviceContext->DrawIndexed(indexCount, 0, 0);
 }

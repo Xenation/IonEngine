@@ -1,11 +1,5 @@
 ﻿#pragma once
-//#pragma comment(lib, "d3d11.lib")
-//#pragma comment(lib, "dxgi.lib")
-//#pragma comment(lib, "d3dcompiler.lib")
-#include <DirectXMath.h> // TODO replace with custom math
-#undef near
-#undef far
-#include "Core/MathVec.h"
+#include "Core/MathAdv.h"
 #include "Render/Descriptors.h"
 
 struct IDXGISwapChain;
@@ -18,8 +12,6 @@ struct ID3D11DepthStencilView;
 struct ID3D11RasterizerState;
 
 namespace IonEngine {
-	using namespace DirectX;
-
 	class EngineCore;
 	class Buffer;
 
@@ -39,9 +31,9 @@ namespace IonEngine {
 		ID3D11Device* getDevice();
 		ID3D11DeviceContext* getDeviceContext();
 
-		void getProjectionMatrix(XMMATRIX&);
-		void getWorldMatrix(XMMATRIX&);
-		void getOrthoMatrix(XMMATRIX&);
+		void getProjectionMatrix(Matrix4x4f&);
+		void getWorldMatrix(Matrix4x4f&);
+		void getOrthoMatrix(Matrix4x4f&);
 
 		void getVideoCardInfo(char*, int&);
 
@@ -62,8 +54,8 @@ namespace IonEngine {
 		ID3D11DepthStencilState* depthStencilState;
 		ID3D11DepthStencilView* depthStencilView;
 		ID3D11RasterizerState* rasterState;
-		XMMATRIX projectionMatrix;
-		XMMATRIX worldMatrix;
-		XMMATRIX orthoMatrix;
+		Matrix4x4f projectionMatrix;
+		Matrix4x4f worldMatrix;
+		Matrix4x4f orthoMatrix;
 	};
 }

@@ -34,7 +34,7 @@ namespace IonEngine {
 
 		/* ==== CONSTRUCTORS ==== */
 		// Creates a new BulkDenseSet, no allocation yet (virtual address space is reserved)
-		BulkDenseSet() : count(0), pageCount(0), slotsBuffer(BULK_VIRT_ALLOC_SIZE) {}
+		BulkDenseSet() : count(0), pageCount(0), slotsBuffer(ION_BULK_VIRT_ALLOC_SIZE) {}
 		// Destroys the set by clearing and freeing any allocated memory (virtual address space is released)
 		~BulkDenseSet() {}
 		BulkDenseSet(const BulkDenseSet&) = delete;

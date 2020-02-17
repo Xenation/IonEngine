@@ -1,18 +1,19 @@
-#pragma once
+﻿#pragma once
+#include "CollectionParams.h"
 
 namespace IonEngine {
-	template<typename T, int N>
-	class CappedSparseArray {
+	template<typename T>
+	class BulkSparseArray {
 	public:
 		struct Iterator {
-			Iterator(const CappedSparseArray<T, N>* set, u32 pos) : set(set), pos(pos) {}
+			Iterator(const BulkSparseArray<T>* set, u32 pos) : set(set), pos(pos) {}
 
 			bool operator!=(const Iterator& o) const {
 				return pos != o.pos;
 			}
 
 			T& operator*() const {
-				return const_cast<CappedSparseArray<T, N>*>(set)->slots[pos].item;
+				return const_cast<BulkSparseArray<T>*>(set)->slots[pos].item;
 			}
 
 			const Iterator& operator++() {
@@ -24,16 +25,17 @@ namespace IonEngine {
 			}
 
 		private:
-			const CappedSparseArray<T, N>* set;
+			const BulkSparseArray<T>* set;
 			u32 pos;
 		};
 
 		/* ==== CONSTRUCTORS ==== */
 		//
-		CappedSparseArray() : count(0) {
-
+		BulkSparseArray() : count(0) {
+			slotsAddr = reserveVirtualAddress(ION_BULK_VIRT_ALLOC_SIZE);
+			holeBitFieldAddr = reserveVirtualAddress(getRequiredHoleFieldSize(ION_BULK_VIRT_ALLOC_SIZE));
 		}
-		~CappedSparseArray() {
+		~BulkSparseArray() {
 
 		}
 
@@ -58,7 +60,7 @@ namespace IonEngine {
 				holeBitField[i] = 0;
 			}
 		}
-		
+
 		/* Access */
 		//
 		T* at(u32 index) {
@@ -88,11 +90,25 @@ namespace IonEngine {
 		}
 
 	private:
-		static constexpr u32 bitFieldSize = (N / 32) + ((N % 32 != 0) ? 1 : 0);
+		static constexpr u32 maxPageCount = ION_BULK_VIRT_ALLOC_SIZE / virtPageSize + ((ION_BULK_VIRT_ALLOC_SIZE % virtPageSize != 0) ? 1 : 0);
+		static constexpr u32 pageFieldSize = maxPageCount / 32 + ((maxPageCount % 32 != 0) ? 1 : 0);
 
-		T slots[N];
-		u32 holeBitField[bitFieldSize];
+		// TODO CONTINUE HERE!
+		union {
+			void* slotsAddr;
+			T* slots;
+		};
+		union {
+			void* holeBitFieldAddr;
+			u32* holeBitField;
+		};
+		u32 pageBitField[pageFieldSize]; // TODO maybe use a more dynamic allocation to reduce memory cost
+
 		u32 count;
+
+		inline static u32 getRequiredHoleFieldSize(u32 range) {
+			return ((range - 1) / 32) + (((range - 1) % 32 != 0) ? 1 : 0);
+		}
 
 		inline void fieldSetHole(u32 index) {
 			holeBitField[index / 32] |= 1 << (index % 32);
@@ -102,8 +118,20 @@ namespace IonEngine {
 			holeBitField[index / 32] &= ~(1 << (index % 32));
 		}
 
-		bool isHole(u32 index) const {
+		inline bool isHole(u32 index) const {
 			return (holeBitField[index / 32] & (1 << (index % 32))) != 0;
+		}
+
+		inline void pageSetUsed(u32 pageIndex) {
+			pageBitField[pageIndex / 32] |= 1 << (pageIndex % 32);
+		}
+
+		inline void pageSetUnused(u32 pageIndex) {
+			pageBitField[pageIndex / 32] &= ~(1 << (pageIndex % 32));
+		}
+
+		inline bool pageIsUsed(u32 pageIndex) {
+			return (pageBitField[pageIndex / 32] & (1 << (pageIndex % 32))) != 0;
 		}
 	};
 }
